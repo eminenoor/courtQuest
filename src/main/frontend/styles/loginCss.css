@@ -1,0 +1,18 @@
+login-view .forgot-password {
+    justify-content: flex-end;
+}
+
+.login-view .additional-links {
+    display: flex;
+    justify-content: space-between;
+    width: 22%;
+}
+
+login-form {
+    position: relative;
+}
+
+.create-account {
+    cursor: pointer;
+    text-decoration: underline;
+}
