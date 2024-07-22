@@ -39,7 +39,7 @@ public class LoginView extends VerticalLayout {
         links.addClassName("additional-links");
         RouterLink createAccount = new RouterLink("Create an account", RegistrationView.class);
         createAccount.addClassName("create-account");
-        RouterLink forgotPassword = new RouterLink("Forgot password", EmailVerification.class);
+        RouterLink forgotPassword = new RouterLink("Forgot password", AnonymUserLoginView.class);
         forgotPassword.addClassName("forgot-password");
         links.add(createAccount, forgotPassword);
 
