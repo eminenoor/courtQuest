@@ -1,22 +1,29 @@
 package dev.ice.CourtQuest.views;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import jakarta.annotation.security.PermitAll;
 
-@Route("")
-@PermitAll
-public class CurrentActivitiesView extends HorizontalLayout {
+import java.util.stream.IntStream;
 
-    public CurrentActivitiesView() {
+@Route("make-reservation")
+@PermitAll
+public class MakeReservationView extends VerticalLayout {
+
+    public MakeReservationView() {
         // Header
-        H1 currentActivitiesTitle = new H1("Current Activities");
+        H1 makeReservationTitle = new H1("Make a Reservation");
 
         // Log out link
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class); // Assuming LogoutView is the class handling logout
@@ -35,14 +42,13 @@ public class CurrentActivitiesView extends HorizontalLayout {
         topRightIcons.getStyle().set("margin-left", "auto"); // Push to the right
 
         // Header with top right icons
-        HorizontalLayout headerLayout = new HorizontalLayout(currentActivitiesTitle, topRightIcons);
+        HorizontalLayout headerLayout = new HorizontalLayout(topRightIcons);
         headerLayout.setWidthFull();
         headerLayout.setAlignItems(Alignment.CENTER);
 
         // Navigation bar on the left
         VerticalLayout iconBar = new VerticalLayout();
         iconBar.setWidth("50px"); // Adjust width as needed
-        iconBar.getStyle().set("margin-top", "20px"); // Space below the header
         iconBar.getStyle().set("background-color", "#1E3A8A"); // Dark blue color
         iconBar.getStyle().set("height", "100vh"); // Full height
 
@@ -79,28 +85,60 @@ public class CurrentActivitiesView extends HorizontalLayout {
 
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
-        // Horizontal buttons
-        Button createReservationButton = new Button("Create Reservation");
-        Button myActivitiesButton = new Button("My Activities");
-        Button myInvitationsButton = new Button("My Invitations");
+        // Form components
+        RadioButtonGroup<String> visibility = new RadioButtonGroup<>();
+        visibility.setLabel("Visibility");
+        visibility.setItems("Public", "Private");
 
-        createReservationButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("make-reservation")));
-        myActivitiesButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("my-activities")));
-        myInvitationsButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("my-invitations")));
+        ComboBox<String> courtField = new ComboBox<>("Court/Field:");
+        courtField.setItems("Basketball", "Football", "Tennis", "Volleyball");
 
-        HorizontalLayout buttonLayout = new HorizontalLayout(createReservationButton, myActivitiesButton, myInvitationsButton);
+        ComboBox<String> time = new ComboBox<>("Time:");
+        time.setItems(IntStream.rangeClosed(8, 22).mapToObj(hour -> String.format("%02d:00", hour)).toArray(String[]::new));
+
+        TextField quota = new TextField("Quota:");
+
+        Button doneButton = new Button("Done");
+        doneButton.addClickListener(e -> Notification.show("Reservation made!"));
+
+        FormLayout formLayout = new FormLayout();
+        formLayout.add(visibility, courtField, time, quota);
+        formLayout.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("0", 1)
+        );
+
+        // Center the Done button
+        HorizontalLayout buttonLayout = new HorizontalLayout(doneButton);
         buttonLayout.setWidthFull();
         buttonLayout.setJustifyContentMode(JustifyContentMode.CENTER);
-        buttonLayout.setSpacing(true);
 
-        // Main content layout
-        VerticalLayout mainContent = new VerticalLayout(headerLayout, buttonLayout);
-        mainContent.setWidthFull();
+        // Form container layout
+        VerticalLayout formContainer = new VerticalLayout(makeReservationTitle, formLayout, buttonLayout);
+        formContainer.setAlignItems(Alignment.CENTER);
+        formContainer.setPadding(false);
+        formContainer.getStyle().set("margin", "0 auto");
+        formContainer.getStyle().set("padding-top", "20px"); // Adjust padding as needed
+        formContainer.getStyle().set("width", "400px"); // Set width for compact form
+
+        // Main content layout with header at the top
+        VerticalLayout mainContent = new VerticalLayout(headerLayout, formContainer);
         mainContent.setAlignItems(Alignment.CENTER);
+        mainContent.setJustifyContentMode(JustifyContentMode.START);
+        mainContent.setHeightFull();
+        mainContent.setPadding(false);
 
         // Add components to the root layout
-        add(iconBar, mainContent);
-        setAlignItems(Alignment.STRETCH);
-        setSizeFull();
+        HorizontalLayout rootLayout = new HorizontalLayout(iconBar, mainContent);
+        rootLayout.setAlignItems(Alignment.STRETCH);
+        rootLayout.setSizeFull();
+        rootLayout.getStyle().set("padding", "0"); // Remove any padding around the root layout
+
+        // Ensure the sidebar is flush with the left edge
+        iconBar.getStyle().set("position", "fixed");
+        iconBar.getStyle().set("top", "0");
+        iconBar.getStyle().set("left", "0");
+        iconBar.getStyle().set("bottom", "0");
+
+        add(rootLayout);
     }
 }
