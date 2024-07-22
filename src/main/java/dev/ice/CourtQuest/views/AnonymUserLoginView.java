@@ -1,7 +1,6 @@
 package dev.ice.CourtQuest.views;
 
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
@@ -11,7 +10,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
 @Route("forgot-password")
@@ -20,9 +18,8 @@ public class AnonymUserLoginView extends VerticalLayout {
 
     public AnonymUserLoginView() {
         // Creating the back button with an icon
-        Icon backIcon = VaadinIcon.ARROW_LEFT.create();
-        RouterLink backButton = new RouterLink("", LoginView.class);
-        backButton.getElement().appendChild(backIcon.getElement());
+        Button backButton = new Button(new Icon(VaadinIcon.ARROW_LEFT));
+        backButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("login")));
 
         // Creating the header
         H1 header = new H1("CourtQuest");
@@ -36,10 +33,14 @@ public class AnonymUserLoginView extends VerticalLayout {
         // Creating the sub-header
         H2 subHeader = new H2("Welcome!");
         subHeader.getStyle().set("text-align", "center");
+        subHeader.getStyle().set("margin-top", "20px"); // Adding space above the sub-header
+        subHeader.getStyle().set("margin-bottom", "10px"); // Adding space below the sub-header
 
         // Creating the entrance message
         H3 entranceMessage = new H3("Please Enter Your Bilkent Email");
         entranceMessage.getStyle().set("text-align", "left");
+        entranceMessage.getStyle().set("margin-top", "10px"); // Adding space above the entrance message
+        entranceMessage.getStyle().set("margin-bottom", "20px"); // Adding space below the entrance message
 
         // Creating the email field
         EmailField emailField = new EmailField();

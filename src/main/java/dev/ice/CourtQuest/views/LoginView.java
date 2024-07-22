@@ -4,7 +4,6 @@ package dev.ice.CourtQuest.views;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -37,7 +36,7 @@ public class LoginView extends VerticalLayout {
         //Custom links div
         Div links = new Div();
         links.addClassName("additional-links");
-        RouterLink createAccount = new RouterLink("Create an account", RegistrationView.class);
+        RouterLink createAccount = new RouterLink("Create an account", AnonymUserLoginView.class);
         createAccount.addClassName("create-account");
         RouterLink forgotPassword = new RouterLink("Forgot password", AnonymUserLoginView.class);
         forgotPassword.addClassName("forgot-password");

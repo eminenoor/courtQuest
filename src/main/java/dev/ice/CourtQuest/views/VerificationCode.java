@@ -33,10 +33,14 @@ public class VerificationCode extends VerticalLayout {
         // Creating the sub-header
         H2 subHeader = new H2("Welcome!");
         subHeader.getStyle().set("text-align", "center");
+        subHeader.getStyle().set("margin-top", "20px"); // Adding space above the sub-header
+        subHeader.getStyle().set("margin-bottom", "10px"); // Adding space below the sub-header
 
         // Creating the entrance message
         H3 entranceMessage = new H3("Please Enter The Verification Code");
         entranceMessage.getStyle().set("text-align", "center");
+        entranceMessage.getStyle().set("margin-top", "10px"); // Adding space above the entrance message
+        entranceMessage.getStyle().set("margin-bottom", "20px"); // Adding space below the entrance message
 
         // Creating the verification code field
         TextField verificationCodeField = new TextField();
@@ -47,7 +51,7 @@ public class VerificationCode extends VerticalLayout {
         Button continueButton = new Button("Continue");
         continueButton.addClickListener(e -> {
             // Navigate to the next view (e.g., dashboard or reset password view)
-            // continueButton.getUI().ifPresent(ui -> ui.navigate("nextView"));
+            continueButton.getUI().ifPresent(ui -> ui.navigate("register"));
         });
 
         // Creating the main layout and adding components
