@@ -2,6 +2,7 @@ package dev.ice.CourtQuest.views;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
@@ -11,11 +12,17 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import jakarta.annotation.security.PermitAll;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Route("make-reservation")
 @PermitAll
@@ -93,16 +100,72 @@ public class MakeReservationView extends VerticalLayout {
         ComboBox<String> courtField = new ComboBox<>("Court/Field:");
         courtField.setItems("Basketball", "Football", "Tennis", "Volleyball");
 
+        DatePicker date = new DatePicker("Date:");
+        if (LocalTime.now().isAfter(LocalTime.of(21, 59))) {
+            date.setMin(LocalDate.now().plusDays(1));
+        }else{
+            date.setMin(LocalDate.now());
+        }
+        date.setMax(LocalDate.now().withDayOfMonth(1).plusMonths(2).minusDays(1));
+        date.setEnabled(false);
+
         ComboBox<String> time = new ComboBox<>("Time:");
-        time.setItems(IntStream.rangeClosed(8, 22).mapToObj(hour -> String.format("%02d:00", hour)).toArray(String[]::new));
+        //time.setItems(IntStream.rangeClosed(8, 22).mapToObj(hour -> String.format("%02d:00", hour)).toArray(String[]::new));
+
+        date.addValueChangeListener(event -> {
+            LocalDate selectedDate = event.getValue();
+            List<String> availableTimes;
+            if (selectedDate != null && selectedDate.equals(LocalDate.now())) {
+                availableTimes = IntStream.rangeClosed(LocalTime.now().getHour() + 1, 22)
+                        .mapToObj(hour -> String.format("%02d:00", hour))
+                        .collect(Collectors.toList());
+            } else {
+                availableTimes = IntStream.rangeClosed(8, 22)
+                        .mapToObj(hour -> String.format("%02d:00", hour))
+                        .collect(Collectors.toList());
+            }
+            time.setItems(availableTimes);
+        });
+        time.setEnabled(false);
 
         TextField quota = new TextField("Quota:");
+        quota.setEnabled(false);
+
+        courtField.addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+                date.setEnabled(true);
+            }
+        });
+
+        date.addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+                time.setEnabled(true);
+            }
+        });
+
+        time.addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+                quota.setEnabled(true);
+            }
+        });
 
         Button doneButton = new Button("Done");
+        doneButton.setEnabled(false);
+
+        quota.addValueChangeListener(event -> {
+            if (event.getValue() != null) {
+                visibility.addValueChangeListener(e -> {
+                    if(e.getValue() != null){
+                        doneButton.setEnabled(true);
+                    }
+                });
+            }
+        });
+
         doneButton.addClickListener(e -> Notification.show("Reservation made!"));
 
         FormLayout formLayout = new FormLayout();
-        formLayout.add(visibility, courtField, time, quota);
+        formLayout.add(visibility, courtField, date, time, quota);
         formLayout.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 1)
         );
