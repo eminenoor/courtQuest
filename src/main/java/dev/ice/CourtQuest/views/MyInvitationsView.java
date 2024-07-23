@@ -7,6 +7,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import dev.ice.CourtQuest.components.MyInvitationsCard;
 import jakarta.annotation.security.PermitAll;
 
 @Route("my-invitations")
@@ -78,10 +79,20 @@ public class MyInvitationsView extends HorizontalLayout {
 
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
+        MyInvitationsCard invitation1 = new MyInvitationsCard(
+                "Elif",
+                "Volleyball",
+                "Dormitory Sports Hall",
+                "25/08/2024",
+                "16.00-17.00",
+                "7/12",
+                true
+        );
+
         // Main content layout
-        VerticalLayout mainContent = new VerticalLayout(headerLayout);
+        VerticalLayout mainContent = new VerticalLayout(headerLayout, invitation1); // Add the invitation card here
         mainContent.setWidthFull();
-        mainContent.setAlignItems(Alignment.CENTER);
+        mainContent.setAlignItems(Alignment.START);
 
         // Add components to the root layout
         add(iconBar, mainContent);
@@ -89,4 +100,3 @@ public class MyInvitationsView extends HorizontalLayout {
         setSizeFull();
     }
 }
-

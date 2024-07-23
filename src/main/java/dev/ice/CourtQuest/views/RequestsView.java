@@ -7,6 +7,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import dev.ice.CourtQuest.components.RequestActivityCard;
 import jakarta.annotation.security.PermitAll;
 
 @Route("requests")
@@ -78,10 +79,19 @@ public class RequestsView extends HorizontalLayout {
 
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
+        RequestActivityCard request1 = new RequestActivityCard(
+                "Basketball",
+                "Main Sports Hall",
+                "24/08/2024",
+                "13.00-14.00",
+                "7/12",
+                true
+        );
+
         // Main content layout
-        VerticalLayout mainContent = new VerticalLayout(headerLayout);
+        VerticalLayout mainContent = new VerticalLayout(headerLayout, request1);
         mainContent.setWidthFull();
-        mainContent.setAlignItems(Alignment.CENTER);
+        mainContent.setAlignItems(Alignment.START);
 
         // Add components to the root layout
         add(iconBar, mainContent);
