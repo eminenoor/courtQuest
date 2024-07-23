@@ -8,6 +8,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import dev.ice.CourtQuest.components.MyActivityCard;
 import jakarta.annotation.security.PermitAll;
 
 @Route("my-activities")
@@ -91,8 +92,30 @@ public class MyActivitiesView extends HorizontalLayout {
         buttonLayout.setJustifyContentMode(JustifyContentMode.CENTER);
         buttonLayout.setSpacing(true);
 
+        MyActivityCard tennisActivityCard = new MyActivityCard(
+                "Volleyball",
+                "Dormitory Sports Hall",
+                "24/08/2024",
+                "15.00-17.00",
+                "7/12",
+                true
+        );
+
+        MyActivityCard footballActivityCard = new MyActivityCard(
+                "Football",
+                "Stadium",
+                "25/08/2024",
+                "21.00-22.30",
+                "18/22",
+                false
+        );
+
+        VerticalLayout activityLayout = new VerticalLayout(tennisActivityCard, footballActivityCard);
+        activityLayout.setWidthFull();
+        activityLayout.setSpacing(true);
+
         // Main content layout
-        VerticalLayout mainContent = new VerticalLayout(headerLayout, buttonLayout);
+        VerticalLayout mainContent = new VerticalLayout(headerLayout, buttonLayout, activityLayout);
         mainContent.setWidthFull();
         mainContent.setAlignItems(Alignment.CENTER);
 
