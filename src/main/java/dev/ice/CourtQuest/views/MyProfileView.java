@@ -181,4 +181,40 @@ public class MyProfileView extends HorizontalLayout {
         }
         return ratingLayout;
     }
+
+    public String getAgeValue() {
+        return new String(ageValue.getText());
+    }
+
+    public String getDepartmentValue() {
+        return new String(departmentValue.getText());
+    }
+
+    public String getNameValue() {
+        return new String(nameValue.getText());
+    }
+
+    public String getGenderValue() {
+        return new String(genderValue.getText());
+    }
+
+    public String getEmailValue() {
+        return new String(emailValue.getText());
+    }
+
+    public void setNameValue(String nameValue) {
+        this.nameValue = new Text(nameValue);
+    }
+
+    public void setAgeValue(String ageValue) {
+        this.ageValue = new Text(ageValue);
+    }
+
+    public void setDepartmentValue(String departmentValue) {
+        this.departmentValue = new Text(departmentValue);
+    }
+
+    public void setEmailValue(String emailValue) {
+        this.emailValue = new Text(emailValue);
+    }
 }
