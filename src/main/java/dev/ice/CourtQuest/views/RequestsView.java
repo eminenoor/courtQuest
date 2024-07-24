@@ -3,16 +3,19 @@ package dev.ice.CourtQuest.views;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import dev.ice.CourtQuest.components.PlayerCard;
 import dev.ice.CourtQuest.components.RequestActivityCard;
 import jakarta.annotation.security.PermitAll;
 
 @Route("requests")
 @PermitAll
 public class RequestsView extends HorizontalLayout {
+    PlayerCard player = new PlayerCard("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeujnl7lsLBPalSsz1LLXMY2hwKeNh_Lg_5w&s", "Metin Çalışkan", "CS", "M", 20, 5, 0.5);
 
     public RequestsView() {
         // Header
@@ -88,10 +91,21 @@ public class RequestsView extends HorizontalLayout {
                 true
         );
 
+        HorizontalLayout requestLayout = new HorizontalLayout(request1, player);
+        requestLayout.setWidthFull();
+        requestLayout.setAlignItems(Alignment.STRETCH);
+        request1.getStyle().setWidth("300px");
+        request1.getStyle().setHeight("200px");
+        request1.getStyle().set("margin-right", "500px");
+        requestLayout.setSpacing(true);
+        requestLayout.setPadding(true);
+
+
         // Main content layout
-        VerticalLayout mainContent = new VerticalLayout(headerLayout, request1);
+        VerticalLayout mainContent = new VerticalLayout(headerLayout, requestLayout);
         mainContent.setWidthFull();
         mainContent.setAlignItems(Alignment.START);
+
 
         // Add components to the root layout
         add(iconBar, mainContent);
