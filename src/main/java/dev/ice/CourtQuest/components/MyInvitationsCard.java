@@ -16,8 +16,8 @@ public class MyInvitationsCard extends GeneralActivityCard {
 
     public MyInvitationsCard(String inviter, String sportName, String place, String date, String time, String quota, boolean isPublic) {
         super(sportName, isPublic);
-        setWidth(25);
-        setHeight(45);
+        setWidth("350px");
+        setHeight("auto");
 
         inviterSpan = new Span(inviter + " has invited you to a game");
         inviterSpan.getStyle().set("background-color", "#1E3A8A");

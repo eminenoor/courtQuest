@@ -7,6 +7,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import dev.ice.CourtQuest.components.RatePlayersCard;
 import jakarta.annotation.security.PermitAll;
 
 @Route("rate-players")
@@ -78,10 +79,24 @@ public class RatePlayersView extends HorizontalLayout {
 
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
+        RatePlayersCard activity1 = new RatePlayersCard(
+                "volleyball",
+                "15:00-17:00",
+                "12.07.2024",
+                "Dormitory Sports Hall"
+        );
+
+        RatePlayersCard activity2 = new RatePlayersCard(
+                "basketball",
+                "12:00-13:00",
+                "13.07.2024",
+                "Main Sports Hall"
+        );
+
         // Main content layout
-        VerticalLayout mainContent = new VerticalLayout(headerLayout);
+        VerticalLayout mainContent = new VerticalLayout(headerLayout, activity1, activity2);
         mainContent.setWidthFull();
-        mainContent.setAlignItems(Alignment.CENTER);
+        mainContent.setAlignItems(Alignment.START);
 
         // Add components to the root layout
         add(iconBar, mainContent);
@@ -89,4 +104,3 @@ public class RatePlayersView extends HorizontalLayout {
         setSizeFull();
     }
 }
-

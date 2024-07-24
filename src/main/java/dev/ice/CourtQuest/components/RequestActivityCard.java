@@ -6,8 +6,8 @@ public class RequestActivityCard extends GeneralActivityCard {
 
     public RequestActivityCard(String sportName, String place, String date, String time, String quota, boolean isPublic) {
         super(sportName, isPublic);
-        setWidth(30);
-        setHeight(25);
+        setWidth("30px");
+        setHeight("auto");
 
         addDetails(place, date, time, quota);
         contentLayout = new VerticalLayout(detailsLayout);

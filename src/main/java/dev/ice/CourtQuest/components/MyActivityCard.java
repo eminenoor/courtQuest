@@ -36,7 +36,7 @@ public class MyActivityCard extends GeneralActivityCard{
         playersButton.getStyle().set("background-color", "#1E3A8A");
         playersButton.getStyle().set("color", "white");
 
-        inviteButton = new Button("Join");
+        inviteButton = new Button("Invite");
         inviteButton.getStyle().set("background-color", "#1E3A8A");
         inviteButton.getStyle().set("color", "white");
 
