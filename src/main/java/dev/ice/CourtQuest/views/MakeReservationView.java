@@ -1,5 +1,6 @@
 package dev.ice.CourtQuest.views;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -27,11 +28,13 @@ import java.util.stream.Stream;
 @Route("make-reservation")
 @PermitAll
 public class MakeReservationView extends VerticalLayout {
+    private int count;
 
     public MakeReservationView() {
         // Header
         H1 makeReservationTitle = new H1("Make a Reservation");
 
+        count = 0;
         // Log out link
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class); // Assuming LogoutView is the class handling logout
         logoutLink.getStyle().set("margin-right", "auto");
@@ -97,8 +100,22 @@ public class MakeReservationView extends VerticalLayout {
         visibility.setLabel("Visibility");
         visibility.setItems("Public", "Private");
 
+        ComboBox<String> sports = new ComboBox<>("Sport:");
+        sports.setItems("Basketball", "Football", "Tennis", "Volleyball");
+
         ComboBox<String> courtField = new ComboBox<>("Court/Field:");
-        courtField.setItems("Basketball", "Football", "Tennis", "Volleyball");
+        courtField.setEnabled(false);
+        sports.addValueChangeListener(event -> {
+            if(event.getValue().equals("Football")) {
+                courtField.setItems("Dormitary Sports Hall Football Pitch 1", "Dormitary Sports Hall Football Pitch 2", "Dormitary Sports Hall Football Pitch 3");
+            }else if(event.getValue().equals("Tennis")) {
+                courtField.setItems("Dormitary Sports Hall Closed Tennis Court 1", "Dormitary Sports Hall Closed Tennis Court 2", "Dormitary Sports Hall Open Tennis Court 1");
+            }else if(event.getValue().equals("Volleyball")) {
+                courtField.setItems("Dormitary Sports Hall Closed Volleyball Field", "Dormitary Sports Hall Open Volleyball Field", "Main Sports Hall Closed Volleyball Field");
+            }else if(event.getValue().equals("Basketball")) {
+                courtField.setItems("Dormitary Sports Hall Basketball Field", "Main Sports Hall Basketball Field");
+            }
+        });
 
         DatePicker date = new DatePicker("Date:");
         if (LocalTime.now().isAfter(LocalTime.of(21, 59))) {
@@ -131,41 +148,63 @@ public class MakeReservationView extends VerticalLayout {
         TextField quota = new TextField("Quota:");
         quota.setEnabled(false);
 
+        Button doneButton = new Button("Done");
+        doneButton.setEnabled(false);
+
+        sports.addValueChangeListener(event -> {
+            if(event.getValue() != null) {
+                courtField.setEnabled(true);
+                count++;
+            }
+        });
+
         courtField.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 date.setEnabled(true);
+                count++;
             }
         });
 
         date.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 time.setEnabled(true);
+                count++;
             }
         });
 
         time.addValueChangeListener(event -> {
             if (event.getValue() != null) {
                 quota.setEnabled(true);
+                count++;
             }
         });
-
-        Button doneButton = new Button("Done");
-        doneButton.setEnabled(false);
 
         quota.addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                visibility.addValueChangeListener(e -> {
-                    if(e.getValue() != null){
-                        doneButton.setEnabled(true);
-                    }
-                });
+                count++;
+                if(count == 6){
+                    doneButton.setEnabled(true);
+                }
             }
         });
 
-        doneButton.addClickListener(e -> Notification.show("Reservation made!"));
+        visibility.addValueChangeListener(e -> {
+            if (e.getValue() != null) {
+                count++;
+                if(count == 6){
+                    doneButton.setEnabled(true);
+                }
+            }
+        });
+
+        doneButton.addClickListener(e -> {
+            Notification.show("Reservation made!");
+            UI.getCurrent().navigate("my-activities");
+        });
+
 
         FormLayout formLayout = new FormLayout();
-        formLayout.add(visibility, courtField, date, time, quota);
+        formLayout.add(visibility, sports, courtField, date, time, quota);
         formLayout.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 1)
         );
@@ -204,4 +243,5 @@ public class MakeReservationView extends VerticalLayout {
 
         add(rootLayout);
     }
+
 }
