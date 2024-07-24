@@ -1,5 +1,7 @@
 package dev.ice.CourtQuest.views;
 
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -9,13 +11,21 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import dev.ice.CourtQuest.components.PlayerCard;
+import dev.ice.CourtQuest.components.PlayerCardRequest;
 import dev.ice.CourtQuest.components.RequestActivityCard;
 import jakarta.annotation.security.PermitAll;
 
 @Route("requests")
 @PermitAll
 public class RequestsView extends HorizontalLayout {
-    PlayerCard player = new PlayerCard("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeujnl7lsLBPalSsz1LLXMY2hwKeNh_Lg_5w&s", "Metin Çalışkan", "CS", "M", 20, 5, 0.5);
+    PlayerCardRequest player1 = new PlayerCardRequest("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIF0ePQThnXeyYbDWWcFFchDy4Oq2mW4m4OA&s", "DERBEDERBERK", "HAYAT", "M", 29, 5, 5);
+    PlayerCardRequest player = new PlayerCardRequest("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeujnl7lsLBPalSsz1LLXMY2hwKeNh_Lg_5w&s", "Metin Çalışkan", "CS", "M", 20, 5, 0.5);
+    PlayerCardRequest player2 = new PlayerCardRequest("İlke", "İlke Latifoğlu", "CS", "F", 20, 4, 4.5);
+    PlayerCardRequest player3 = new PlayerCardRequest("Emine", "Emine Noor", "CS", "F", 20, 3.5, 4);
+    PlayerCardRequest player4 = new PlayerCardRequest("Elif", "Elif Lara", "CS", "F", 20, 2.5, 5);
+    PlayerCardRequest player5 = new PlayerCardRequest("Murathan", "Murathan Işık", "CS", "M", 22, 5, 1);
+    PlayerCardRequest player6 = new PlayerCardRequest("Can", "Can Akpınar", "CS", "M", 22, 3.5, 4);
+    PlayerCardRequest player7 = new PlayerCardRequest("Ekin", "Ekin Köylü", "CS", "F", 20, 5, 3);
 
     public RequestsView() {
         // Header
@@ -91,21 +101,36 @@ public class RequestsView extends HorizontalLayout {
                 true
         );
 
-        HorizontalLayout requestLayout = new HorizontalLayout(request1, player);
-        requestLayout.setWidthFull();
-        requestLayout.setAlignItems(Alignment.STRETCH);
+        Div scrollableContainer = new Div();
+        scrollableContainer.getStyle().set("overflow-x", "auto"); // Enable horizontal scrolling
+        scrollableContainer.setWidth("100%"); // Full width of the parent container
+
+        HorizontalLayout playersLayout = new HorizontalLayout();
+        playersLayout.setWidth("max-content");
+        playersLayout.add(player1, player, player2, player3, player3, player4, player5, player6, player7);
+
+        scrollableContainer.add(playersLayout);
+        scrollableContainer.setWidth("920px");
+
+        HorizontalLayout requestsLayout = new HorizontalLayout(request1, scrollableContainer);
+
+        requestsLayout.setWidthFull();
+        requestsLayout.setAlignItems(Alignment.STRETCH);
+        requestsLayout.setAlignItems(VerticalLayout.Alignment.END);
         request1.getStyle().setWidth("300px");
         request1.getStyle().setHeight("200px");
-        request1.getStyle().set("margin-right", "500px");
-        requestLayout.setSpacing(true);
-        requestLayout.setPadding(true);
+        request1.getStyle().set("margin-right", "100px");
+        requestsLayout.setSpacing(true);
+        requestsLayout.setPadding(true);
+
+        getStyle().set("overflow", "hidden");
 
 
         // Main content layout
-        VerticalLayout mainContent = new VerticalLayout(headerLayout, requestLayout);
+        VerticalLayout mainContent = new VerticalLayout(headerLayout, requestsLayout);
         mainContent.setWidthFull();
         mainContent.setAlignItems(Alignment.START);
-
+        mainContent.setAlignItems(FlexComponent.Alignment.END);
 
         // Add components to the root layout
         add(iconBar, mainContent);

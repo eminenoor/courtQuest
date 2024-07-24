@@ -74,7 +74,7 @@ public class PlayerCard extends VerticalLayout {
         setSpacing(false);
         getElement().getStyle().set("background-color", "#3F51B5").set("color", "white").set("border-radius", "10px").set("padding", "10px");
         setWidth("200px");
-        setHeight("auto");
+        setHeight("320px");
     }
 
     private HorizontalLayout createRatingLayout(double rating, boolean isGeneralRating) {
