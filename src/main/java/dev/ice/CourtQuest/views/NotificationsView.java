@@ -7,6 +7,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import dev.ice.CourtQuest.components.NotificationsCard;
 import jakarta.annotation.security.PermitAll;
 
 @Route("notifications")
@@ -83,11 +84,15 @@ public class NotificationsView extends HorizontalLayout {
         mainContent.setWidthFull();
         mainContent.setAlignItems(Alignment.CENTER);
 
+        // Adding notification cards
+        mainContent.add(new NotificationsCard("Ilke", "has invited you to a game", "Volleyball", "12.07.2024", "15.00 - 17.00", "Dormitory Sports Hall"));
+        mainContent.add(new NotificationsCard("The team", "has accepted your request.", "Tennis", "13.07.2024", "13.00 - 14.00", "Dormitory Sports Hall"));
+        mainContent.add(new NotificationsCard("Emine", "wants to join your game.", "Football", "16.07.2024", "15.00 - 17.00", "Dormitory Sports Hall"));
+        mainContent.add(new NotificationsCard("The team", "has declined your request.", "Basketball", "13.07.2024", "10.00 - 12.30", "Main Sports Hall"));
+
         // Add components to the root layout
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);
         setSizeFull();
     }
 }
-
-
