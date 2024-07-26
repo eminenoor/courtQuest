@@ -21,7 +21,7 @@ import jakarta.annotation.security.PermitAll;
 
 @Route("invite-players")
 @PermitAll
-public class InvitePlayers extends HorizontalLayout {
+public class InvitePlayersView extends HorizontalLayout {
 
     PlayerCardRequest player1 = new PlayerCardRequest("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIF0ePQThnXeyYbDWWcFFchDy4Oq2mW4m4OA&s", "DERBEDERBERK", "HAYAT", "M", 29, 5, 5);
     PlayerCardRequest player = new PlayerCardRequest("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeujnl7lsLBPalSsz1LLXMY2hwKeNh_Lg_5w&s", "Metin Çalışkan", "CS", "M", 20, 5, 0.5);
@@ -33,7 +33,7 @@ public class InvitePlayers extends HorizontalLayout {
     PlayerCardRequest player7 = new PlayerCardRequest("Ekin", "Ekin Köylü", "CS", "F", 20, 5, 3);
     PlayerCardRequest[] playerList = {player1, player, player2, player3, player4, player5, player6};
 
-    public InvitePlayers(){
+    public InvitePlayersView(){
         H1 profileTitle = new H1("Invite Players");
 
         // Log out link
