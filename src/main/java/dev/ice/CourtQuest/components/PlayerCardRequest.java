@@ -30,6 +30,8 @@ public class PlayerCardRequest extends PlayerCard{
         buttonsLayout.setAlignItems(HorizontalLayout.Alignment.CENTER);
         buttonsLayout.getStyle().set("margin-top", "10px");
 
+        //newLine;
+
         setWidth("auto");
         setHeight("350px");
 

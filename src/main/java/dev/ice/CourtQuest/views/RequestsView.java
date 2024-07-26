@@ -125,6 +125,8 @@ public class RequestsView extends HorizontalLayout {
 
         getStyle().set("overflow", "hidden");
 
+        //newLine;
+
 
         // Main content layout
         VerticalLayout mainContent = new VerticalLayout(headerLayout, requestsLayout);
