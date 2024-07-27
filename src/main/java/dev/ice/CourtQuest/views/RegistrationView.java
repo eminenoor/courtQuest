@@ -98,8 +98,8 @@ public class RegistrationView extends VerticalLayout {
                         getUI().ifPresent(ui -> ui.navigate("login"));
                     }
                     else{
-                        Notification.show("You should register with your Bilkent email!");
 
+                        Notification.show("You should register with your Bilkent email!");
                     }
                 } catch (Exception ex) {
                     Notification.show("Registration failed: " + ex.getMessage());
