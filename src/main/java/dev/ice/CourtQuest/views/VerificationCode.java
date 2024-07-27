@@ -6,15 +6,19 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import dev.ice.CourtQuest.services.UserService;
 
 @Route("verification-code")
 @AnonymousAllowed
 public class VerificationCode extends VerticalLayout {
+
 
     public VerificationCode() {
         // Creating the back button with an icon
@@ -51,7 +55,14 @@ public class VerificationCode extends VerticalLayout {
         Button continueButton = new Button("Continue");
         continueButton.addClickListener(e -> {
             // Navigate to the next view (e.g., dashboard or reset password view)
-            continueButton.getUI().ifPresent(ui -> ui.navigate("register"));
+            String otp1 = (String) VaadinSession.getCurrent().getAttribute("otp");
+            String otp2 = verificationCodeField.getValue();
+            if(otp1.equals(otp2)){
+                continueButton.getUI().ifPresent(ui -> ui.navigate("register"));
+            }
+            else{
+                Notification.show("OTP is wrong!");
+            }
         });
 
         // Creating the main layout and adding components

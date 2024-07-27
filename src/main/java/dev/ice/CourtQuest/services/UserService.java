@@ -2,15 +2,25 @@ package dev.ice.CourtQuest.services;
 
 import dev.ice.CourtQuest.entities.User;
 import dev.ice.CourtQuest.repos.UserRepository;
+import dev.ice.CourtQuest.util.EmailUtil;
+import dev.ice.CourtQuest.util.OtpUtil;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
     UserRepository userRepository;
+
+    @Autowired
+    private OtpUtil otpUtil;
+    @Autowired
+    private EmailUtil emailUtil;
 
     @Autowired // May change
     public UserService(UserRepository userRepository) {
@@ -53,4 +63,25 @@ public class UserService {
     public void deleteById(Long userId) {
         userRepository.deleteById(userId);
     }
+
+
+    public String getOtp(String email) {
+        String otp = otpUtil.generateOtp();
+        try {
+            emailUtil.sendOtpEmail(email, otp);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Unable to send otp please try again");
+        }
+        return otp;
+    }
+
+    public String verifyOtp(String email, String otp1, String otp2) {
+        User user = userRepository.findByEmail(email);
+        if (otp1.equals(otp2)){
+            // register
+            return "OTP verified you can login";
+        }
+        return "Please regenerate otp and try again";
+    }
+
 }

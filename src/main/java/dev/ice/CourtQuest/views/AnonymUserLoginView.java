@@ -10,16 +10,22 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import dev.ice.CourtQuest.services.UserService;
 
 @Route("forgot-password")
 @AnonymousAllowed
 public class AnonymUserLoginView extends VerticalLayout {
 
-    public AnonymUserLoginView() {
+    private UserService userService;
+
+    public AnonymUserLoginView(UserService userService) {
         // Creating the back button with an icon
+        this.userService = userService;
         Button backButton = new Button(new Icon(VaadinIcon.ARROW_LEFT));
         backButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("login")));
+
 
         // Creating the header
         H1 header = new H1("CourtQuest");
@@ -51,6 +57,10 @@ public class AnonymUserLoginView extends VerticalLayout {
         Button continueButton = new Button("Continue");
         continueButton.addClickListener(e -> {
             // Navigate to the VerificationCodeView
+            String email = emailField.getValue();
+            String otp = userService.getOtp(email);
+
+            VaadinSession.getCurrent().setAttribute("otp", otp);
             continueButton.getUI().ifPresent(ui -> ui.navigate("verification-code"));
         });
 
