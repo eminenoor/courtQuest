@@ -16,6 +16,9 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import dev.ice.CourtQuest.controllers.UserController;
+import dev.ice.CourtQuest.entities.User;
+
 
 import java.time.LocalDate;
 
@@ -23,7 +26,11 @@ import java.time.LocalDate;
 @AnonymousAllowed
 public class RegistrationView extends VerticalLayout {
 
-    public RegistrationView() {
+    private final UserController userController;
+
+    public RegistrationView(UserController userController) {
+        this.userController = userController;
+
         // Back button with arrow icon
         Button backButton = new Button(new Icon(VaadinIcon.ARROW_LEFT));
         backButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("login")));
@@ -69,10 +76,31 @@ public class RegistrationView extends VerticalLayout {
         // Validation and registration logic
         registerButton.addClickListener(e -> {
             if (validateForm(firstName, lastName, birthday, department, gender, email, passwordField)) {
-                // Assuming a method to validate form data
                 try {
-                    // Registration logic or call to a service layer
-                    Notification.show("Registration successful!");
+                    // Gather form data and create a new User object
+                    String email1 = email.getValue();
+                    if(email1.contains("ug.bilkent.edu.tr")){
+                        User newUser = new User();
+                        newUser.setFirstName(firstName.getValue());
+                        newUser.setLastName(lastName.getValue());
+                        newUser.setBirthDate(birthday.getValue().toString());
+                        newUser.setDepartment(department.getValue());
+                        newUser.setGender(gender.getValue());
+                        newUser.setEmail(email.getValue());
+                        newUser.setPassword(passwordField.getValue());
+                        newUser.setAge(LocalDate.now().getYear() - birthday.getValue().getYear());
+                        newUser.setRating(0.0); // Initial rating
+
+                        // Save the user using UserService
+                        userController.createUser(newUser);
+                        Notification.show("Registration successful!");
+                        // Optionally, navigate to another page
+                        getUI().ifPresent(ui -> ui.navigate("login"));
+                    }
+                    else{
+
+                        Notification.show("You should register with your Bilkent email!");
+                    }
                 } catch (Exception ex) {
                     Notification.show("Registration failed: " + ex.getMessage());
                 }

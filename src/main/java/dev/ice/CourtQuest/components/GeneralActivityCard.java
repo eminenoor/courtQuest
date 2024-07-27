@@ -53,16 +53,6 @@ public class GeneralActivityCard extends VerticalLayout {
         publicLabel.getStyle().set("height", "28px");
     }
 
-    public void setWidth(int width) {
-        String widthString = width + "%";
-        getStyle().set("width", widthString);
-    }
-
-    public void setHeight(int height) {
-        String heightString = height + "%";
-        getStyle().set("height", heightString);
-    }
-
     public void addDetails(String place, String date, String time, String quota) {
         // Details
         placeLabel = new Span("Place: ");

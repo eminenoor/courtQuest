@@ -12,6 +12,7 @@ import dev.ice.CourtQuest.components.ActivityCard;
 import dev.ice.CourtQuest.components.GeneralActivityCard;
 import dev.ice.CourtQuest.components.PlayerCard;
 import dev.ice.CourtQuest.components.PlayerCardRequest;
+import dev.ice.CourtQuest.components.RatePlayersCard;
 import jakarta.annotation.security.PermitAll;
 
 @Route("rate-players")
@@ -83,6 +84,20 @@ public class RatePlayersView extends HorizontalLayout {
 
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
+        RatePlayersCard activity1 = new RatePlayersCard(
+                "volleyball",
+                "15:00-17:00",
+                "12.07.2024",
+                "Dormitory Sports Hall"
+        );
+
+        RatePlayersCard activity2 = new RatePlayersCard(
+                "basketball",
+                "12:00-13:00",
+                "13.07.2024",
+                "Main Sports Hall"
+        );
+
         // Main content layout
         VerticalLayout mainContent = new VerticalLayout(headerLayout, playerCard);
         mainContent.setWidthFull();
@@ -90,6 +105,9 @@ public class RatePlayersView extends HorizontalLayout {
         mainContent.setHeightFull();
         mainContent.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
         mainContent.getStyle().set("overflow", "auto");
+        VerticalLayout mainContent = new VerticalLayout(headerLayout, activity1, activity2);
+        mainContent.setWidthFull();
+        mainContent.setAlignItems(Alignment.START);
 
         // Add components to the root layout
         add(iconBar, mainContent);
@@ -98,4 +116,3 @@ public class RatePlayersView extends HorizontalLayout {
 
     }
 }
-
