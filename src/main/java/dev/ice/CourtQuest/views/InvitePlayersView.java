@@ -2,20 +2,26 @@ package dev.ice.CourtQuest.views;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.virtuallist.VirtualList;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.dom.ElementFactory;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import dev.ice.CourtQuest.components.PlayerCard;
+import dev.ice.CourtQuest.components.PlayerCardInvite;
 import dev.ice.CourtQuest.components.PlayerCardRequest;
 import jakarta.annotation.security.PermitAll;
 
@@ -23,15 +29,16 @@ import jakarta.annotation.security.PermitAll;
 @PermitAll
 public class InvitePlayersView extends HorizontalLayout {
 
-    PlayerCardRequest player1 = new PlayerCardRequest("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIF0ePQThnXeyYbDWWcFFchDy4Oq2mW4m4OA&s", "DERBEDERBERK", "HAYAT", "M", 29, 5, 5);
-    PlayerCardRequest player = new PlayerCardRequest("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeujnl7lsLBPalSsz1LLXMY2hwKeNh_Lg_5w&s", "Metin Çalışkan", "CS", "M", 20, 5, 0.5);
-    PlayerCardRequest player2 = new PlayerCardRequest("İlke", "İlke Latifoğlu", "CS", "F", 20, 4, 4.5);
-    PlayerCardRequest player3 = new PlayerCardRequest("Emine", "Emine Noor", "CS", "F", 20, 3.5, 4);
-    PlayerCardRequest player4 = new PlayerCardRequest("Elif", "Elif Lara", "CS", "F", 20, 2.5, 5);
-    PlayerCardRequest player5 = new PlayerCardRequest("Murathan", "Murathan Işık", "CS", "M", 22, 5, 1);
-    PlayerCardRequest player6 = new PlayerCardRequest("Can", "Can Akpınar", "CS", "M", 22, 3.5, 4);
-    PlayerCardRequest player7 = new PlayerCardRequest("Ekin", "Ekin Köylü", "CS", "F", 20, 5, 3);
-    PlayerCardRequest[] playerList = {player1, player, player2, player3, player4, player5, player6};
+    PlayerCardInvite player1 = new PlayerCardInvite("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIF0ePQThnXeyYbDWWcFFchDy4Oq2mW4m4OA&s", "DERBEDERBERK", "HAYAT", "M", 29, 5, 5);
+    PlayerCardInvite player = new PlayerCardInvite("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeujnl7lsLBPalSsz1LLXMY2hwKeNh_Lg_5w&s", "Metin Çalışkan", "CS", "M", 20, 5, 0.5);
+    PlayerCardInvite player2 = new PlayerCardInvite("İlke", "İlke Latifoğlu", "CS", "F", 20, 4, 4.5);
+    PlayerCardInvite player3 = new PlayerCardInvite("Emine", "Emine Noor", "CS", "F", 20, 3.5, 4);
+    PlayerCardInvite player4 = new PlayerCardInvite("Elif", "Elif Lara", "CS", "F", 20, 2.5, 5);
+    PlayerCardInvite player5 = new PlayerCardInvite("Murathan", "Murathan Işık", "CS", "M", 22, 5, 1);
+    PlayerCardInvite player6 = new PlayerCardInvite("Can", "Can Akpınar", "CS", "M", 22, 3.5, 4);
+    PlayerCardInvite player7 = new PlayerCardInvite("Ekin", "Ekin Köylü", "CS", "F", 20, 5, 3);
+    PlayerCardInvite[] playerList = {player1, player, player2, player3, player4, player5, player6};
+    Div playerContainer = new Div();
 
     public InvitePlayersView(){
         H1 profileTitle = new H1("Invite Players");
@@ -96,20 +103,33 @@ public class InvitePlayersView extends HorizontalLayout {
 
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
-        Div playerContainer = new Div();
+        TextField searchField = new TextField();
+        searchField.setPlaceholder("Search...");
+        searchField.setValueChangeMode(ValueChangeMode.EAGER);
+        searchField.getStyle().setWidth("300px");
+        Icon searchIcon = VaadinIcon.SEARCH.create();
+        searchIcon.getStyle().set("cursor", "pointer");
+        searchField.addValueChangeListener(event -> search(String.valueOf(searchField.getValue())));
+        Button searchButton = new Button(searchIcon);
+        searchButton.addClickListener(event -> search(searchField.getValue()));
+        HorizontalLayout searchLayout = new HorizontalLayout(searchField, searchButton);
+
+        //ComboBox<String>
+
+        playerContainer = new Div();
         playerContainer.getStyle().set("display", "grid");
         playerContainer.getStyle().set("grid-template-columns", "repeat(5, 1fr)");
         playerContainer.getStyle().set("gap", "16px");
 
-        for (PlayerCardRequest playerCard : playerList) {
+        for (PlayerCard playerCard : playerList) {
             playerContainer.add(playerCard);
         }
 
-        VerticalLayout mainContent = new VerticalLayout(headerLayout, playerContainer);
-        headerLayout.getStyle().set("margin-bottom", "50px");
+        VerticalLayout mainContent = new VerticalLayout(headerLayout, searchLayout, playerContainer);
+        headerLayout.getStyle().set("margin-bottom", "20px");
         mainContent.setWidthFull();
         mainContent.setAlignItems(Alignment.CENTER);
-        mainContent.setSpacing(false);
+        mainContent.setSpacing(true);
         mainContent.setPadding(false);
         mainContent.setHeightFull();
         mainContent.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
@@ -120,6 +140,28 @@ public class InvitePlayersView extends HorizontalLayout {
         setAlignItems(Alignment.STRETCH);
         setSizeFull();
 
+    }
+
+    public void search(String name){
+        playerContainer.removeAll();
+        for (int i = 0; i < playerList.length; i++) {
+            PlayerCard checkCard = (PlayerCard) playerList[i];
+            String check = (String) playerList[i].getName().toLowerCase();
+            String search = name.toLowerCase();
+            if(check.startsWith(search)){
+                playerContainer.add(playerList[i]);
+            }
+        }
+
+        if(name.isEmpty()){
+            displayPlayers();
+        }
+    }
+
+    public void displayPlayers(){
+        for (PlayerCard playerCard : playerList) {
+            playerContainer.add(playerCard);
+        }
     }
 
 }

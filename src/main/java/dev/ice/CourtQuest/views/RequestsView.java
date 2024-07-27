@@ -55,41 +55,39 @@ public class RequestsView extends HorizontalLayout {
 
         // Navigation bar on the left
         VerticalLayout iconBar = new VerticalLayout();
-        iconBar.setWidth("50px"); // Adjust width as needed
-        iconBar.getStyle().set("margin-top", "20px"); // Space below the header
-        iconBar.getStyle().set("background-color", "#1E3A8A"); // Dark blue color
-        iconBar.getStyle().set("height", "100vh"); // Full height
+        iconBar.setWidth("50px");
+        iconBar.getStyle().set("background-color", "#1E3A8A");
+        iconBar.getStyle().set("height", "100vh");
 
-        // Icons with navigation
         Icon groupIcon = new Icon(VaadinIcon.GROUP);
         groupIcon.getStyle().set("cursor", "pointer");
         groupIcon.getStyle().set("color", "white");
-        groupIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate(""))); // Current Activities
+        groupIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("")));
 
         Icon calendarIcon = new Icon(VaadinIcon.CALENDAR);
         calendarIcon.getStyle().set("cursor", "pointer");
         calendarIcon.getStyle().set("color", "white");
-        calendarIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("my-activities"))); // My Activities
+        calendarIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("my-activities")));
 
         Icon envelopeIcon = new Icon(VaadinIcon.ENVELOPE);
         envelopeIcon.getStyle().set("cursor", "pointer");
         envelopeIcon.getStyle().set("color", "white");
-        envelopeIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("my-invitations"))); // My Invitations
+        envelopeIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("my-invitations")));
 
         Icon checkIcon = new Icon(VaadinIcon.CHECK);
         checkIcon.getStyle().set("cursor", "pointer");
         checkIcon.getStyle().set("color", "white");
-        checkIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("requests"))); // Requests
+        checkIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("requests")));
 
         Icon plusIcon = new Icon(VaadinIcon.PLUS);
         plusIcon.getStyle().set("cursor", "pointer");
         plusIcon.getStyle().set("color", "white");
-        plusIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("make-reservation"))); // Make a Reservation
+        plusIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("make-reservation")));
 
         Icon starIcon = new Icon(VaadinIcon.STAR);
         starIcon.getStyle().set("cursor", "pointer");
         starIcon.getStyle().set("color", "white");
-        starIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("rate-players"))); // Rate Players
+        starIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("rate-players")));
 
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
@@ -125,7 +123,7 @@ public class RequestsView extends HorizontalLayout {
         requestsLayout.setSpacing(true);
         requestsLayout.setPadding(true);
 
-        getStyle().set("overflow", "hidden");
+        getStyle().set("overflow-x", "hidden");
 
         VerticalLayout allRequestsLayout = new VerticalLayout();
         allRequestsLayout.add(requestsLayout);
@@ -136,6 +134,9 @@ public class RequestsView extends HorizontalLayout {
         mainContent.setWidthFull();
         mainContent.setAlignItems(Alignment.START);
         mainContent.setAlignItems(FlexComponent.Alignment.END);
+        mainContent.setHeightFull();
+        mainContent.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+        mainContent.getStyle().set("overflow", "auto");
 
         // Add components to the root layout
         add(iconBar, mainContent);

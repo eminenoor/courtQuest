@@ -112,7 +112,8 @@ public class PlayerCard extends VerticalLayout {
     }
 
     public String getName() {
-        return new String(String.valueOf(name));
+        String nameString = name.getText();
+        return nameString;
     }
 
     public String getAvatarUrl() {
@@ -120,15 +121,15 @@ public class PlayerCard extends VerticalLayout {
     }
 
     public String getDepartment() {
-        return String.valueOf(department);
+        return department.getText();
     }
 
     public String getGender() {
-        return String.valueOf(gender);
+        return gender.getText();
     }
 
     public int getAge() {
-        return Integer.parseInt(String.valueOf(age));
+        return Integer.parseInt(age.getText());
     }
 
     public double getSelfRating() {

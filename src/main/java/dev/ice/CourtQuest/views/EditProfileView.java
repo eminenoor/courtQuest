@@ -213,7 +213,8 @@ public class EditProfileView extends HorizontalLayout {
         profileAndRatings.setSpacing(true);
         profileAndRatings.setWidthFull();
 
-        Button saveButton = new Button("Save Changes", e -> saveChanges());
+        Button saveButton = new Button("Save Changes");
+        saveButton.addClickListener(e -> saveChanges());
         saveButton.getStyle().set("margin-top", "20px");
 
         // Center bottom button layout
@@ -298,7 +299,8 @@ public class EditProfileView extends HorizontalLayout {
             Notification.show("Changes saved successfully!", 3000, Notification.Position.MIDDLE)
                     .addOpenedChangeListener(e -> getUI().ifPresent(ui -> ui.navigate("profile")));
         } else {
-            getUI().ifPresent(ui -> ui.navigate("profile"));
+            Notification.show("No Changes Made!", 3000, Notification.Position.MIDDLE)
+                    .addOpenedChangeListener(e -> getUI().ifPresent(ui -> ui.navigate("profile")));
         }
     }
 }
