@@ -107,6 +107,7 @@ public class UserDB {
         this.rating = rating;
     }
 
+    /*
     @ManyToMany
     @JoinTable(
             name = "user_activities",
@@ -114,10 +115,13 @@ public class UserDB {
             inverseJoinColumns = @JoinColumn(name = "activity_id"))
     private Set<Activity> activities = new HashSet<>();
 
+     */
+    @ManyToMany(mappedBy = "participants", fetch = FetchType.EAGER)
+    private Set<Activity> activities = new HashSet<>();
+
     public void addActivity(Activity activity){
         activities.add(activity);
     }
-
 
     /*
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)

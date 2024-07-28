@@ -23,13 +23,21 @@ public class Activity {
     String time;
     int quota;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_activities",
             joinColumns = @JoinColumn(name = "activity_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<UserDB> participants = new HashSet<>();
+
+
+    /*
+    @ManyToMany(mappedBy = "activities", fetch = FetchType.EAGER)
+    private Set<UserDB> participants = new HashSet<>();
+
+     */
+
 
     public void addParticipant(UserDB participant) {
         participants.add(participant);

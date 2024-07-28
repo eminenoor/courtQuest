@@ -206,6 +206,7 @@ public class MakeReservationView extends VerticalLayout {
             activityService.createActivity(sport, visibilityStatus, court, selectedDate.toString(), selectedTime, quotaValue);
 
             Notification.show("Reservation made!");
+
             UI.getCurrent().navigate("my-activities");
         });
 

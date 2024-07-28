@@ -50,6 +50,7 @@ public class ActivityService {
         return activityRepository.save(activity);
     }
 
+
     public Activity getActivity(Long activityId) {
         return activityRepository.findById(activityId).orElse(null);
     }
@@ -79,6 +80,15 @@ public class ActivityService {
             return activities;
         }
         return null;
+    }
+
+    public List<Activity> getMyActivities(){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserDB currentUser = userRepository.findByEmailWithActivities(username);
+        Set activities = currentUser.getActivities();
+        List<Activity> activitiesList = new ArrayList<>();
+        activitiesList.addAll(activities);
+        return activitiesList;
     }
 
     public Activity joinActivity(Long activityId, Long userId) {
