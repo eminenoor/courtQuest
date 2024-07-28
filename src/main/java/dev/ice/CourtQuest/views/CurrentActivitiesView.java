@@ -9,14 +9,24 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import jakarta.annotation.security.PermitAll;
 import dev.ice.CourtQuest.components.ActivityCard;
+import dev.ice.CourtQuest.entities.Activity;
+import dev.ice.CourtQuest.services.ActivityService;
+import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @Route("")
 @PermitAll
 public class CurrentActivitiesView extends HorizontalLayout {
 
-    public CurrentActivitiesView() {
+    @Autowired
+    private ActivityService activityService;
+
+    public CurrentActivitiesView(ActivityService activityService) {
+        this.activityService = activityService;
+
         H1 currentActivitiesTitle = new H1("Current Activities");
 
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class); // Assuming LogoutView is the class handling logout
@@ -84,31 +94,25 @@ public class CurrentActivitiesView extends HorizontalLayout {
 
         HorizontalLayout buttonLayout = new HorizontalLayout(createReservationButton, myActivitiesButton, myInvitationsButton);
         buttonLayout.setWidthFull();
-        buttonLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+        buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         buttonLayout.setSpacing(true);
 
-        ActivityCard tennisActivityCard = new ActivityCard(
-                "Tennis",
-                "Closed Tennis Court 1",
-                "24/08/2024",
-                "19.00-20.15",
-                "1/4",
-                true
-        );
-
-        ActivityCard footballActivityCard = new ActivityCard(
-                "Football",
-                "Stadium",
-                "25/08/2024",
-                "21.00-22.30",
-                "15/22",
-                true
-        );
-
-
-        VerticalLayout activityLayout = new VerticalLayout(tennisActivityCard, footballActivityCard);
+        VerticalLayout activityLayout = new VerticalLayout();
         activityLayout.setWidthFull();
         activityLayout.setSpacing(true);
+
+        List<Activity> publicActivities = activityService.getPublicActivities();
+        for (Activity activity : publicActivities) {
+            ActivityCard activityCard = new ActivityCard(
+                    activity.getName(),
+                    activity.getPlace(),
+                    activity.getDate(),
+                    (activity.getTime()+ " - " + (Integer.parseInt(activity.getTime().substring(0,2)) + 1) + ".00"),
+                    activity.getParticipants().size() + "/" + activity.getQuota(),
+                    activity.getStatus().equalsIgnoreCase("public")
+            );
+            activityLayout.add(activityCard);
+        }
 
         VerticalLayout mainContent = new VerticalLayout(headerLayout, buttonLayout, activityLayout);
         mainContent.setWidthFull();

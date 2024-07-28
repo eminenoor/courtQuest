@@ -38,6 +38,8 @@ public class MyActivityCard extends GeneralActivityCard{
         inviteButton.getStyle().set("background-color", "#1E3A8A");
         inviteButton.getStyle().set("color", "white");
 
+        inviteButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("invite-players")));
+
         topRightLayout = new HorizontalLayout(playersButton, inviteButton);
         topRightLayout.setAlignItems(Alignment.CENTER);
 

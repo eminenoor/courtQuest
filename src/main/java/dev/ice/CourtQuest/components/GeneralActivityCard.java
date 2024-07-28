@@ -37,7 +37,7 @@ public class GeneralActivityCard extends VerticalLayout {
         getStyle().set("padding", "15px");
         getStyle().set("margin", "10px 0");
         getStyle().set("width", "75%");
-        getStyle().set("height", "85%");
+        getStyle().set("height", "auto");
 
         sportLabel = new Span(sportName);
         sportLabel.getStyle().set("font-weight", "bold");

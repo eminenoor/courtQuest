@@ -105,13 +105,13 @@ public class MakeReservationView extends VerticalLayout {
         courtField.setEnabled(false);
         sports.addValueChangeListener(event -> {
             if(event.getValue().equals("Football")) {
-                courtField.setItems("Dormitary Sports Hall Football Pitch 1", "Dormitary Sports Hall Football Pitch 2", "Dormitary Sports Hall Football Pitch 3");
+                courtField.setItems("Dormitory Sports Hall Football Pitch 1", "Dormitory Sports Hall Football Pitch 2", "Dormitory Sports Hall Football Pitch 3");
             }else if(event.getValue().equals("Tennis")) {
-                courtField.setItems("Dormitary Sports Hall Closed Tennis Court 1", "Dormitary Sports Hall Closed Tennis Court 2", "Dormitary Sports Hall Open Tennis Court 1");
+                courtField.setItems("Dormitory Sports Hall Closed Tennis Court 1", "Dormitory Sports Hall Closed Tennis Court 2", "Dormitory Sports Hall Open Tennis Court 1");
             }else if(event.getValue().equals("Volleyball")) {
-                courtField.setItems("Dormitary Sports Hall Closed Volleyball Field", "Dormitary Sports Hall Open Volleyball Field", "Main Sports Hall Closed Volleyball Field");
+                courtField.setItems("Dormitory Sports Hall Closed Volleyball Field", "Dormitory Sports Hall Open Volleyball Field", "Main Sports Hall Closed Volleyball Field");
             }else if(event.getValue().equals("Basketball")) {
-                courtField.setItems("Dormitary Sports Hall Basketball Field", "Main Sports Hall Basketball Field");
+                courtField.setItems("Dormitory Sports Hall Basketball Field", "Main Sports Hall Basketball Field");
             }
         });
 
@@ -124,7 +124,7 @@ public class MakeReservationView extends VerticalLayout {
         date.setMax(LocalDate.now().withDayOfMonth(1).plusMonths(2).minusDays(1));
         date.setEnabled(false);
 
-        ComboBox<String> time = new ComboBox<>("Time:");
+        ComboBox<String> time = new ComboBox<>("Time: (each session is 1 hour long)");
         //time.setItems(IntStream.rangeClosed(8, 22).mapToObj(hour -> String.format("%02d:00", hour)).toArray(String[]::new));
 
         date.addValueChangeListener(event -> {

@@ -102,4 +102,8 @@ public class ActivityService {
         }
         return null;
     }
+
+    public List<Activity> getPublicActivities() {
+        return activityRepository.findByStatus("Public");
+    }
 }

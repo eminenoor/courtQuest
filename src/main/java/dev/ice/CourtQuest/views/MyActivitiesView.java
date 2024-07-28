@@ -105,7 +105,7 @@ public class MyActivitiesView extends HorizontalLayout {
                     activity.getName(),
                     activity.getPlace(),
                     activity.getDate(),
-                    activity.getTime(),
+                    (activity.getTime()+ " - " + (Integer.parseInt(activity.getTime().substring(0,2)) + 1) + ".00"),
                     activity.getParticipants().size() + "/" + activity.getQuota(),
                     activity.getStatus().equalsIgnoreCase("public")
             );
