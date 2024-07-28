@@ -51,4 +51,13 @@ public class UserService {
     public void deleteById(Long userId) {
         userRepository.deleteById(userId);
     }
+
+    public String login(String email, String password) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent() && user.get().getPassword().equals(password)) {
+            return "Login successful";
+        } else {
+            return "Invalid email or password";
+        }
+    }
 }

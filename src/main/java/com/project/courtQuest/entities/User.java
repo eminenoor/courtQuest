@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.checkerframework.common.value.qual.StringVal;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,12 +18,13 @@ public class User {
 
     String firstName;
     String lastName;
-    String birthDate; //XX.XX.XXXX
+    Date birthDate; //XX.XX.XXXX
     String department;
     String gender;
     String email;
     String password;
     Double rating;
+    String verificationCode;
     int age;
 
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -47,4 +49,11 @@ public class User {
     @OneToMany(mappedBy = "ratingUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Rating> givenRatings = new HashSet<>();
 
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
 }
