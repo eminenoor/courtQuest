@@ -9,6 +9,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import dev.ice.CourtQuest.entities.UserDB;
+import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
 
 @Route("profile")
@@ -21,7 +23,10 @@ public class MyProfileView extends HorizontalLayout {
     private Text departmentValue;
     private Text emailValue;
 
-    public MyProfileView() {
+    UserService userService;
+
+    public MyProfileView(UserService userService) {
+        this.userService = userService;
         H1 profileTitle = new H1("My Profile");
 
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class); // Assuming LogoutView is the class handling logout
@@ -84,11 +89,12 @@ public class MyProfileView extends HorizontalLayout {
 
         RouterLink editProfileLink = new RouterLink("Edit Profile", EditProfileView.class);
 
-        nameValue = new Text("Emine Noor");
-        ageValue = new Text("20");
-        genderValue = new Text("Female");
-        departmentValue = new Text("CS");
-        emailValue = new Text("emine.noor@ug.bilkent.edu.tr");
+        UserDB user = userService.getCurrentUser();
+        nameValue = new Text(user.getFirst_name() + " " + user.getLast_name());
+        ageValue = new Text(Integer.toString(user.getAge()));
+        genderValue = new Text(user.getGender());
+        departmentValue = new Text(user.getDepartment());
+        emailValue = new Text(user.getEmail());
 
         HorizontalLayout nameLayout = new HorizontalLayout(new Text("Name: "), nameValue);
         nameLayout.setSpacing(true);

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -110,5 +111,11 @@ public class UserService implements UserDetailsService {
 
     public UserDB findUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public UserDB getCurrentUser(){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserDB currentUser = userRepository.findByEmailWithActivities(username);
+        return currentUser;
     }
 }

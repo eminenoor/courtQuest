@@ -18,9 +18,12 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.StreamResource;
+import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 
 @Route("edit-profile")
 @PermitAll
@@ -31,9 +34,13 @@ public class EditProfileView extends HorizontalLayout {
     private ComboBox<String> departmentField;
     private EmailField emailField;
     private Avatar avatar;
-    MyProfileView profile = new MyProfileView();
+    private UserService userService;
+    MyProfileView profile;
 
-    public EditProfileView() {
+    @Autowired
+    public EditProfileView(UserService userService) {
+        this.userService = userService;
+        profile = new MyProfileView(userService);
         H1 profileTitle = new H1("Edit Profile");
 
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class);
@@ -93,13 +100,13 @@ public class EditProfileView extends HorizontalLayout {
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
         avatar = new Avatar(profile.getNameValue());
-        avatar.setImageResource(new StreamResource("avatar.png", () -> getClass().getResourceAsStream("/images/avatar.png")));
+        //avatar.setImageResource(new StreamResource("avatar.png", () -> getClass().getResourceAsStream("/images/avatar.png")));
         avatar.setWidth("150px");
         avatar.setHeight("150px");
 
         MemoryBuffer buffer = new MemoryBuffer();
         Upload upload = new Upload(buffer);
-        upload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
+        //upload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
         upload.setUploadButton(new Button("Upload Avatar"));
         upload.setDropAllowed(false);
         upload.addSucceededListener(event -> {
