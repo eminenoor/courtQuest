@@ -1,69 +1,71 @@
 package dev.ice.CourtQuest.services;
 
-import dev.ice.CourtQuest.entities.User;
+import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.repos.UserRepository;
 import dev.ice.CourtQuest.util.EmailUtil;
 import dev.ice.CourtQuest.util.OtpUtil;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
-    UserRepository userRepository;
+public class UserService implements UserDetailsService {
+
+    private final UserRepository userRepository;
+    private final OtpUtil otpUtil;
+    private final EmailUtil emailUtil;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private OtpUtil otpUtil;
-    @Autowired
-    private EmailUtil emailUtil;
-
-    @Autowired // May change
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, OtpUtil otpUtil, EmailUtil emailUtil, JdbcTemplate jdbcTemplate) {
         this.userRepository = userRepository;
+        this.otpUtil = otpUtil;
+        this.emailUtil = emailUtil;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<User> getAllUsers() {
+    public List<UserDB> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public User saveUser(User user) {
+    public UserDB saveUser(UserDB user) {
         return userRepository.save(user);
     }
 
-    public User getUser(Long userId) {
-        return userRepository.findById(userId).orElse(null);
+    public UserDB getUser(Long user_id) {
+        return userRepository.findById(user_id).orElse(null);
     }
 
-    public User updateUser(Long userId, User newUser) {
-        Optional<User> user = userRepository.findById(userId);
+    public UserDB updateUser(Long user_id, UserDB newUser) {
+        Optional<UserDB> user = userRepository.findById(user_id);
         if(user.isPresent()) {
-            User foundUser = user.get();
-            foundUser.setFirstName(newUser.getFirstName());
-            foundUser.setLastName(newUser.getLastName());
+            UserDB foundUser = user.get();
+            foundUser.setFirst_name(newUser.getFirst_name());
+            foundUser.setLast_name(newUser.getLast_name());
             foundUser.setEmail(newUser.getEmail());
-            foundUser.setPassword(newUser.getPassword());
-            //foundUser.setActivities(newUser.getActivities());
+            foundUser.setPassword(newUser.getPassword()); // Use {noop} prefix
             foundUser.setAge(newUser.getAge());
-            foundUser.setBirthDate(newUser.getBirthDate());
-            //foundUser.setCreatedActivities(newUser.getCreatedActivities());
+            foundUser.setBirth_date(newUser.getBirth_date());
             foundUser.setDepartment(newUser.getDepartment());
             foundUser.setRating(newUser.getRating());
             return userRepository.save(foundUser);
-        }
-        else{
+        } else {
             return null;
         }
     }
 
-    public void deleteById(Long userId) {
-        userRepository.deleteById(userId);
+    public void deleteById(Long user_id) {
+        userRepository.deleteById(user_id);
     }
-
 
     public String getOtp(String email) {
         String otp = otpUtil.generateOtp();
@@ -76,12 +78,25 @@ public class UserService {
     }
 
     public String verifyOtp(String email, String otp1, String otp2) {
-        User user = userRepository.findByEmail(email);
+        UserDB user = userRepository.findByEmail(email);
         if (otp1.equals(otp2)){
             // register
             return "OTP verified you can login";
         }
         return "Please regenerate otp and try again";
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        String sql = "SELECT * FROM user where email = ?";
+        UserDB user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(UserDB.class), username);
+        if(user == null) {
+            throw new RuntimeException("User does not exist");
+        }
+
+        return User.withUsername(user.getEmail())
+                .password("{noop}" + user.getPassword()) // Use {noop} prefix
+                .build();
     }
 
 }

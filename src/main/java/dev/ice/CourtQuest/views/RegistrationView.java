@@ -17,7 +17,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import dev.ice.CourtQuest.controllers.UserController;
-import dev.ice.CourtQuest.entities.User;
+import dev.ice.CourtQuest.entities.UserDB;
 
 
 import java.time.LocalDate;
@@ -80,10 +80,10 @@ public class RegistrationView extends VerticalLayout {
                     // Gather form data and create a new User object
                     String email1 = email.getValue();
                     if(email1.contains("ug.bilkent.edu.tr")){
-                        User newUser = new User();
-                        newUser.setFirstName(firstName.getValue());
-                        newUser.setLastName(lastName.getValue());
-                        newUser.setBirthDate(birthday.getValue().toString());
+                        UserDB newUser = new UserDB();
+                        newUser.setFirst_name(firstName.getValue());
+                        newUser.setLast_name(lastName.getValue());
+                        newUser.setBirth_date(birthday.getValue().toString());
                         newUser.setDepartment(department.getValue());
                         newUser.setGender(gender.getValue());
                         newUser.setEmail(email.getValue());

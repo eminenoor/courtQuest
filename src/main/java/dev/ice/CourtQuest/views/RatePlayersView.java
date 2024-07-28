@@ -3,23 +3,16 @@ package dev.ice.CourtQuest.views;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import dev.ice.CourtQuest.components.ActivityCard;
-import dev.ice.CourtQuest.components.GeneralActivityCard;
-import dev.ice.CourtQuest.components.PlayerCard;
-import dev.ice.CourtQuest.components.PlayerCardRequest;
 import dev.ice.CourtQuest.components.RatePlayersCard;
 import jakarta.annotation.security.PermitAll;
 
 @Route("rate-players")
 @PermitAll
 public class RatePlayersView extends HorizontalLayout {
-
-    PlayerCard playerCard = new PlayerCard("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeujnl7lsLBPalSsz1LLXMY2hwKeNh_Lg_5w&s", "Metin Çalışkan", "CS", "M", 20, 5, 0.5);
 
     public RatePlayersView() {
         // Header
@@ -99,12 +92,6 @@ public class RatePlayersView extends HorizontalLayout {
         );
 
         // Main content layout
-        VerticalLayout mainContent = new VerticalLayout(headerLayout, playerCard);
-        mainContent.setWidthFull();
-        mainContent.setAlignItems(Alignment.CENTER);
-        mainContent.setHeightFull();
-        mainContent.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
-        mainContent.getStyle().set("overflow", "auto");
         VerticalLayout mainContent = new VerticalLayout(headerLayout, activity1, activity2);
         mainContent.setWidthFull();
         mainContent.setAlignItems(Alignment.START);
