@@ -22,14 +22,11 @@ public class MyProfileView extends HorizontalLayout {
     private Text emailValue;
 
     public MyProfileView() {
-        // Header
         H1 profileTitle = new H1("My Profile");
 
-        // Log out link
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class); // Assuming LogoutView is the class handling logout
         logoutLink.getStyle().set("margin-right", "auto");
 
-        // Top right icons
         Icon bellIcon = new Icon(VaadinIcon.BELL);
         bellIcon.getStyle().set("cursor", "pointer");
         bellIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("notifications")));
@@ -41,12 +38,10 @@ public class MyProfileView extends HorizontalLayout {
         HorizontalLayout topRightIcons = new HorizontalLayout(logoutLink, bellIcon, profileIcon);
         topRightIcons.getStyle().set("margin-left", "auto"); // Push to the right
 
-        // Header with top right icons
         HorizontalLayout headerLayout = new HorizontalLayout(profileTitle, topRightIcons);
         headerLayout.setWidthFull();
         headerLayout.setAlignItems(Alignment.CENTER);
 
-        // Navigation bar on the left
         VerticalLayout iconBar = new VerticalLayout();
         iconBar.setWidth("50px");
         iconBar.getStyle().set("background-color", "#1E3A8A");
@@ -84,7 +79,6 @@ public class MyProfileView extends HorizontalLayout {
 
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
-        // Profile details
         Image profilePicture = new Image("images/profile-picture-placeholder.png", "Profile Picture");
         profilePicture.setWidth("150px");
 
@@ -154,7 +148,6 @@ public class MyProfileView extends HorizontalLayout {
         HorizontalLayout ratingsLayout = new HorizontalLayout(personalRatings, othersRatings);
         ratingsLayout.setSpacing(true);
 
-        // Main content layout
         HorizontalLayout profileAndRatings = new HorizontalLayout(profileDetails, ratingsLayout);
         profileAndRatings.setSpacing(true);
         profileAndRatings.setAlignItems(Alignment.START);
@@ -164,7 +157,6 @@ public class MyProfileView extends HorizontalLayout {
         mainContent.setAlignItems(Alignment.START);
         mainContent.setSpacing(true);
 
-        // Add components to the root layout
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);
         setSizeFull();

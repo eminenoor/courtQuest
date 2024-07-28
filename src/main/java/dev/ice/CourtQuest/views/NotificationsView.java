@@ -16,14 +16,11 @@ import jakarta.annotation.security.PermitAll;
 public class NotificationsView extends HorizontalLayout {
 
     public NotificationsView() {
-        // Header
         H1 currentActivitiesTitle = new H1("Notifications");
 
-        // Log out link
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class); // Assuming LogoutView is the class handling logout
         logoutLink.getStyle().set("margin-right", "auto");
 
-        // Top right icons
         Icon bellIcon = new Icon(VaadinIcon.BELL);
         bellIcon.getStyle().set("cursor", "pointer");
         bellIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("notifications")));
@@ -35,12 +32,10 @@ public class NotificationsView extends HorizontalLayout {
         HorizontalLayout topRightIcons = new HorizontalLayout(logoutLink, bellIcon, profileIcon);
         topRightIcons.getStyle().set("margin-left", "auto"); // Push to the right
 
-        // Header with top right icons
         HorizontalLayout headerLayout = new HorizontalLayout(currentActivitiesTitle, topRightIcons);
         headerLayout.setWidthFull();
         headerLayout.setAlignItems(Alignment.CENTER);
 
-        // Navigation bar on the left
         VerticalLayout iconBar = new VerticalLayout();
         iconBar.setWidth("50px");
         iconBar.getStyle().set("background-color", "#1E3A8A");
@@ -78,7 +73,6 @@ public class NotificationsView extends HorizontalLayout {
 
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
-        // Main content layout
         VerticalLayout mainContent = new VerticalLayout(headerLayout);
         mainContent.setWidthFull();
         mainContent.setAlignItems(Alignment.CENTER);
@@ -86,13 +80,11 @@ public class NotificationsView extends HorizontalLayout {
         mainContent.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
         mainContent.getStyle().set("overflow", "auto");
 
-        // Adding notification cards
         mainContent.add(new NotificationsCard("Ilke", "has invited you to a game", "Volleyball", "12.07.2024", "15.00 - 17.00", "Dormitory Sports Hall"));
         mainContent.add(new NotificationsCard("The team", "has accepted your request.", "Tennis", "13.07.2024", "13.00 - 14.00", "Dormitory Sports Hall"));
         mainContent.add(new NotificationsCard("Emine", "wants to join your game.", "Football", "16.07.2024", "15.00 - 17.00", "Dormitory Sports Hall"));
         mainContent.add(new NotificationsCard("The team", "has declined your request.", "Basketball", "13.07.2024", "10.00 - 12.30", "Main Sports Hall"));
 
-        // Add components to the root layout
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);
         setSizeFull();

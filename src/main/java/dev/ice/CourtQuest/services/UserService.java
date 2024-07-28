@@ -6,12 +6,14 @@ import dev.ice.CourtQuest.util.EmailUtil;
 import dev.ice.CourtQuest.util.OtpUtil;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,13 +26,15 @@ public class UserService implements UserDetailsService {
     private final OtpUtil otpUtil;
     private final EmailUtil emailUtil;
     private final JdbcTemplate jdbcTemplate;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, OtpUtil otpUtil, EmailUtil emailUtil, JdbcTemplate jdbcTemplate) {
+    public UserService(UserRepository userRepository, OtpUtil otpUtil, EmailUtil emailUtil, JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.otpUtil = otpUtil;
         this.emailUtil = emailUtil;
         this.jdbcTemplate = jdbcTemplate;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<UserDB> getAllUsers() {
@@ -38,6 +42,7 @@ public class UserService implements UserDetailsService {
     }
 
     public UserDB saveUser(UserDB user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -52,7 +57,7 @@ public class UserService implements UserDetailsService {
             foundUser.setFirst_name(newUser.getFirst_name());
             foundUser.setLast_name(newUser.getLast_name());
             foundUser.setEmail(newUser.getEmail());
-            foundUser.setPassword(newUser.getPassword()); // Use {noop} prefix
+            foundUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
             foundUser.setAge(newUser.getAge());
             foundUser.setBirth_date(newUser.getBirth_date());
             foundUser.setDepartment(newUser.getDepartment());
@@ -89,14 +94,18 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         String sql = "SELECT * FROM user where email = ?";
-        UserDB user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(UserDB.class), username);
-        if(user == null) {
-            throw new RuntimeException("User does not exist");
-        }
+        try {
+            UserDB user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(UserDB.class), username);
+            if(user == null) {
+                throw new UsernameNotFoundException("User not found with username: " + username);
+            }
 
-        return User.withUsername(user.getEmail())
-                .password("{noop}" + user.getPassword()) // Use {noop} prefix
-                .build();
+            return User.withUsername(user.getEmail())
+                    .password(user.getPassword())
+                    .build();
+        } catch (EmptyResultDataAccessException e) {
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
     }
 
 }

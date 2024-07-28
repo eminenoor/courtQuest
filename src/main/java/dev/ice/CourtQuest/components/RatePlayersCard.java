@@ -11,7 +11,6 @@ public class RatePlayersCard extends HorizontalLayout {
     private Button rateButton;
 
     public RatePlayersCard(String sportLabel, String time, String date, String court) {
-        // Set styles for the card
         setWidthFull();
         getStyle().set("background-color", "#f2f2f2");
         getStyle().set("border-radius", "10px");

@@ -29,15 +29,12 @@ public class MakeReservationView extends VerticalLayout {
     private int count;
 
     public MakeReservationView() {
-        // Header
         H1 makeReservationTitle = new H1("Make a Reservation");
 
         count = 0;
-        // Log out link
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class); // Assuming LogoutView is the class handling logout
         logoutLink.getStyle().set("margin-right", "auto");
 
-        // Top right icons
         Icon bellIcon = new Icon(VaadinIcon.BELL);
         bellIcon.getStyle().set("cursor", "pointer");
         bellIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("notifications")));
@@ -49,18 +46,15 @@ public class MakeReservationView extends VerticalLayout {
         HorizontalLayout topRightIcons = new HorizontalLayout(logoutLink, bellIcon, profileIcon);
         topRightIcons.getStyle().set("margin-left", "auto"); // Push to the right
 
-        // Header with top right icons
         HorizontalLayout headerLayout = new HorizontalLayout(topRightIcons);
         headerLayout.setWidthFull();
         headerLayout.setAlignItems(Alignment.CENTER);
 
-        // Navigation bar on the left
         VerticalLayout iconBar = new VerticalLayout();
         iconBar.setWidth("50px"); // Adjust width as needed
         iconBar.getStyle().set("background-color", "#1E3A8A"); // Dark blue color
         iconBar.getStyle().set("height", "100vh"); // Full height
 
-        // Icons with navigation
         Icon groupIcon = new Icon(VaadinIcon.GROUP);
         groupIcon.getStyle().set("cursor", "pointer");
         groupIcon.getStyle().set("color", "white");
@@ -93,7 +87,6 @@ public class MakeReservationView extends VerticalLayout {
 
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
-        // Form components
         RadioButtonGroup<String> visibility = new RadioButtonGroup<>();
         visibility.setLabel("Visibility");
         visibility.setItems("Public", "Private");
@@ -207,33 +200,28 @@ public class MakeReservationView extends VerticalLayout {
                 new FormLayout.ResponsiveStep("0", 1)
         );
 
-        // Center the Done button
         HorizontalLayout buttonLayout = new HorizontalLayout(doneButton);
         buttonLayout.setWidthFull();
         buttonLayout.setJustifyContentMode(JustifyContentMode.CENTER);
 
-        // Form container layout
         VerticalLayout formContainer = new VerticalLayout(makeReservationTitle, formLayout, buttonLayout);
         formContainer.setAlignItems(Alignment.CENTER);
         formContainer.setPadding(false);
         formContainer.getStyle().set("margin", "0 auto");
-        formContainer.getStyle().set("padding-top", "20px"); // Adjust padding as needed
-        formContainer.getStyle().set("width", "400px"); // Set width for compact form
+        formContainer.getStyle().set("padding-top", "20px");
+        formContainer.getStyle().set("width", "400px");
 
-        // Main content layout with header at the top
         VerticalLayout mainContent = new VerticalLayout(headerLayout, formContainer);
         mainContent.setAlignItems(Alignment.CENTER);
         mainContent.setJustifyContentMode(JustifyContentMode.START);
         mainContent.setHeightFull();
         mainContent.setPadding(false);
 
-        // Add components to the root layout
         HorizontalLayout rootLayout = new HorizontalLayout(iconBar, mainContent);
         rootLayout.setAlignItems(Alignment.STRETCH);
         rootLayout.setSizeFull();
-        rootLayout.getStyle().set("padding", "0"); // Remove any padding around the root layout
+        rootLayout.getStyle().set("padding", "0");
 
-        // Ensure the sidebar is flush with the left edge
         iconBar.getStyle().set("position", "fixed");
         iconBar.getStyle().set("top", "0");
         iconBar.getStyle().set("left", "0");

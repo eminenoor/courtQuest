@@ -43,11 +43,9 @@ public class InvitePlayersView extends HorizontalLayout {
     public InvitePlayersView(){
         H1 profileTitle = new H1("Invite Players");
 
-        // Log out link
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class);
         logoutLink.getStyle().set("margin-right", "auto");
 
-        // Top right icons
         Icon bellIcon = new Icon(VaadinIcon.BELL);
         bellIcon.getStyle().set("cursor", "pointer");
         bellIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("notifications")));
@@ -59,13 +57,11 @@ public class InvitePlayersView extends HorizontalLayout {
         HorizontalLayout topRightIcons = new HorizontalLayout(logoutLink, bellIcon, profileIcon);
         topRightIcons.getStyle().set("margin-left", "auto");
 
-        // Header with top right icons
         HorizontalLayout headerLayout = new HorizontalLayout(profileTitle, topRightIcons);
         headerLayout.setWidthFull();
         headerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         headerLayout.getStyle().set("padding", "10px");
 
-        // Navigation bar on the left
         VerticalLayout iconBar = new VerticalLayout();
         iconBar.setWidth("50px");
         iconBar.getStyle().set("background-color", "#1E3A8A");
@@ -114,7 +110,6 @@ public class InvitePlayersView extends HorizontalLayout {
         searchButton.addClickListener(event -> search(searchField.getValue()));
         HorizontalLayout searchLayout = new HorizontalLayout(searchField, searchButton);
 
-        //ComboBox<String>
 
         playerContainer = new Div();
         playerContainer.getStyle().set("display", "grid");
@@ -135,7 +130,6 @@ public class InvitePlayersView extends HorizontalLayout {
         mainContent.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
         mainContent.getStyle().set("overflow", "auto");
 
-        // Add components to the root layout
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);
         setSizeFull();

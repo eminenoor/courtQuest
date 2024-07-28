@@ -19,11 +19,9 @@ public class ActivityCard extends GeneralActivityCard {
         playersButton.getStyle().set("margin-left", "10px");
         playersButton.getStyle().set("height", "36px");
 
-        // Top right layout
         topRightLayout = new HorizontalLayout(publicLabel, playersButton);
         topRightLayout.setAlignItems(Alignment.CENTER);
 
-        // Combine sport name and top right layout
         topLayout = new HorizontalLayout(sportLabel, topRightLayout);
         topLayout.setWidthFull();
         topLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
@@ -35,7 +33,6 @@ public class ActivityCard extends GeneralActivityCard {
         joinButton.getStyle().set("background-color", "#1E3A8A");
         joinButton.getStyle().set("color", "white");
 
-        // Quota and Join button layout
         quotaJoinLayout = new HorizontalLayout(quotaLayout, joinButton);
         quotaJoinLayout.setWidthFull();
         quotaJoinLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);

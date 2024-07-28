@@ -17,14 +17,11 @@ import jakarta.annotation.security.PermitAll;
 public class MyActivitiesView extends HorizontalLayout {
 
     public MyActivitiesView() {
-        // Header
         H1 currentActivitiesTitle = new H1("My Activities");
 
-        // Log out link
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class); // Assuming LogoutView is the class handling logout
         logoutLink.getStyle().set("margin-right", "auto");
 
-        // Top right icons
         Icon bellIcon = new Icon(VaadinIcon.BELL);
         bellIcon.getStyle().set("cursor", "pointer");
         bellIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("notifications")));
@@ -36,12 +33,10 @@ public class MyActivitiesView extends HorizontalLayout {
         HorizontalLayout topRightIcons = new HorizontalLayout(logoutLink, bellIcon, profileIcon);
         topRightIcons.getStyle().set("margin-left", "auto"); // Push to the right
 
-        // Header with top right icons
         HorizontalLayout headerLayout = new HorizontalLayout(currentActivitiesTitle, topRightIcons);
         headerLayout.setWidthFull();
         headerLayout.setAlignItems(Alignment.CENTER);
 
-        // Navigation bar on the left
         VerticalLayout iconBar = new VerticalLayout();
         iconBar.setWidth("50px");
         iconBar.getStyle().set("background-color", "#1E3A8A");
@@ -79,7 +74,6 @@ public class MyActivitiesView extends HorizontalLayout {
 
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
-        // Horizontal buttons
         Button createReservationButton = new Button("Create Reservation");
         Button requestsButton = new Button("Requests");
 
@@ -113,7 +107,6 @@ public class MyActivitiesView extends HorizontalLayout {
         activityLayout.setWidthFull();
         activityLayout.setSpacing(true);
 
-        // Main content layout
         VerticalLayout mainContent = new VerticalLayout(headerLayout, buttonLayout, activityLayout);
         mainContent.setWidthFull();
         mainContent.setAlignItems(Alignment.CENTER);
@@ -121,7 +114,6 @@ public class MyActivitiesView extends HorizontalLayout {
         mainContent.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
         mainContent.getStyle().set("overflow", "auto");
 
-        // Add components to the root layout
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);
         setSizeFull();

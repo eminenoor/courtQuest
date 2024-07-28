@@ -33,7 +33,6 @@ public class LoginView extends VerticalLayout {
         login.setI18n(i18n);
         login.setAction("login");
 
-        //Custom links div
         Div links = new Div();
         links.addClassName("additional-links");
         RouterLink createAccount = new RouterLink("Create an account", AnonymUserLoginView.class);

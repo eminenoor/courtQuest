@@ -15,14 +15,11 @@ import jakarta.annotation.security.PermitAll;
 public class RatePlayersView extends HorizontalLayout {
 
     public RatePlayersView() {
-        // Header
         H1 currentActivitiesTitle = new H1("Rate Players");
 
-        // Log out link
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class); // Assuming LogoutView is the class handling logout
         logoutLink.getStyle().set("margin-right", "auto");
 
-        // Top right icons
         Icon bellIcon = new Icon(VaadinIcon.BELL);
         bellIcon.getStyle().set("cursor", "pointer");
         bellIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("notifications")));
@@ -34,12 +31,10 @@ public class RatePlayersView extends HorizontalLayout {
         HorizontalLayout topRightIcons = new HorizontalLayout(logoutLink, bellIcon, profileIcon);
         topRightIcons.getStyle().set("margin-left", "auto"); // Push to the right
 
-        // Header with top right icons
         HorizontalLayout headerLayout = new HorizontalLayout(currentActivitiesTitle, topRightIcons);
         headerLayout.setWidthFull();
         headerLayout.setAlignItems(Alignment.CENTER);
 
-        // Navigation bar on the left
         VerticalLayout iconBar = new VerticalLayout();
         iconBar.setWidth("50px");
         iconBar.getStyle().set("background-color", "#1E3A8A");
@@ -91,12 +86,10 @@ public class RatePlayersView extends HorizontalLayout {
                 "Main Sports Hall"
         );
 
-        // Main content layout
         VerticalLayout mainContent = new VerticalLayout(headerLayout, activity1, activity2);
         mainContent.setWidthFull();
         mainContent.setAlignItems(Alignment.START);
 
-        // Add components to the root layout
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);
         setSizeFull();

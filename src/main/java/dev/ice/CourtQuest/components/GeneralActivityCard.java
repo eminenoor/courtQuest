@@ -31,7 +31,6 @@ public class GeneralActivityCard extends VerticalLayout {
     }
 
     public GeneralActivityCard(String sportName, boolean isPublic) {
-        // Set styles for the card
         addClassName("activity-card");
         getStyle().set("background-color", "#f2f2f2");
         getStyle().set("border-radius", "10px");
@@ -44,7 +43,6 @@ public class GeneralActivityCard extends VerticalLayout {
         sportLabel.getStyle().set("font-weight", "bold");
         sportLabel.getStyle().set("font-size", "24px");
 
-        // Public label
         publicLabel = new Span(isPublic ? "Public" : "Private");
         publicLabel.getStyle().set("background-color", isPublic ? "green" : "red");
         publicLabel.getStyle().set("color", "white");
@@ -54,7 +52,6 @@ public class GeneralActivityCard extends VerticalLayout {
     }
 
     public void addDetails(String place, String date, String time, String quota) {
-        // Details
         placeLabel = new Span("Place: ");
         placeLabel.getStyle().set("font-weight", "bold");
         placeValue = new Span(place);
@@ -88,7 +85,6 @@ public class GeneralActivityCard extends VerticalLayout {
     }
 
     public void addDetails(String sport, String place, String date, String time, String quota) {
-        // Details
         Span sportNameLabel = new Span("Sport: ");
         sportNameLabel.getStyle().set("font-weight", "bold");
         sportValue = new Span(sport);
@@ -131,7 +127,7 @@ public class GeneralActivityCard extends VerticalLayout {
     public void finalizeLayout() {
         contentLayout.setSpacing(false);
         contentLayout.setPadding(false);
-        contentLayout.getStyle().set("gap", "10px"); // Ensure equal spacing
+        contentLayout.getStyle().set("gap", "10px");
         contentLayout.getStyle().set("margin-top", "0px");
 
         add(contentLayout);

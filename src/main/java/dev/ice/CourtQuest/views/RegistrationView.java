@@ -31,16 +31,13 @@ public class RegistrationView extends VerticalLayout {
     public RegistrationView(UserController userController) {
         this.userController = userController;
 
-        // Back button with arrow icon
         Button backButton = new Button(new Icon(VaadinIcon.ARROW_LEFT));
         backButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("login")));
 
-        // Header
         H1 header = new H1("Registration");
         header.getStyle().set("margin-top", "0");
         header.getStyle().set("align-self", "flex-start");
 
-        // Form fields
         TextField firstName = new TextField("First Name");
         TextField lastName = new TextField("Last Name");
         DatePicker birthday = new DatePicker("Birthday");
@@ -67,17 +64,15 @@ public class RegistrationView extends VerticalLayout {
         formLayout.setColspan(email, 3);
         formLayout.setColspan(passwordField, 3);
 
-        // Center the Register button
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setWidthFull();
         buttonLayout.setJustifyContentMode(JustifyContentMode.CENTER);
         buttonLayout.add(registerButton);
 
-        // Validation and registration logic
         registerButton.addClickListener(e -> {
             if (validateForm(firstName, lastName, birthday, department, gender, email, passwordField)) {
                 try {
-                    // Gather form data and create a new User object
+
                     String email1 = email.getValue();
                     if(email1.contains("ug.bilkent.edu.tr")){
                         UserDB newUser = new UserDB();
@@ -89,12 +84,9 @@ public class RegistrationView extends VerticalLayout {
                         newUser.setEmail(email.getValue());
                         newUser.setPassword(passwordField.getValue());
                         newUser.setAge(LocalDate.now().getYear() - birthday.getValue().getYear());
-                        newUser.setRating(0.0); // Initial rating
-
-                        // Save the user using UserService
+                        newUser.setRating(0.0);
                         userController.createUser(newUser);
                         Notification.show("Registration successful!");
-                        // Optionally, navigate to another page
                         getUI().ifPresent(ui -> ui.navigate("login"));
                     }
                     else{
@@ -109,7 +101,6 @@ public class RegistrationView extends VerticalLayout {
             }
         });
 
-        // Adding components to the layout
         HorizontalLayout headerLayout = new HorizontalLayout(backButton, header);
         headerLayout.setWidthFull();
         headerLayout.setAlignItems(Alignment.CENTER);
@@ -128,7 +119,6 @@ public class RegistrationView extends VerticalLayout {
 
     private boolean validateForm(TextField firstName, TextField lastName, DatePicker birthday, TextField department, RadioButtonGroup<String> gender, EmailField email, PasswordField passwordField) {
         boolean isValid = true;
-        // Check each field and set isValid to false if any fields are empty
         if (firstName.isEmpty()) {
             firstName.setErrorMessage("First name is required");
             firstName.setInvalid(true);
