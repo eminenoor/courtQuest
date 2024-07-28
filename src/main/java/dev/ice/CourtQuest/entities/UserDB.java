@@ -2,10 +2,16 @@ package dev.ice.CourtQuest.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="user")
 @Data
+@EqualsAndHashCode(exclude = "activities")
 public class UserDB {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -100,9 +106,6 @@ public class UserDB {
     public void setRating(Double rating) {
         this.rating = rating;
     }
-    /*
-    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Activity> createdActivities = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -110,6 +113,15 @@ public class UserDB {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "activity_id"))
     private Set<Activity> activities = new HashSet<>();
+
+    public void addActivity(Activity activity){
+        activities.add(activity);
+    }
+
+
+    /*
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Activity> createdActivities = new HashSet<>();
 
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Invitation> receivedInvitations = new HashSet<>();

@@ -15,7 +15,9 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import dev.ice.CourtQuest.services.ActivityService;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -28,7 +30,12 @@ import java.util.stream.IntStream;
 public class MakeReservationView extends VerticalLayout {
     private int count;
 
-    public MakeReservationView() {
+    @Autowired
+    private ActivityService activityService;
+
+    public MakeReservationView(ActivityService activityService) {
+        this.activityService = activityService;
+
         H1 makeReservationTitle = new H1("Make a Reservation");
 
         count = 0;
@@ -187,12 +194,20 @@ public class MakeReservationView extends VerticalLayout {
                 }
             }
         });
-
         doneButton.addClickListener(e -> {
+            // Get form data
+            String sport = sports.getValue();
+            String court = courtField.getValue();
+            LocalDate selectedDate = date.getValue();
+            String selectedTime = time.getValue();
+            String visibilityStatus = visibility.getValue();
+            int quotaValue = Integer.parseInt(quota.getValue());
+            // Call the service to create and save the activity
+            activityService.createActivity(sport, visibilityStatus, court, selectedDate.toString(), selectedTime, quotaValue);
+
             Notification.show("Reservation made!");
             UI.getCurrent().navigate("my-activities");
         });
-
 
         FormLayout formLayout = new FormLayout();
         formLayout.add(visibility, sports, courtField, date, time, quota);
@@ -229,5 +244,4 @@ public class MakeReservationView extends VerticalLayout {
 
         add(rootLayout);
     }
-
 }
