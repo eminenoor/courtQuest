@@ -1,4 +1,4 @@
-package com.project.courtQuest.entities;
+package dev.ice.CourtQuest.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -13,11 +13,11 @@ public class Invitation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id")
-    private User sender;
+    private UserDB sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipient_id")
-    private User recipient;
+    private UserDB recipient;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "activity_id")

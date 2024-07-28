@@ -1,7 +1,7 @@
-package com.project.courtQuest.controllers;
+package dev.ice.CourtQuest.controllers;
 
-import com.project.courtQuest.entities.Invitation;
-import com.project.courtQuest.services.InvitationService;
+import dev.ice.CourtQuest.entities.Invitation;
+import dev.ice.CourtQuest.services.InvitationService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

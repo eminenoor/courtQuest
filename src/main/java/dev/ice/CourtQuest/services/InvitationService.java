@@ -1,11 +1,11 @@
-package com.project.courtQuest.services;
+package dev.ice.CourtQuest.services;
 
-import com.project.courtQuest.entities.Activity;
-import com.project.courtQuest.entities.Invitation;
-import com.project.courtQuest.entities.User;
-import com.project.courtQuest.repos.ActivityRepository;
-import com.project.courtQuest.repos.InvitationRepository;
-import com.project.courtQuest.repos.UserRepository;
+import dev.ice.CourtQuest.entities.Activity;
+import dev.ice.CourtQuest.entities.Invitation;
+import dev.ice.CourtQuest.entities.UserDB;
+import dev.ice.CourtQuest.repos.ActivityRepository;
+import dev.ice.CourtQuest.repos.InvitationRepository;
+import dev.ice.CourtQuest.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +27,8 @@ public class InvitationService {
     private NotificationService notificationService;
 
     public Invitation sendInvitation(Long senderId, Long recipientId, Long activityId) {
-        User sender = userRepository.findById(senderId).orElse(null);
-        User recipient = userRepository.findById(recipientId).orElse(null);
+        UserDB sender = userRepository.findById(senderId).orElse(null);
+        UserDB recipient = userRepository.findById(recipientId).orElse(null);
         Activity activity = activityRepository.findById(activityId).orElse(null);
 
         if (sender != null && recipient != null && activity != null) {
@@ -39,7 +39,7 @@ public class InvitationService {
             invitation.setStatus("Pending");
             invitationRepository.save(invitation);
 
-            notificationService.createNotification(recipientId, "You have a new invitation from " + sender.getFirstName(), "INVITATION");
+            notificationService.createNotification(recipientId, "You have a new invitation from " + sender.getFirst_name(), "INVITATION");
 
             return invitation;
         }
@@ -47,7 +47,7 @@ public class InvitationService {
     }
 
     public List<Invitation> getUserInvitations(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
+        UserDB user = userRepository.findById(userId).orElse(null);
         if (user != null) {
             return invitationRepository.findByRecipient(user);
         }
@@ -59,7 +59,7 @@ public class InvitationService {
             invitation.setStatus(status);
             invitationRepository.save(invitation);
 
-            notificationService.createNotification(invitation.getSender().getUserId(), "Your invitation has been " + status.toLowerCase(), "INVITATION_RESPONSE");
+            notificationService.createNotification(invitation.getSender().getUser_id(), "Your invitation has been " + status.toLowerCase(), "INVITATION_RESPONSE");
 
             return invitation;
         }).orElse(null);

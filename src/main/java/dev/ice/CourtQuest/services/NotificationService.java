@@ -1,10 +1,10 @@
-package com.project.courtQuest.services;
+package dev.ice.CourtQuest.services;
 
 
-import com.project.courtQuest.entities.Notification;
-import com.project.courtQuest.entities.User;
-import com.project.courtQuest.repos.NotificationRepository;
-import com.project.courtQuest.repos.UserRepository;
+import dev.ice.CourtQuest.entities.Notification;
+import dev.ice.CourtQuest.entities.UserDB;
+import dev.ice.CourtQuest.repos.NotificationRepository;
+import dev.ice.CourtQuest.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 
@@ -21,7 +21,7 @@ public class NotificationService {
     private UserRepository userRepository;
 
     public Notification createNotification(Long userId, String message, String type) {
-        User user = userRepository.findById(userId).orElse(null);
+        UserDB user = userRepository.findById(userId).orElse(null);
         if (user != null) {
             Notification notification = new Notification();
             notification.setUser(user);
@@ -34,7 +34,7 @@ public class NotificationService {
     }
 
     public List<Notification> getUserNotifications(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
+        UserDB user = userRepository.findById(userId).orElse(null);
         if (user != null) {
             return notificationRepository.findByUser(user);
         }

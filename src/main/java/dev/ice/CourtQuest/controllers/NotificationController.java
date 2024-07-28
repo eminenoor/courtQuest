@@ -1,7 +1,7 @@
-package com.project.courtQuest.controllers;
+package dev.ice.CourtQuest.controllers;
 
-import com.project.courtQuest.entities.Notification;
-import com.project.courtQuest.services.NotificationService;
+import dev.ice.CourtQuest.entities.Notification;
+import dev.ice.CourtQuest.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
