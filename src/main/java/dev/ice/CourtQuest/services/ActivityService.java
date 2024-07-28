@@ -8,6 +8,7 @@ import dev.ice.CourtQuest.entities.UserDB;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,5 +106,15 @@ public class ActivityService {
 
     public List<Activity> getPublicActivities() {
         return activityRepository.findByStatus("Public");
+    }
+
+    @Transactional
+    public void removeUserFromActivity(Long activityId, Long userId) {
+        Activity activity = activityRepository.findById(activityId).orElse(null);
+        UserDB user = userRepository.findById(userId).orElse(null);
+        if (activity != null && user != null) {
+            activity.getParticipants().remove(user);
+            user.getActivities().remove(activity);
+        }
     }
 }

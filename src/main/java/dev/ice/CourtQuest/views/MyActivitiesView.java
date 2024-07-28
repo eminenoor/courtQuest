@@ -11,8 +11,12 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import dev.ice.CourtQuest.components.MyActivityCard;
 import dev.ice.CourtQuest.entities.Activity;
+import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.services.ActivityService;
+import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -21,9 +25,14 @@ import java.util.List;
 public class MyActivitiesView extends HorizontalLayout {
 
     private ActivityService activityService;
+    private UserService userService;
+    private VerticalLayout activityLayout;
+    private Long currentUserId;
 
-    public MyActivitiesView(ActivityService activityService) {
+    @Autowired
+    public MyActivitiesView(ActivityService activityService, UserService userService) {
         this.activityService = activityService;
+        this.userService = userService;
 
         H1 currentActivitiesTitle = new H1("My Activities");
 
@@ -93,24 +102,15 @@ public class MyActivitiesView extends HorizontalLayout {
         buttonLayout.setJustifyContentMode(JustifyContentMode.CENTER);
         buttonLayout.setSpacing(true);
 
-        List<Activity> activities = activityService.getMyActivities();
-
-        VerticalLayout activityLayout = new VerticalLayout();
+        activityLayout = new VerticalLayout();
         activityLayout.setWidthFull();
         activityLayout.setSpacing(true);
 
-        // Dynamically create MyActivityCard instances for each activity
-        for (Activity activity : activities) {
-            MyActivityCard activityCard = new MyActivityCard(
-                    activity.getName(),
-                    activity.getPlace(),
-                    activity.getDate(),
-                    (activity.getTime()+ " - " + (Integer.parseInt(activity.getTime().substring(0,2)) + 1) + ".00"),
-                    activity.getParticipants().size() + "/" + activity.getQuota(),
-                    activity.getStatus().equalsIgnoreCase("public")
-            );
-            activityLayout.add(activityCard);
-        }
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserDB currentUser = userService.findUserByEmail(username);
+        currentUserId = currentUser.getUser_id();
+
+        refreshActivities();
 
         VerticalLayout mainContent = new VerticalLayout(headerLayout, buttonLayout, activityLayout);
         mainContent.setWidthFull();
@@ -122,5 +122,28 @@ public class MyActivitiesView extends HorizontalLayout {
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);
         setSizeFull();
+    }
+
+    private void refreshActivities() {
+        activityLayout.removeAll();
+        List<Activity> activities = activityService.getMyActivities();
+
+        for (Activity activity : activities) {
+            MyActivityCard activityCard = new MyActivityCard(
+                    activity.getName(),
+                    activity.getPlace(),
+                    activity.getDate(),
+                    (activity.getTime()+ " - " + (Integer.parseInt(activity.getTime().substring(0,2)) + 1) + ".00"),
+                    activity.getParticipants().size() + "/" + activity.getQuota(),
+                    activity.getStatus().equalsIgnoreCase("public")
+            );
+
+            activityCard.getCancelButton().addClickListener(event -> {
+                activityService.removeUserFromActivity(activity.getActivityId(), currentUserId);
+                refreshActivities();
+            });
+
+            activityLayout.add(activityCard);
+        }
     }
 }
