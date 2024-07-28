@@ -72,25 +72,36 @@ public class RegistrationView extends VerticalLayout {
         registerButton.addClickListener(e -> {
             if (validateForm(firstName, lastName, birthday, department, gender, email, passwordField)) {
                 try {
-
+                    String emailValue = email.getValue();
                     String email1 = email.getValue();
-                    if(email1.contains("ug.bilkent.edu.tr")){
-                        UserDB newUser = new UserDB();
-                        newUser.setFirst_name(firstName.getValue());
-                        newUser.setLast_name(lastName.getValue());
-                        newUser.setBirth_date(birthday.getValue().toString());
-                        newUser.setDepartment(department.getValue());
-                        newUser.setGender(gender.getValue());
-                        newUser.setEmail(email.getValue());
-                        newUser.setPassword(passwordField.getValue());
-                        newUser.setAge(LocalDate.now().getYear() - birthday.getValue().getYear());
-                        newUser.setRating(0.0);
-                        userController.createUser(newUser);
-                        Notification.show("Registration successful!");
+                    if (emailValue.contains("ug.bilkent.edu.tr")) {
+                        UserDB existingUser = userController.findUserByEmail(emailValue);
+                        if (existingUser != null) {
+                            existingUser.setFirst_name(firstName.getValue());
+                            existingUser.setLast_name(lastName.getValue());
+                            existingUser.setBirth_date(birthday.getValue().toString());
+                            existingUser.setDepartment(department.getValue());
+                            existingUser.setGender(gender.getValue());
+                            existingUser.setPassword(passwordField.getValue());
+                            existingUser.setAge(LocalDate.now().getYear() - birthday.getValue().getYear());
+                            userController.updateUser(existingUser.getUser_id(), existingUser);
+                            Notification.show("User updated successfully!");
+                        } else {
+                            UserDB newUser = new UserDB();
+                            newUser.setFirst_name(firstName.getValue());
+                            newUser.setLast_name(lastName.getValue());
+                            newUser.setBirth_date(birthday.getValue().toString());
+                            newUser.setDepartment(department.getValue());
+                            newUser.setGender(gender.getValue());
+                            newUser.setEmail(email.getValue());
+                            newUser.setPassword(passwordField.getValue());
+                            newUser.setAge(LocalDate.now().getYear() - birthday.getValue().getYear());
+                            newUser.setRating(0.0);
+                            userController.createUser(newUser);
+                            Notification.show("Registration successful!");
+                        }
                         getUI().ifPresent(ui -> ui.navigate("login"));
-                    }
-                    else{
-
+                    } else {
                         Notification.show("You should register with your Bilkent email!");
                     }
                 } catch (Exception ex) {
