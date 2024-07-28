@@ -66,4 +66,7 @@ public class UserController {
         return "user";
     }
 
+    public UserDB findUserByEmail(String emailValue) {
+        return userService.findUserByEmail(emailValue);
+    }
 }
