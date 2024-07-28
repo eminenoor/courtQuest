@@ -34,14 +34,11 @@ public class EditProfileView extends HorizontalLayout {
     MyProfileView profile = new MyProfileView();
 
     public EditProfileView() {
-        // Header
         H1 profileTitle = new H1("Edit Profile");
 
-        // Log out link
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class);
         logoutLink.getStyle().set("margin-right", "auto");
 
-        // Top right icons
         Icon bellIcon = new Icon(VaadinIcon.BELL);
         bellIcon.getStyle().set("cursor", "pointer");
         bellIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("notifications")));
@@ -53,13 +50,11 @@ public class EditProfileView extends HorizontalLayout {
         HorizontalLayout topRightIcons = new HorizontalLayout(logoutLink, bellIcon, profileIcon);
         topRightIcons.getStyle().set("margin-left", "auto");
 
-        // Header with top right icons
         HorizontalLayout headerLayout = new HorizontalLayout(profileTitle, topRightIcons);
         headerLayout.setWidthFull();
         headerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         headerLayout.getStyle().set("padding", "10px");
 
-        // Navigation bar on the left
         VerticalLayout iconBar = new VerticalLayout();
         iconBar.setWidth("50px");
         iconBar.getStyle().set("background-color", "#1E3A8A");
@@ -213,10 +208,10 @@ public class EditProfileView extends HorizontalLayout {
         profileAndRatings.setSpacing(true);
         profileAndRatings.setWidthFull();
 
-        Button saveButton = new Button("Save Changes", e -> saveChanges());
+        Button saveButton = new Button("Save Changes");
+        saveButton.addClickListener(e -> saveChanges());
         saveButton.getStyle().set("margin-top", "20px");
 
-        // Center bottom button layout
         VerticalLayout buttonLayout = new VerticalLayout(saveButton);
         buttonLayout.setWidthFull();
         buttonLayout.setAlignItems(FlexComponent.Alignment.END);
@@ -231,7 +226,6 @@ public class EditProfileView extends HorizontalLayout {
         mainContent.setSpacing(true);
         mainContent.getStyle().set("position", "relative");
 
-        // Add components to the root layout
         add(iconBar, mainContent, buttonLayout);
         setAlignItems(FlexComponent.Alignment.START);
         setSizeFull();
@@ -298,7 +292,8 @@ public class EditProfileView extends HorizontalLayout {
             Notification.show("Changes saved successfully!", 3000, Notification.Position.MIDDLE)
                     .addOpenedChangeListener(e -> getUI().ifPresent(ui -> ui.navigate("profile")));
         } else {
-            getUI().ifPresent(ui -> ui.navigate("profile"));
+            Notification.show("No Changes Made!", 3000, Notification.Position.MIDDLE)
+                    .addOpenedChangeListener(e -> getUI().ifPresent(ui -> ui.navigate("profile")));
         }
     }
 }

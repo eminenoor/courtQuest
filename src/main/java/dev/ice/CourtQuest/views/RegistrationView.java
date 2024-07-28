@@ -16,8 +16,9 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import dev.ice.CourtQuest.entities.User;
-import dev.ice.CourtQuest.services.UserService;
+import dev.ice.CourtQuest.controllers.UserController;
+import dev.ice.CourtQuest.entities.UserDB;
+
 
 import java.time.LocalDate;
 
@@ -25,21 +26,18 @@ import java.time.LocalDate;
 @AnonymousAllowed
 public class RegistrationView extends VerticalLayout {
 
-    private final UserService userService;
+    private final UserController userController;
 
-    public RegistrationView(UserService userService) {
-        this.userService = userService;
+    public RegistrationView(UserController userController) {
+        this.userController = userController;
 
-        // Back button with arrow icon
         Button backButton = new Button(new Icon(VaadinIcon.ARROW_LEFT));
         backButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("login")));
 
-        // Header
         H1 header = new H1("Registration");
         header.getStyle().set("margin-top", "0");
         header.getStyle().set("align-self", "flex-start");
 
-        // Form fields
         TextField firstName = new TextField("First Name");
         TextField lastName = new TextField("Last Name");
         DatePicker birthday = new DatePicker("Birthday");
@@ -66,34 +64,35 @@ public class RegistrationView extends VerticalLayout {
         formLayout.setColspan(email, 3);
         formLayout.setColspan(passwordField, 3);
 
-        // Center the Register button
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setWidthFull();
         buttonLayout.setJustifyContentMode(JustifyContentMode.CENTER);
         buttonLayout.add(registerButton);
 
-        // Validation and registration logic
         registerButton.addClickListener(e -> {
             if (validateForm(firstName, lastName, birthday, department, gender, email, passwordField)) {
                 try {
-                    // Gather form data and create a new User object
-                    User newUser = new User();
-                    newUser.setFirstName(firstName.getValue());
-                    newUser.setLastName(lastName.getValue());
-                    newUser.setBirthDate(birthday.getValue().toString());
-                    newUser.setDepartment(department.getValue());
-                    newUser.setGender(gender.getValue());
-                    newUser.setEmail(email.getValue());
-                    newUser.setPassword(passwordField.getValue());
-                    newUser.setAge(LocalDate.now().getYear() - birthday.getValue().getYear());
-                    newUser.setRating(0.0); // Initial rating
 
-                    // Save the user using UserService
-                    userService.saveUser(newUser);
+                    String email1 = email.getValue();
+                    if(email1.contains("ug.bilkent.edu.tr")){
+                        UserDB newUser = new UserDB();
+                        newUser.setFirst_name(firstName.getValue());
+                        newUser.setLast_name(lastName.getValue());
+                        newUser.setBirth_date(birthday.getValue().toString());
+                        newUser.setDepartment(department.getValue());
+                        newUser.setGender(gender.getValue());
+                        newUser.setEmail(email.getValue());
+                        newUser.setPassword(passwordField.getValue());
+                        newUser.setAge(LocalDate.now().getYear() - birthday.getValue().getYear());
+                        newUser.setRating(0.0);
+                        userController.createUser(newUser);
+                        Notification.show("Registration successful!");
+                        getUI().ifPresent(ui -> ui.navigate("login"));
+                    }
+                    else{
 
-                    Notification.show("Registration successful!");
-                    // Optionally, navigate to another page
-                    getUI().ifPresent(ui -> ui.navigate("login"));
+                        Notification.show("You should register with your Bilkent email!");
+                    }
                 } catch (Exception ex) {
                     Notification.show("Registration failed: " + ex.getMessage());
                 }
@@ -102,7 +101,6 @@ public class RegistrationView extends VerticalLayout {
             }
         });
 
-        // Adding components to the layout
         HorizontalLayout headerLayout = new HorizontalLayout(backButton, header);
         headerLayout.setWidthFull();
         headerLayout.setAlignItems(Alignment.CENTER);
@@ -121,7 +119,6 @@ public class RegistrationView extends VerticalLayout {
 
     private boolean validateForm(TextField firstName, TextField lastName, DatePicker birthday, TextField department, RadioButtonGroup<String> gender, EmailField email, PasswordField passwordField) {
         boolean isValid = true;
-        // Check each field and set isValid to false if any fields are empty
         if (firstName.isEmpty()) {
             firstName.setErrorMessage("First name is required");
             firstName.setInvalid(true);

@@ -20,11 +20,9 @@ public class MyActivityCard extends GeneralActivityCard{
         cancelButton.getStyle().set("margin-left", "10px");
         cancelButton.getStyle().set("height", "36px");
 
-        // Top right layout
         topRightLayout = new HorizontalLayout(publicLabel, cancelButton);
         topRightLayout.setAlignItems(Alignment.CENTER);
 
-        // Combine sport name and top right layout
         topLayout = new HorizontalLayout(sportLabel, topRightLayout);
         topLayout.setWidthFull();
         topLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);

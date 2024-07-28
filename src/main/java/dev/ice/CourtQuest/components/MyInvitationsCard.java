@@ -43,7 +43,6 @@ public class MyInvitationsCard extends GeneralActivityCard {
         declineButton.getStyle().set("background-color", "red");
         declineButton.getStyle().set("color", "white");
 
-        // Create a horizontal layout for the accept and decline buttons and center them
         HorizontalLayout acceptDeclineLayout = new HorizontalLayout(acceptButton, declineButton);
         acceptDeclineLayout.setAlignItems(Alignment.CENTER);
         acceptDeclineLayout.setJustifyContentMode(JustifyContentMode.CENTER);

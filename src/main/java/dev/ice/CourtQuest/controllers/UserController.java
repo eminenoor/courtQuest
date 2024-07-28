@@ -1,6 +1,6 @@
 package dev.ice.CourtQuest.controllers;
 
-import dev.ice.CourtQuest.entities.User;
+import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.services.UserService;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +17,12 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<UserDB> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
+    public UserDB createUser(@RequestBody UserDB user) {
         return userService.saveUser(user);
     }
 /*
@@ -31,29 +31,29 @@ public class UserController {
         return userRepository.findByEmail(user.getEmail());
     }*/
 
-    @GetMapping("/{userId}")
-    public User getUser(@PathVariable Long userId) {
-        return userService.getUser(userId);
+    @GetMapping("/{user_id}")
+    public UserDB getUser(@PathVariable Long user_id) {
+        return userService.getUser(user_id);
     }
 
-    @PutMapping("/{userId}")
-    public User updateUser(@PathVariable Long userId, @RequestBody User newUser) {
-        return userService.updateUser(userId, newUser);
+    @PutMapping("/{user_id}")
+    public UserDB updateUser(@PathVariable Long user_id, @RequestBody UserDB newUser) {
+        return userService.updateUser(user_id, newUser);
     }
 
-    @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable Long userId) {
-        userService.deleteById(userId);
+    @DeleteMapping("/{user_id}")
+    public void deleteUser(@PathVariable Long user_id) {
+        userService.deleteById(user_id);
     }
 
 
     @GetMapping("/registration")
-    public String getRegPage(@ModelAttribute("user") User user) {
+    public String getRegPage(@ModelAttribute("user") UserDB user) {
         return "register";
     }
 
     @PostMapping("/registration")
-    public String saveUser(@ModelAttribute("user") User user, Model model) {
+    public String saveUser(@ModelAttribute("user") UserDB user, Model model) {
         userService.saveUser(user);
         model.addAttribute("message", "Submitted Successfully");
         return "register";
@@ -61,7 +61,7 @@ public class UserController {
 
     @GetMapping("/users")
     public String usersPage(Model model) {
-        List<User> listOfUsers = userService.getAllUsers();
+        List<UserDB> listOfUsers = userService.getAllUsers();
         model.addAttribute("user", listOfUsers);
         return "user";
     }

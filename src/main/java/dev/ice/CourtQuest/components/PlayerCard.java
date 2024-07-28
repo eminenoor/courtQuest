@@ -17,8 +17,10 @@ public class PlayerCard extends VerticalLayout {
     private Span department;
     private Span age;
     private Span gender;
-    private HorizontalLayout selfRating;
-    private HorizontalLayout generalRating;
+    private double selfRating;
+    private double generalRating;
+    private HorizontalLayout selfRatingLayout;
+    private HorizontalLayout generalRatingLayout;
 
     public PlayerCard(String avatarUrl, String name, String department, String gender, int age, double selfRating, double generalRating) {
         this.avatar = new Avatar(name);
@@ -32,8 +34,11 @@ public class PlayerCard extends VerticalLayout {
         this.age = new Span(String.valueOf(age));
         this.age.getElement().getStyle().set("font-weight", "bold");
 
-        this.selfRating = createRatingLayout(selfRating, false);
-        this.generalRating = createRatingLayout(generalRating, true);
+        this.selfRating = selfRating;
+        this.generalRating = generalRating;
+
+        this.selfRatingLayout = createRatingLayout(selfRating, false);
+        this.generalRatingLayout = createRatingLayout(generalRating, true);
 
         Span selfRatingSpan = new Span("Self Rating:");
 
@@ -59,13 +64,13 @@ public class PlayerCard extends VerticalLayout {
         line.getStyle().set("background-color", "white");
 
         add(this.avatar, this.name, line, infoLayout,
-                new Span("Personal Rating:"), this.selfRating,
-                new Span("General Rating:"), this.generalRating);
+                new Span("Personal Rating:"), this.selfRatingLayout,
+                new Span("General Rating:"), this.generalRatingLayout);
 
         this.name.getElement().getStyle().set("margin-bottom", "2px");
-        this.selfRating.getElement().getStyle().set("margin-bottom", "10px");
-        this.selfRating.getElement().getStyle().set("margin-top", "5px");
-        this.generalRating.getElement().getStyle().set("margin-top", "5px");
+        this.selfRatingLayout.getElement().getStyle().set("margin-bottom", "10px");
+        this.selfRatingLayout.getElement().getStyle().set("margin-top", "5px");
+        this.generalRatingLayout.getElement().getStyle().set("margin-top", "5px");
         infoLayout.getStyle().set("margin-bottom", "15px");
         line.getStyle().set("margin-top", "0.5px");
         line.getStyle().set("margin-bottom", "10px");
@@ -74,7 +79,7 @@ public class PlayerCard extends VerticalLayout {
         setSpacing(false);
         getElement().getStyle().set("background-color", "#3F51B5").set("color", "white").set("border-radius", "10px").set("padding", "10px");
         setWidth("200px");
-        setHeight("auto");
+        setHeight("320px");
     }
 
     private HorizontalLayout createRatingLayout(double rating, boolean isGeneralRating) {
@@ -104,5 +109,34 @@ public class PlayerCard extends VerticalLayout {
         }else if(gender.equalsIgnoreCase("Female") || gender.equalsIgnoreCase("F")) {
             this.gender = new Span("F");
         }
+    }
+
+    public String getName() {
+        String nameString = name.getText();
+        return nameString;
+    }
+
+    public String getAvatarUrl() {
+        return String.valueOf(avatar);
+    }
+
+    public String getDepartment() {
+        return department.getText();
+    }
+
+    public String getGender() {
+        return gender.getText();
+    }
+
+    public int getAge() {
+        return Integer.parseInt(age.getText());
+    }
+
+    public double getSelfRating() {
+        return selfRating;
+    }
+
+    public double getGeneralRating() {
+        return generalRating;
     }
 }
