@@ -44,7 +44,7 @@ public class InvitationService {
             invitation.setStatus("Pending");
             invitationRepository.save(invitation);
 
-           // notificationService.createNotification(recipientId, "You have a new invitation from " + sender.getFirst_name(), "INVITATION");
+            // notificationService.createNotification(recipientId, "You have a new invitation from " + sender.getFirst_name(), "INVITATION");
 
             return invitation;
         }

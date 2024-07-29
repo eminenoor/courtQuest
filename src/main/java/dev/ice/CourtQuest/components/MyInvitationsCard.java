@@ -70,13 +70,11 @@ public class MyInvitationsCard extends GeneralActivityCard {
             this.setVisible(false);
         });
 
-        // Create a horizontal layout for the accept and decline buttons and center them
         HorizontalLayout acceptDeclineLayout = new HorizontalLayout(acceptButton, declineButton);
         acceptDeclineLayout.setAlignItems(Alignment.CENTER);
         acceptDeclineLayout.setJustifyContentMode(JustifyContentMode.CENTER);
         acceptDeclineLayout.setWidthFull();
 
-        // Create a vertical layout for the buttons
         buttonsLayout = new VerticalLayout(playersButton, acceptDeclineLayout);
         buttonsLayout.setAlignItems(Alignment.START);
         buttonsLayout.setWidthFull();

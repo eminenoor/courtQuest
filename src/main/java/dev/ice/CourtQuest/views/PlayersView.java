@@ -92,7 +92,7 @@ public class PlayersView extends HorizontalLayout{
         VerticalLayout mainContent = new VerticalLayout(headerLayout, playerContainer);
         headerLayout.getStyle().set("margin-bottom", "20px");
         mainContent.setWidthFull();
-        mainContent.setAlignItems(Alignment.CENTER);
+        mainContent.setAlignItems(FlexComponent.Alignment.CENTER);
         mainContent.setSpacing(true);
         mainContent.setPadding(false);
         mainContent.setHeightFull();
@@ -104,4 +104,5 @@ public class PlayersView extends HorizontalLayout{
         setAlignItems(Alignment.STRETCH);
         setSizeFull();
     }
+
 }
