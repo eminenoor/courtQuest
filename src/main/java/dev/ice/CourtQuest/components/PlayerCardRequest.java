@@ -46,4 +46,11 @@ public class PlayerCardRequest extends PlayerCard{
         add(buttonsLayout);
 
     }
+    public Button getAcceptButton(){
+        return acceptButton;
+    }
+
+    public Button getDeclineButton(){
+        return declineButton;
+    }
 }
