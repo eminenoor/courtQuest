@@ -127,7 +127,7 @@ public class RequestsView extends HorizontalLayout {
             );
             playersLayout.setWidth("max-content");
             UserDB player = request.getSender();
-            PlayerCardRequest playerCard = new PlayerCardRequest(player.getEmail(), player.getFirst_name(), player.getDepartment(), player.getGender(), player.getAge(), player.getRating(), 4.5);
+            PlayerCardRequest playerCard = new PlayerCardRequest(player.getFirst_name(), player.getDepartment(), player.getGender(), player.getAge(), player.getRating(), 4.5);
             playerCard.getAcceptButton().addClickListener(e -> {
                 activityService.acceptUser(activity,player);
             });

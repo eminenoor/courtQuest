@@ -1,9 +1,21 @@
 package dev.ice.CourtQuest.views;
 
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import dev.ice.CourtQuest.components.PlayerCard;
+import dev.ice.CourtQuest.components.PlayerCardInvite;
+import jakarta.annotation.security.PermitAll;
 
-public class PlayersView {
+@Route("players")
+@PermitAll
+public class PlayersView extends HorizontalLayout{
 
     Div playerContainer;
 
@@ -92,5 +104,4 @@ public class PlayersView {
         setAlignItems(Alignment.STRETCH);
         setSizeFull();
     }
-
 }

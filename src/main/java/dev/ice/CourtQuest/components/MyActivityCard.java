@@ -54,6 +54,7 @@ public class MyActivityCard extends GeneralActivityCard {
         contentLayout = new VerticalLayout(topLayout, detailsLayout);
         finalizeLayout();
     }
+
     public Button getCancelButton() {
         return cancelButton;
     }

@@ -18,6 +18,11 @@ public class ActivityCard extends GeneralActivityCard {
         playersButton.getStyle().set("color", "white");
         playersButton.getStyle().set("margin-left", "10px");
         playersButton.getStyle().set("height", "36px");
+        playersButton.getElement().addEventListener("mouseover", e -> {
+            playersButton.getElement().getStyle().set("cursor", "pointer");
+        });
+
+        playersButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("players")));
 
         topRightLayout = new HorizontalLayout(publicLabel, playersButton);
         topRightLayout.setAlignItems(Alignment.CENTER);
@@ -32,6 +37,9 @@ public class ActivityCard extends GeneralActivityCard {
         joinButton = new Button("Join");
         joinButton.getStyle().set("background-color", "#1E3A8A");
         joinButton.getStyle().set("color", "white");
+        joinButton.getElement().addEventListener("mouseover", e -> {
+            joinButton.getElement().getStyle().set("cursor", "pointer");
+        });
 
         quotaJoinLayout = new HorizontalLayout(quotaLayout, joinButton);
         quotaJoinLayout.setWidthFull();
@@ -46,5 +54,5 @@ public class ActivityCard extends GeneralActivityCard {
     public Button getJoinButton() {
         return joinButton;
     }
-    
+
 }

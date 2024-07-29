@@ -26,7 +26,6 @@ import java.util.List;
 @PermitAll
 public class MyActivitiesView extends HorizontalLayout {
 
-    private final InvitationService invitationService;
     private ActivityService activityService;
     private UserService userService;
     private VerticalLayout activityLayout;
@@ -34,7 +33,7 @@ public class MyActivitiesView extends HorizontalLayout {
     private Long activityId;
 
     @Autowired
-    public MyActivitiesView(ActivityService activityService, UserService use {
+    public MyActivitiesView(ActivityService activityService, UserService userService) {
         this.activityService = activityService;
         this.userService = userService;
 
@@ -126,7 +125,6 @@ public class MyActivitiesView extends HorizontalLayout {
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);
         setSizeFull();
-        this.invitationService = invitationService;
     }
 
     private void refreshActivities() {
