@@ -4,14 +4,12 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name="user")
 @Data
-@EqualsAndHashCode(exclude = "activities")
+@EqualsAndHashCode(exclude = {"activities", "receivedRequests", "createdActivities", "receivedInvitations"})
 public class UserDB {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -122,6 +120,24 @@ public class UserDB {
     public void addActivity(Activity activity){
         activities.add(activity);
     }
+
+    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<Request> receivedRequests = new HashSet<>();
+
+    public void addRequest(Request request){
+        receivedRequests.add(request);
+    }
+
+    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<Invitation> receivedInvitations = new HashSet<>();
+
+    public void addInvitation(Invitation invitation){
+        receivedInvitations.add(invitation);
+    }
+
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<Activity> createdActivities = new HashSet<>();
+
 
     /*
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -1,31 +1,47 @@
 package dev.ice.CourtQuest.views;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import dev.ice.CourtQuest.components.PlayerCard;
 import dev.ice.CourtQuest.components.PlayerCardRequest;
 import dev.ice.CourtQuest.components.RequestActivityCard;
+import dev.ice.CourtQuest.entities.Activity;
+import dev.ice.CourtQuest.entities.Request;
+import dev.ice.CourtQuest.entities.UserDB;
+import dev.ice.CourtQuest.services.ActivityService;
+import dev.ice.CourtQuest.services.RequestService;
+import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Route("requests")
 @PermitAll
 public class RequestsView extends HorizontalLayout {
 
-    public RequestsView() {
+    private final ActivityService activityService;
+    private UserService userService;
+    private RequestService requestService;
+
+    @Autowired
+    public RequestsView(UserService userService, RequestService requestService, ActivityService activityService) {
+        this.userService = userService;
+        this.requestService = requestService;
+
         // Header
         H1 currentActivitiesTitle = new H1("Requests");
 
         // Log out link
-        RouterLink logoutLink = new RouterLink("Log out", LogoutView.class); // Assuming LogoutView is the class handling logout
+        RouterLink logoutLink = new RouterLink("Log out", LogoutView.class);
         logoutLink.getStyle().set("margin-right", "auto");
 
         // Top right icons
@@ -38,7 +54,7 @@ public class RequestsView extends HorizontalLayout {
         profileIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("profile")));
 
         HorizontalLayout topRightIcons = new HorizontalLayout(logoutLink, bellIcon, profileIcon);
-        topRightIcons.getStyle().set("margin-left", "auto"); // Push to the right
+        topRightIcons.getStyle().set("margin-left", "auto");
 
         // Header with top right icons
         HorizontalLayout headerLayout = new HorizontalLayout(currentActivitiesTitle, topRightIcons);
@@ -83,50 +99,57 @@ public class RequestsView extends HorizontalLayout {
 
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
-        RequestActivityCard request1 = new RequestActivityCard(
-                "Basketball",
-                "Main Sports Hall",
-                "24/08/2024",
-                "13.00-14.00",
-                "7/12",
-                true
-        );
+        // Get current user and their received requests
+        UserDB user = userService.getCurrentUser();
+        Set<Request> requestsSet = user.getReceivedRequests();
 
-        Div scrollableContainer = new Div();
-        scrollableContainer.getStyle().set("overflow-x", "auto"); // Enable horizontal scrolling
-        scrollableContainer.setWidth("100%"); // Full width of the parent container
+        // Convert Set to List
+        List<Request> requestList = new ArrayList<>(requestsSet);
+
+        // Create a layout to hold all request cards
+        VerticalLayout requestCardsLayout = new VerticalLayout();
+        requestCardsLayout.setSpacing(true);
+        requestCardsLayout.setPadding(true);
+        requestCardsLayout.setWidthFull();
 
         HorizontalLayout playersLayout = new HorizontalLayout();
-        playersLayout.setWidth("max-content");
-//        playersLayout.add(player1, player, player2, player3, player3, player4, player5, player6, player7);
+
+        // Create and add a RequestActivityCard for each request
+        for (Request request : requestList) {
+            Activity activity = request.getActivity();
+            RequestActivityCard requestCard = new RequestActivityCard(
+                    activity.getName(),
+                    activity.getPlace(),
+                    activity.getDate(),
+                    activity.getTime(),
+                    activity.getQuota() + "/" + activity.getQuota(),
+                    true
+            );
+            playersLayout.setWidth("max-content");
+            UserDB player = request.getSender();
+            PlayerCardRequest playerCard = new PlayerCardRequest(player.getEmail(), player.getFirst_name(), player.getDepartment(), player.getGender(), player.getAge(), player.getRating(), 4.5);
+            playerCard.getAcceptButton().addClickListener(e -> {
+                activityService.acceptUser(activity,player);
+            });
+            playersLayout.add(playerCard);
+            requestCard.getStyle().setWidth("300px");
+            requestCard.getStyle().setHeight("200px");
+            requestCard.getStyle().set("margin-bottom", "20px");
+            requestCardsLayout.add(requestCard);
+        }
+
+        // Make the layout scrollable
+        Div scrollableContainer = new Div(requestCardsLayout);
+        scrollableContainer.getStyle().set("overflow", "auto");
+        scrollableContainer.setHeight("100%");
 
         scrollableContainer.add(playersLayout);
         scrollableContainer.setWidth("900px");
-        scrollableContainer.setHeight("auto");
-
-        HorizontalLayout requestsLayout = new HorizontalLayout(request1, scrollableContainer);
-        requestsLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-
-        requestsLayout.setWidthFull();
-        requestsLayout.setAlignItems(Alignment.STRETCH);
-        requestsLayout.setAlignItems(VerticalLayout.Alignment.END);
-        request1.getStyle().setWidth("300px");
-        request1.getStyle().setHeight("200px");
-        request1.getStyle().set("margin-right", "100px");
-        requestsLayout.setSpacing(true);
-        requestsLayout.setPadding(true);
-
-        getStyle().set("overflow-x", "hidden");
-
-        VerticalLayout allRequestsLayout = new VerticalLayout();
-        allRequestsLayout.add(requestsLayout);
-        allRequestsLayout.setWidth("100%");
 
         // Main content layout
-        VerticalLayout mainContent = new VerticalLayout(headerLayout, allRequestsLayout);
+        VerticalLayout mainContent = new VerticalLayout(headerLayout, scrollableContainer);
         mainContent.setWidthFull();
         mainContent.setAlignItems(Alignment.START);
-        mainContent.setAlignItems(FlexComponent.Alignment.END);
         mainContent.setHeightFull();
         mainContent.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
         mainContent.getStyle().set("overflow", "auto");
@@ -135,6 +158,6 @@ public class RequestsView extends HorizontalLayout {
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);
         setSizeFull();
+        this.activityService = activityService;
     }
 }
-

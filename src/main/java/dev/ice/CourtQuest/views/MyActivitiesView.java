@@ -9,11 +9,13 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.server.VaadinSession;
 import dev.ice.CourtQuest.components.MyActivityCard;
 import dev.ice.CourtQuest.entities.Activity;
 import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.services.ActivityService;
 import dev.ice.CourtQuest.services.UserService;
+import dev.ice.CourtQuest.services.InvitationService;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +26,7 @@ import java.util.List;
 @PermitAll
 public class MyActivitiesView extends HorizontalLayout {
 
+    private final InvitationService invitationService;
     private ActivityService activityService;
     private UserService userService;
     private VerticalLayout activityLayout;
@@ -31,7 +34,7 @@ public class MyActivitiesView extends HorizontalLayout {
     private Long activityId;
 
     @Autowired
-    public MyActivitiesView(ActivityService activityService, UserService userService) {
+    public MyActivitiesView(ActivityService activityService, UserService use {
         this.activityService = activityService;
         this.userService = userService;
 
@@ -123,6 +126,7 @@ public class MyActivitiesView extends HorizontalLayout {
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);
         setSizeFull();
+        this.invitationService = invitationService;
     }
 
     private void refreshActivities() {

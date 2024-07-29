@@ -11,7 +11,10 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import dev.ice.CourtQuest.components.ActivityCard;
 import dev.ice.CourtQuest.entities.Activity;
+import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.services.ActivityService;
+import dev.ice.CourtQuest.services.RequestService;
+import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,9 +26,15 @@ public class CurrentActivitiesView extends HorizontalLayout {
 
     @Autowired
     private ActivityService activityService;
+    @Autowired
+    private RequestService requestService;
+    @Autowired
+    private UserService userService;
 
-    public CurrentActivitiesView(ActivityService activityService) {
+    public CurrentActivitiesView(ActivityService activityService, UserService userService, RequestService requestService) {
         this.activityService = activityService;
+        this.userService = userService;
+        this.requestService = requestService;
 
         H1 currentActivitiesTitle = new H1("Current Activities");
 
@@ -111,6 +120,10 @@ public class CurrentActivitiesView extends HorizontalLayout {
                     activity.getParticipants().size() + "/" + activity.getQuota(),
                     activity.getStatus().equalsIgnoreCase("public")
             );
+            activityCard.getJoinButton().addClickListener(e -> {
+                UserDB user = userService.getCurrentUser();
+                requestService.joinActivity(user.getUser_id(), activity.getCreator().getUser_id(), activity.getActivityId());
+            });
             activityLayout.add(activityCard);
         }
 

@@ -24,9 +24,6 @@ public class RatePlayersCard extends HorizontalLayout {
         rateButton.getStyle().set("background-color", "black");
         rateButton.getStyle().set("color", "white");
         rateButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("rate-players-detailed")));
-        rateButton.getElement().addEventListener("mouseover", e -> {
-            rateButton.getElement().getStyle().set("cursor", "pointer");
-        });
 
         HorizontalLayout contentLayout = new HorizontalLayout(activityInfo, rateButton);
         contentLayout.setWidthFull();

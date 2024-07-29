@@ -11,7 +11,7 @@ import java.util.Set;
 @Entity
 @Table(name="activity")
 @Data
-@EqualsAndHashCode(exclude = "participants")
+@EqualsAndHashCode(exclude = {"participants", "creator"})
 public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +22,7 @@ public class Activity {
     String date;
     String time;
     int quota;
+    boolean finished = false;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -31,13 +32,15 @@ public class Activity {
     )
     private Set<UserDB> participants = new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "creator_id")
+    private UserDB creator;
 
     /*
     @ManyToMany(mappedBy = "activities", fetch = FetchType.EAGER)
     private Set<UserDB> participants = new HashSet<>();
 
      */
-
 
     public void addParticipant(UserDB participant) {
         participants.add(participant);
