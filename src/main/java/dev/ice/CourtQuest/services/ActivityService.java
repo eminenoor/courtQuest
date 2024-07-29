@@ -52,6 +52,7 @@ public class ActivityService {
     }
 
 
+    @Transactional(readOnly = true)
     public Activity getActivity(Long activityId) {
         return activityRepository.findById(activityId).orElse(null);
     }

@@ -28,6 +28,7 @@ public class MyActivitiesView extends HorizontalLayout {
     private UserService userService;
     private VerticalLayout activityLayout;
     private Long currentUserId;
+    private Long activityId;
 
     @Autowired
     public MyActivitiesView(ActivityService activityService, UserService userService) {
@@ -130,10 +131,11 @@ public class MyActivitiesView extends HorizontalLayout {
 
         for (Activity activity : activities) {
             MyActivityCard activityCard = new MyActivityCard(
+                    activity.getActivityId(),
                     activity.getName(),
                     activity.getPlace(),
                     activity.getDate(),
-                    (activity.getTime()+ " - " + (Integer.parseInt(activity.getTime().substring(0,2)) + 1) + ".00"),
+                    (activity.getTime() + " - " + (Integer.parseInt(activity.getTime().substring(0, 2)) + 1) + ".00"),
                     activity.getParticipants().size() + "/" + activity.getQuota(),
                     activity.getStatus().equalsIgnoreCase("public")
             );
@@ -145,5 +147,9 @@ public class MyActivitiesView extends HorizontalLayout {
 
             activityLayout.add(activityCard);
         }
+    }
+
+    public Long getActivityId(){
+        return activityId;
     }
 }

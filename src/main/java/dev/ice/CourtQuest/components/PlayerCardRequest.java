@@ -8,8 +8,10 @@ public class PlayerCardRequest extends PlayerCard{
     Button acceptButton;
     Button declineButton;
 
-    public PlayerCardRequest(String avatarUrl, String name, String department, String gender, int age, double selfRating, double generalRating) {
-        super(avatarUrl, name, department, gender, age, selfRating, generalRating);
+    public PlayerCardRequest(String name, String department, String gender, int age, double selfRating, double generalRating) {
+        super(name, department, gender, age, selfRating, generalRating);
+        //super(avatarURL, name, department, gender, age, selfRating, generalRating);
+
 
         acceptButton = new Button("Accept");
         declineButton = new Button("Decline");
