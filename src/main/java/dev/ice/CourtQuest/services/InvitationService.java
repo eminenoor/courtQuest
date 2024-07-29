@@ -6,6 +6,8 @@ import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.repos.ActivityRepository;
 import dev.ice.CourtQuest.repos.InvitationRepository;
 import dev.ice.CourtQuest.repos.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,17 +74,29 @@ public class InvitationService {
         }).orElse(null);
     }
 
+    @Transactional
     public void respondToInvitationVoid(Long invitationId, String response) {
-        Invitation invitation = invitationRepository.findById(invitationId).orElse(null);
-        if (invitation != null) {
-            UserDB user = invitation.getRecipient();
-            Activity activity = invitation.getActivity();
+        try {
+            Invitation invitation = invitationRepository.findById(invitationId).orElse(null);
+            if (invitation != null) {
+                UserDB user = invitation.getRecipient();
+                Activity activity = invitation.getActivity();
 
-            if ("Accepted".equals(response)) {
-                activityService.addParticipant(activity.getActivityId(), user.getUser_id());
+                if ("Accepted".equals(response)) {
+                    activityService.addParticipant(activity.getActivityId(), user.getUser_id());
+                }
+                invitationRepository.deleteById(invitationId);
+            } else {
+                System.out.println("Invitation with ID " + invitationId + " not found.");
             }
-
-            invitationRepository.delete(invitation);
+        } catch (Exception e) {
+            System.err.println("Exception occurred while deleting invitation with ID " + invitationId);
+            e.printStackTrace();
         }
     }
+
+
+
+
+
 }

@@ -55,20 +55,10 @@ public class MyInvitationsCard extends GeneralActivityCard {
         acceptButton = new Button("Accept");
         acceptButton.getStyle().set("background-color", "green");
         acceptButton.getStyle().set("color", "white");
-        acceptButton.addClickListener(event -> {
-            invitationService.respondToInvitationVoid(invitation.getInvitationId(), "Accepted");
-            Notification.show("Invitation accepted");
-            this.setVisible(false);
-        });
 
         declineButton = new Button("Decline");
         declineButton.getStyle().set("background-color", "red");
         declineButton.getStyle().set("color", "white");
-        declineButton.addClickListener(event -> {
-            invitationService.respondToInvitationVoid(invitation.getInvitationId(), "Declined");
-            Notification.show("Invitation declined");
-            this.setVisible(false);
-        });
 
         HorizontalLayout acceptDeclineLayout = new HorizontalLayout(acceptButton, declineButton);
         acceptDeclineLayout.setAlignItems(Alignment.CENTER);

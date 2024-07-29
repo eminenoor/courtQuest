@@ -111,7 +111,7 @@ public class MyInvitationsView extends HorizontalLayout {
     }
 
     private void displayInvitations(Div invitationContainer) {
-        invitationContainer.removeAll(); // Clear previous invitations
+        invitationContainer.removeAll();
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         UserDB currentUser = userService.findUserByEmail(username);
         if (currentUser != null) {
@@ -122,7 +122,7 @@ public class MyInvitationsView extends HorizontalLayout {
                         invitation.getActivity().getName(),
                         invitation.getActivity().getPlace(),
                         invitation.getActivity().getDate(),
-                        invitation.getActivity().getTime(),
+                        (invitation.getActivity().getTime() + " - " + (Integer.parseInt(invitation.getActivity().getTime().substring(0, 2)) + 1) + ".00"),
                         invitation.getActivity().getParticipants().size() + "/" + invitation.getActivity().getQuota(),
                         invitation.getActivity().getStatus().equalsIgnoreCase("public"),
                         invitation,
@@ -130,17 +130,19 @@ public class MyInvitationsView extends HorizontalLayout {
                 );
 
                 invitationCard.getAcceptButton().addClickListener(event -> {
+                    System.out.println("Accept button clicked for invitation ID: " + invitation.getInvitationId());
                     invitationService.respondToInvitationVoid(invitation.getInvitationId(), "Accepted");
                     Notification.show("Invitation accepted");
                     invitationCard.setVisible(false);
-                    displayInvitations(invitationContainer); // Refresh the invitation list
+                    displayInvitations(invitationContainer);
                 });
 
                 invitationCard.getDeclineButton().addClickListener(event -> {
+                    System.out.println("Decline button clicked for invitation ID: " + invitation.getInvitationId());
                     invitationService.respondToInvitationVoid(invitation.getInvitationId(), "Declined");
                     Notification.show("Invitation declined");
                     invitationCard.setVisible(false);
-                    displayInvitations(invitationContainer); // Refresh the invitation list
+                    displayInvitations(invitationContainer);
                 });
 
                 invitationContainer.add(invitationCard);
@@ -149,4 +151,5 @@ public class MyInvitationsView extends HorizontalLayout {
             Notification.show("Unable to load invitations. Please try again.");
         }
     }
+
 }
