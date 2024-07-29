@@ -4,22 +4,40 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import dev.ice.CourtQuest.components.MyInvitationsCard;
+import dev.ice.CourtQuest.entities.Activity;
+import dev.ice.CourtQuest.entities.Invitation;
+import dev.ice.CourtQuest.entities.UserDB;
+import dev.ice.CourtQuest.services.ActivityService;
+import dev.ice.CourtQuest.services.InvitationService;
+import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.List;
 
 @Route("my-invitations")
 @PermitAll
 public class MyInvitationsView extends HorizontalLayout {
-
     Div invitationContainer;
+    private UserService userService;
+    private ActivityService activityService;
+    private InvitationService invitationService;
 
-    public MyInvitationsView() {
-        H1 currentActivitiesTitle = new H1("My Invitations");
+    @Autowired
+    public MyInvitationsView(UserService userService, ActivityService activityService, InvitationService invitationService) {
+        this.userService = userService;
+        this.activityService = activityService;
+        this.invitationService = invitationService;
+
+        H1 currentInvitationsTitle = new H1("My Invitations");
 
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class); // Assuming LogoutView is the class handling logout
         logoutLink.getStyle().set("margin-right", "auto");
@@ -35,7 +53,7 @@ public class MyInvitationsView extends HorizontalLayout {
         HorizontalLayout topRightIcons = new HorizontalLayout(logoutLink, bellIcon, profileIcon);
         topRightIcons.getStyle().set("margin-left", "auto"); // Push to the right
 
-        HorizontalLayout headerLayout = new HorizontalLayout(currentActivitiesTitle, topRightIcons);
+        HorizontalLayout headerLayout = new HorizontalLayout(currentInvitationsTitle, topRightIcons);
         headerLayout.setWidthFull();
         headerLayout.setAlignItems(Alignment.CENTER);
 
@@ -76,22 +94,11 @@ public class MyInvitationsView extends HorizontalLayout {
 
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
-        MyInvitationsCard invitation1 = new MyInvitationsCard(
-                "Elif",
-                "Volleyball",
-                "Dormitory Sports Hall",
-                "25/08/2024",
-                "16.00-17.00",
-                "7/12",
-                true
-        );
-
         invitationContainer = new Div();
         invitationContainer.getStyle().set("display", "grid");
         invitationContainer.getStyle().set("grid-template-columns", "repeat(5, 1fr)");
         invitationContainer.getStyle().set("gap", "16px");
-        invitationContainer.add(invitation1);
-
+        displayInvitations(invitationContainer);
         VerticalLayout mainContent = new VerticalLayout(headerLayout, invitationContainer); // Add the invitation card here
         mainContent.setWidthFull();
         mainContent.setAlignItems(Alignment.START);
@@ -102,5 +109,43 @@ public class MyInvitationsView extends HorizontalLayout {
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);
         setSizeFull();
+
+
+    }
+
+    private void displayInvitations(Div invitationContainer) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserDB currentUser = userService.findUserByEmail(username);
+        if (currentUser != null) {
+            List<Invitation> invitations = invitationService.getUserInvitations(currentUser.getUser_id());
+            for (Invitation invitation : invitations) {
+                Activity activity = activityService.getActivity(invitation.getActivity().getActivityId());
+                MyInvitationsCard invitationCard = new MyInvitationsCard(
+                        invitation.getSender().getFirst_name(),
+                        activity.getName(),
+                        activity.getPlace(),
+                        activity.getDate(),
+                        (activity.getTime() + " - " + (Integer.parseInt(activity.getTime().substring(0, 2)) + 1) + ".00"),
+                        activity.getParticipants().size() + "/" + activity.getQuota(),
+                        activity.getStatus().equalsIgnoreCase("public")
+                );
+
+                invitationCard.getAcceptButton().addClickListener(event -> {
+                    invitationService.respondToInvitation(invitation.getInvitationId(), "Accepted");
+                    Notification.show("Invitation accepted");
+                    invitationContainer.remove(invitationCard);
+                });
+
+                invitationCard.getDeclineButton().addClickListener(event -> {
+                    invitationService.respondToInvitation(invitation.getInvitationId(), "Declined");
+                    Notification.show("Invitation declined");
+                    invitationContainer.remove(invitationCard);
+                });
+
+                invitationContainer.add(invitationCard);
+            }
+        } else {
+            Notification.show("Unable to load invitations. Please try again.");
+        }
     }
 }

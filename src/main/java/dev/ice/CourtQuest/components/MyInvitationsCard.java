@@ -1,5 +1,7 @@
 package dev.ice.CourtQuest.components;
 
+import com.vaadin.flow.component.ClickNotifier;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -74,5 +76,13 @@ public class MyInvitationsCard extends GeneralActivityCard {
         finalizeLayout();
         setWidth("350px");
         setHeight("90%");
+    }
+
+    public Button getAcceptButton() {
+        return acceptButton;
+    }
+
+    public Button getDeclineButton() {
+        return declineButton;
     }
 }

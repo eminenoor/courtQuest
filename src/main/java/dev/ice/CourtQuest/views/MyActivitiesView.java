@@ -14,8 +14,11 @@ import dev.ice.CourtQuest.components.MyActivityCard;
 import dev.ice.CourtQuest.entities.Activity;
 import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.services.ActivityService;
+import dev.ice.CourtQuest.services.UserService;
 import dev.ice.CourtQuest.services.InvitationService;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
@@ -25,9 +28,15 @@ public class MyActivitiesView extends HorizontalLayout {
 
     private final InvitationService invitationService;
     private ActivityService activityService;
+    private UserService userService;
+    private VerticalLayout activityLayout;
+    private Long currentUserId;
+    private Long activityId;
 
-    public MyActivitiesView(ActivityService activityService, InvitationService invitationService) {
+    @Autowired
+    public MyActivitiesView(ActivityService activityService, UserService use {
         this.activityService = activityService;
+        this.userService = userService;
 
         H1 currentActivitiesTitle = new H1("My Activities");
 
@@ -97,28 +106,15 @@ public class MyActivitiesView extends HorizontalLayout {
         buttonLayout.setJustifyContentMode(JustifyContentMode.CENTER);
         buttonLayout.setSpacing(true);
 
-        List<Activity> activities = activityService.getMyActivities();
-
-        VerticalLayout activityLayout = new VerticalLayout();
+        activityLayout = new VerticalLayout();
         activityLayout.setWidthFull();
         activityLayout.setSpacing(true);
 
-        // Dynamically create MyActivityCard instances for each activity
-        for (Activity activity : activities) {
-            MyActivityCard activityCard = new MyActivityCard(
-                    activity.getName(),
-                    activity.getPlace(),
-                    activity.getDate(),
-                    (activity.getTime()+ " - " + (Integer.parseInt(activity.getTime().substring(0,2)) + 1) + ".00"),
-                    activity.getParticipants().size() + "/" + activity.getQuota(),
-                    activity.getStatus().equalsIgnoreCase("public")
-            );
-            activityCard.getInviteButton().addClickListener(e -> {
-                VaadinSession.getCurrent().setAttribute("activityId", activity.getActivityId());
-                getUI().ifPresent(ui -> ui.navigate("invite-players"));
-            });
-            activityLayout.add(activityCard);
-        }
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserDB currentUser = userService.findUserByEmail(username);
+        currentUserId = currentUser.getUser_id();
+
+        refreshActivities();
 
         VerticalLayout mainContent = new VerticalLayout(headerLayout, buttonLayout, activityLayout);
         mainContent.setWidthFull();
@@ -131,5 +127,33 @@ public class MyActivitiesView extends HorizontalLayout {
         setAlignItems(Alignment.STRETCH);
         setSizeFull();
         this.invitationService = invitationService;
+    }
+
+    private void refreshActivities() {
+        activityLayout.removeAll();
+        List<Activity> activities = activityService.getMyActivities();
+
+        for (Activity activity : activities) {
+            MyActivityCard activityCard = new MyActivityCard(
+                    activity.getActivityId(),
+                    activity.getName(),
+                    activity.getPlace(),
+                    activity.getDate(),
+                    (activity.getTime() + " - " + (Integer.parseInt(activity.getTime().substring(0, 2)) + 1) + ".00"),
+                    activity.getParticipants().size() + "/" + activity.getQuota(),
+                    activity.getStatus().equalsIgnoreCase("public")
+            );
+
+            activityCard.getCancelButton().addClickListener(event -> {
+                activityService.removeUserFromActivity(activity.getActivityId(), currentUserId);
+                refreshActivities();
+            });
+
+            activityLayout.add(activityCard);
+        }
+    }
+
+    public Long getActivityId(){
+        return activityId;
     }
 }

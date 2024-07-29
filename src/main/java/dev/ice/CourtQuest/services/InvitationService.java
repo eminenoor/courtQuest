@@ -8,6 +8,7 @@ import dev.ice.CourtQuest.repos.InvitationRepository;
 import dev.ice.CourtQuest.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class InvitationService {
     @Autowired
     private NotificationService notificationService;
 
+    @Transactional
     public Invitation sendInvitation(Long senderId, Long recipientId, Long activityId) {
         UserDB sender = userRepository.findById(senderId).orElse(null);
         UserDB recipient = userRepository.findById(recipientId).orElse(null);
@@ -39,13 +41,14 @@ public class InvitationService {
             invitation.setStatus("Pending");
             invitationRepository.save(invitation);
 
-            notificationService.createNotification(recipientId, "You have a new invitation from " + sender.getFirst_name(), "INVITATION");
+           // notificationService.createNotification(recipientId, "You have a new invitation from " + sender.getFirst_name(), "INVITATION");
 
             return invitation;
         }
         return null;
     }
 
+    @Transactional(readOnly = true)
     public List<Invitation> getUserInvitations(Long userId) {
         UserDB user = userRepository.findById(userId).orElse(null);
         if (user != null) {
@@ -54,6 +57,7 @@ public class InvitationService {
         return null;
     }
 
+    @Transactional
     public Invitation respondToInvitation(Long invitationId, String status) {
         return invitationRepository.findById(invitationId).map(invitation -> {
             invitation.setStatus(status);

@@ -113,6 +113,7 @@ public class RequestsView extends HorizontalLayout {
         requestCardsLayout.setWidthFull();
 
         HorizontalLayout playersLayout = new HorizontalLayout();
+
         // Create and add a RequestActivityCard for each request
         for (Request request : requestList) {
             Activity activity = request.getActivity();

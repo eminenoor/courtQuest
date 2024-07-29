@@ -4,15 +4,17 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-public class MyActivityCard extends GeneralActivityCard{
+public class MyActivityCard extends GeneralActivityCard {
 
     private Button playersButton;
     private Button inviteButton;
     private Button cancelButton;
     private HorizontalLayout quotaInviteLayout;
+    private Long activityId;
 
-    public MyActivityCard (String sportName, String place, String date, String time, String quota, boolean isPublic) {
+    public MyActivityCard (Long activityId, String sportName, String place, String date, String time, String quota, boolean isPublic) {
         super(sportName, isPublic);
+        this.activityId = activityId;
 
         cancelButton = new Button("Cancel Reservation");
         cancelButton.getStyle().set("background-color", "#1E3A8A");
@@ -38,7 +40,7 @@ public class MyActivityCard extends GeneralActivityCard{
         inviteButton.getStyle().set("background-color", "#1E3A8A");
         inviteButton.getStyle().set("color", "white");
 
-        inviteButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("invite-players")));
+        inviteButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("invite-players/" + activityId)));
 
         topRightLayout = new HorizontalLayout(playersButton, inviteButton);
         topRightLayout.setAlignItems(Alignment.CENTER);
@@ -52,8 +54,11 @@ public class MyActivityCard extends GeneralActivityCard{
         contentLayout = new VerticalLayout(topLayout, detailsLayout);
         finalizeLayout();
     }
+    public Button getCancelButton() {
+        return cancelButton;
+    }
 
-    public Button getInviteButton(){
+    public Button getInviteButton() {
         return inviteButton;
     }
 }

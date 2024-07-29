@@ -12,7 +12,7 @@ import com.vaadin.flow.component.textfield.TextField;
 
 public class PlayerCard extends VerticalLayout {
 
-    private Avatar avatar;
+   // private Avatar avatar;
     private Span name;
     private Span department;
     private Span age;
@@ -22,9 +22,9 @@ public class PlayerCard extends VerticalLayout {
     private HorizontalLayout selfRatingLayout;
     private HorizontalLayout generalRatingLayout;
 
-    public PlayerCard(String avatarUrl, String name, String department, String gender, int age, double selfRating, double generalRating) {
-        this.avatar = new Avatar(name);
-        this.avatar.setImage(avatarUrl);
+    public PlayerCard(String name, String department, String gender, int age, double selfRating, double generalRating) {
+//        this.avatar = new Avatar(name);
+//        this.avatar.setImage(avatarUrl);
 
         this.name = new Span(name);
         this.name.getElement().getStyle().set("font-weight", "bold");
@@ -45,9 +45,9 @@ public class PlayerCard extends VerticalLayout {
         setGender(gender);
         this.gender.getElement().getStyle().set("font-weight", "bold");
 
-        avatar.getElement().getStyle().setWidth("100px");
-        avatar.getElement().getStyle().setHeight("100px");
-        avatar.getElement().getStyle().set("color", "white");
+//        avatar.getElement().getStyle().setWidth("100px");
+//        avatar.getElement().getStyle().setHeight("100px");
+//        avatar.getElement().getStyle().set("color", "white");
 
         HorizontalLayout infoLayout = new HorizontalLayout();
         infoLayout.add(this.department, this.gender, this.age);
@@ -63,7 +63,7 @@ public class PlayerCard extends VerticalLayout {
         line.setWidth("80%");
         line.getStyle().set("background-color", "white");
 
-        add(this.avatar, this.name, line, infoLayout,
+        add(this.nameButton, line, infoLayout,
                 new Span("Personal Rating:"), this.selfRatingLayout,
                 new Span("General Rating:"), this.generalRatingLayout);
 
@@ -116,9 +116,9 @@ public class PlayerCard extends VerticalLayout {
         return nameString;
     }
 
-    public String getAvatarUrl() {
-        return String.valueOf(avatar);
-    }
+    //public String getAvatarUrl() {
+//        return String.valueOf(avatar);
+//    }
 
     public String getDepartment() {
         return department.getText();
