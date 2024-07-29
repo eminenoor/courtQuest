@@ -46,4 +46,5 @@ public class ActivityCard extends GeneralActivityCard {
     public Button getJoinButton() {
         return joinButton;
     }
+    
 }

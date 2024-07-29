@@ -27,6 +27,9 @@ public class InvitationService {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private ActivityService activityService;
+
     @Transactional
     public Invitation sendInvitation(Long senderId, Long recipientId, Long activityId) {
         UserDB sender = userRepository.findById(senderId).orElse(null);
@@ -67,5 +70,19 @@ public class InvitationService {
 
             return invitation;
         }).orElse(null);
+    }
+
+    public void respondToInvitationVoid(Long invitationId, String response) {
+        Invitation invitation = invitationRepository.findById(invitationId).orElse(null);
+        if (invitation != null) {
+            UserDB user = invitation.getRecipient();
+            Activity activity = invitation.getActivity();
+
+            if ("Accepted".equals(response)) {
+                activityService.addParticipant(activity.getActivityId(), user.getUser_id());
+            }
+
+            invitationRepository.delete(invitation);
+        }
     }
 }
