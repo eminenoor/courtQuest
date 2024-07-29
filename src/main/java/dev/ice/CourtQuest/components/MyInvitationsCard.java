@@ -1,11 +1,12 @@
 package dev.ice.CourtQuest.components;
 
-import com.vaadin.flow.component.ClickNotifier;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import dev.ice.CourtQuest.entities.Invitation;
+import dev.ice.CourtQuest.services.InvitationService;
 
 public class MyInvitationsCard extends GeneralActivityCard {
 
@@ -16,9 +17,14 @@ public class MyInvitationsCard extends GeneralActivityCard {
     private HorizontalLayout inviterLayout;
     private Span inviterSpan;
     private VerticalLayout buttonsLayout;
+    private Invitation invitation;
+    private InvitationService invitationService;
 
-    public MyInvitationsCard(String inviter, String sportName, String place, String date, String time, String quota, boolean isPublic) {
+    public MyInvitationsCard(String inviter, String sportName, String place, String date, String time, String quota, boolean isPublic, Invitation invitation, InvitationService invitationService) {
         super(sportName, isPublic);
+
+        this.invitation = invitation;
+        this.invitationService = invitationService;
 
         inviterSpan = new Span(inviter + " has invited you to a game");
 
@@ -49,24 +55,26 @@ public class MyInvitationsCard extends GeneralActivityCard {
         acceptButton = new Button("Accept");
         acceptButton.getStyle().set("background-color", "green");
         acceptButton.getStyle().set("color", "white");
-        acceptButton.getElement().addEventListener("mouseover", e -> {
-            acceptButton.getElement().getStyle().set("cursor", "pointer");
+        acceptButton.addClickListener(event -> {
+            invitationService.respondToInvitationVoid(invitation.getInvitationId(), "Accepted");
+            Notification.show("Invitation accepted");
+            this.setVisible(false);
         });
 
         declineButton = new Button("Decline");
         declineButton.getStyle().set("background-color", "red");
         declineButton.getStyle().set("color", "white");
-        declineButton.getElement().addEventListener("mouseover", e -> {
-            declineButton.getElement().getStyle().set("cursor", "pointer");
+        declineButton.addClickListener(event -> {
+            invitationService.respondToInvitationVoid(invitation.getInvitationId(), "Declined");
+            Notification.show("Invitation declined");
+            this.setVisible(false);
         });
 
-        // Create a horizontal layout for the accept and decline buttons and center them
         HorizontalLayout acceptDeclineLayout = new HorizontalLayout(acceptButton, declineButton);
         acceptDeclineLayout.setAlignItems(Alignment.CENTER);
         acceptDeclineLayout.setJustifyContentMode(JustifyContentMode.CENTER);
         acceptDeclineLayout.setWidthFull();
 
-        // Create a vertical layout for the buttons
         buttonsLayout = new VerticalLayout(playersButton, acceptDeclineLayout);
         buttonsLayout.setAlignItems(Alignment.START);
         buttonsLayout.setWidthFull();

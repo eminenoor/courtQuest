@@ -23,6 +23,16 @@ public class ActivityService {
     @Autowired
     private UserRepository userRepository;
 
+    @Transactional
+    public void addParticipant(Long activityId, Long userId) {
+        Activity activity = activityRepository.findById(activityId).orElse(null);
+        UserDB user = userRepository.findById(userId).orElse(null);
+        if (activity != null && user != null) {
+            if (!activity.getParticipants().contains(user)) {
+                activity.addParticipant(user);
+            }
+        }
+    }
 
     /*
     public Activity createActivity(Long userId, Activity activity) {
