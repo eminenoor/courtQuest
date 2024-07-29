@@ -3,6 +3,7 @@ package dev.ice.CourtQuest.views;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -86,7 +87,13 @@ public class RatePlayersView extends HorizontalLayout {
                 "Main Sports Hall"
         );
 
-        VerticalLayout mainContent = new VerticalLayout(headerLayout, activity1, activity2);
+        VerticalLayout mainContent = new VerticalLayout(headerLayout);
+        mainContent.setWidthFull();
+        mainContent.setAlignItems(Alignment.CENTER);
+        mainContent.setHeightFull();
+        mainContent.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+        mainContent.getStyle().set("overflow", "auto");
+        mainContent = new VerticalLayout(headerLayout, activity1, activity2);
         mainContent.setWidthFull();
         mainContent.setAlignItems(Alignment.START);
 

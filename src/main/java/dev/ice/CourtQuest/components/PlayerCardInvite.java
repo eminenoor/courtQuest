@@ -27,6 +27,11 @@ public class PlayerCardInvite extends PlayerCard{
                 inviteButton.getStyle().set("background-color", "lightgreen");
             }
         });
+
+        inviteButton.getElement().addEventListener("mouseover", e -> {
+            inviteButton.getElement().getStyle().set("cursor", "pointer");
+        });
+
         setWidth("auto");
         setHeight("auto");
         add(inviteButton);

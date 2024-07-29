@@ -4,7 +4,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-public class MyActivityCard extends GeneralActivityCard {
+public class MyActivityCard extends GeneralActivityCard{
 
     private Button playersButton;
     private Button inviteButton;
@@ -12,7 +12,7 @@ public class MyActivityCard extends GeneralActivityCard {
     private HorizontalLayout quotaInviteLayout;
     private Long activityId;
 
-    public MyActivityCard (Long activityId, String sportName, String place, String date, String time, String quota, boolean isPublic) {
+    public MyActivityCard (String sportName, String place, String date, String time, String quota, boolean isPublic) {
         super(sportName, isPublic);
         this.activityId = activityId;
 
@@ -21,6 +21,9 @@ public class MyActivityCard extends GeneralActivityCard {
         cancelButton.getStyle().set("color", "white");
         cancelButton.getStyle().set("margin-left", "10px");
         cancelButton.getStyle().set("height", "36px");
+        cancelButton.getElement().addEventListener("mouseover", e -> {
+            cancelButton.getElement().getStyle().set("cursor", "pointer");
+        });
 
         topRightLayout = new HorizontalLayout(publicLabel, cancelButton);
         topRightLayout.setAlignItems(Alignment.CENTER);
@@ -35,12 +38,21 @@ public class MyActivityCard extends GeneralActivityCard {
         playersButton = new Button("Players");
         playersButton.getStyle().set("background-color", "#1E3A8A");
         playersButton.getStyle().set("color", "white");
+        playersButton.getElement().addEventListener("mouseover", e -> {
+            playersButton.getElement().getStyle().set("cursor", "pointer");
+        });
+        playersButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("players")));
+
 
         inviteButton = new Button("Invite");
         inviteButton.getStyle().set("background-color", "#1E3A8A");
         inviteButton.getStyle().set("color", "white");
 
         inviteButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("invite-players/" + activityId)));
+        inviteButton.getElement().addEventListener("mouseover", e -> {
+            inviteButton.getElement().getStyle().set("cursor", "pointer");
+        });
+
 
         topRightLayout = new HorizontalLayout(playersButton, inviteButton);
         topRightLayout.setAlignItems(Alignment.CENTER);
