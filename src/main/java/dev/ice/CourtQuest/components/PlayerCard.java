@@ -1,6 +1,7 @@
 package dev.ice.CourtQuest.components;
 
 import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -10,7 +11,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 
-public class PlayerCard extends VerticalLayout {
+public class PlayerCard extends VerticalLayout implements Comparable<PlayerCard> {
 
    // private Avatar avatar;
     private Span name;
@@ -21,13 +22,21 @@ public class PlayerCard extends VerticalLayout {
     private double generalRating;
     private HorizontalLayout selfRatingLayout;
     private HorizontalLayout generalRatingLayout;
+    private Button nameButton;
 
     public PlayerCard(String name, String department, String gender, int age, double selfRating, double generalRating) {
 //        this.avatar = new Avatar(name);
 //        this.avatar.setImage(avatarUrl);
 
         this.name = new Span(name);
-        this.name.getElement().getStyle().set("font-weight", "bold");
+        this.name.getElement().getStyle().set("font-weight", "bold").set("color", "white");
+        this.nameButton = new Button(name);
+        this.nameButton.getStyle().setBackgroundColor("#5566c3");
+        this.nameButton.getElement().getStyle().set("font-weight", "bold").set("color", "white");
+        this.nameButton.getElement().addEventListener("mouseover", e -> {
+            nameButton.getElement().getStyle().set("cursor", "pointer");
+        });
+        this.nameButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("profile")));
 
         this.department = new Span(department);
         this.department.getElement().getStyle().set("font-weight", "bold");
@@ -79,7 +88,7 @@ public class PlayerCard extends VerticalLayout {
         setSpacing(false);
         getElement().getStyle().set("background-color", "#3F51B5").set("color", "white").set("border-radius", "10px").set("padding", "10px");
         setWidth("200px");
-        setHeight("320px");
+        setHeight("auto");
     }
 
     private HorizontalLayout createRatingLayout(double rating, boolean isGeneralRating) {
@@ -138,5 +147,15 @@ public class PlayerCard extends VerticalLayout {
 
     public double getGeneralRating() {
         return generalRating;
+    }
+
+
+    private double getAverageRating() {
+        return ((0.7) * (double) generalRating) + ((0.3) * (double) selfRating);
+    }
+
+    @Override
+    public int compareTo(PlayerCard other) {
+        return Double.compare(other.getAverageRating(), this.getAverageRating());
     }
 }
