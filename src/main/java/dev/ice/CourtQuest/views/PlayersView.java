@@ -17,15 +17,6 @@ import jakarta.annotation.security.PermitAll;
 @PermitAll
 public class PlayersView extends HorizontalLayout{
 
-    PlayerCard player1 = new PlayerCard("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIF0ePQThnXeyYbDWWcFFchDy4Oq2mW4m4OA&s", "DERBEDERBERK", "HAYAT", "M", 29, 5, 5);
-    PlayerCard player = new PlayerCard("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeujnl7lsLBPalSsz1LLXMY2hwKeNh_Lg_5w&s", "Metin Çalışkan", "CS", "M", 20, 5, 0.5);
-    PlayerCard player2 = new PlayerCard("İlke", "İlke Latifoğlu", "CS", "F", 20, 4, 4.5);
-    PlayerCard player3 = new PlayerCard("Emine", "Emine Noor", "CS", "F", 20, 3.5, 4);
-    PlayerCard player4 = new PlayerCard("Elif", "Elif Lara", "CS", "F", 20, 2.5, 5);
-    PlayerCard player5 = new PlayerCard("Murathan", "Murathan Işık", "CS", "M", 22, 5, 1);
-    PlayerCard player6 = new PlayerCard("Can", "Can Akpınar", "CS", "M", 22, 3.5, 4);
-    PlayerCard player7 = new PlayerCard("Ekin", "Ekin Köylü", "CS", "F", 20, 5, 3);
-    PlayerCard[] playerList = {player1, player, player2, player3, player4, player5, player6};
     Div playerContainer;
 
     public PlayersView(){
@@ -96,7 +87,7 @@ public class PlayersView extends HorizontalLayout{
         playerContainer.getStyle().set("grid-template-columns", "repeat(5, 1fr)");
         playerContainer.getStyle().set("gap", "16px");
 
-        playerContainer.add(playerList);
+        //playerContainer.add(playerList);
 
         VerticalLayout mainContent = new VerticalLayout(headerLayout, playerContainer);
         headerLayout.getStyle().set("margin-bottom", "20px");
