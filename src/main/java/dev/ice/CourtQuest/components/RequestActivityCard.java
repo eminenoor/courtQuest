@@ -12,13 +12,15 @@ public class RequestActivityCard extends GeneralActivityCard {
 
     public RequestActivityCard(String sportName, String place, String date, String time, String quota, boolean isPublic) {
         super(sportName, isPublic);
-        setWidth("auto");
-        setHeight("auto");
-
-        addDetails(sportName, place, date, time, quota);
-        add(new H3(sportName));
+        H3 sportTitle = new H3(sportName);
+        add(sportTitle);
+        sportTitle.getStyle().set("margin-bottom", "10px");
         addDetails(place, date, time, quota);
         contentLayout = new VerticalLayout(detailsLayout);
         finalizeLayout();
+        setWidth("100%");
+        setHeight("120%");
+        setSpacing(false);
+        setPadding(false);
     }
 }

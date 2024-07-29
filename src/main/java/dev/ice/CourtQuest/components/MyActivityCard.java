@@ -19,6 +19,9 @@ public class MyActivityCard extends GeneralActivityCard{
         cancelButton.getStyle().set("color", "white");
         cancelButton.getStyle().set("margin-left", "10px");
         cancelButton.getStyle().set("height", "36px");
+        cancelButton.getElement().addEventListener("mouseover", e -> {
+            cancelButton.getElement().getStyle().set("cursor", "pointer");
+        });
 
         topRightLayout = new HorizontalLayout(publicLabel, cancelButton);
         topRightLayout.setAlignItems(Alignment.CENTER);
@@ -33,11 +36,19 @@ public class MyActivityCard extends GeneralActivityCard{
         playersButton = new Button("Players");
         playersButton.getStyle().set("background-color", "#1E3A8A");
         playersButton.getStyle().set("color", "white");
+        playersButton.getElement().addEventListener("mouseover", e -> {
+            playersButton.getElement().getStyle().set("cursor", "pointer");
+        });
+        playersButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("players")));
+
 
         inviteButton = new Button("Invite");
         inviteButton.getStyle().set("background-color", "#1E3A8A");
         inviteButton.getStyle().set("color", "white");
-
+        inviteButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("invite-players")));
+        inviteButton.getElement().addEventListener("mouseover", e -> {
+            inviteButton.getElement().getStyle().set("cursor", "pointer");
+        });
         inviteButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("invite-players")));
 
         topRightLayout = new HorizontalLayout(playersButton, inviteButton);

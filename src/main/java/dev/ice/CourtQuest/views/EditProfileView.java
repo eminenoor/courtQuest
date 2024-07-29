@@ -113,6 +113,9 @@ public class EditProfileView extends HorizontalLayout {
             StreamResource resource = new StreamResource(event.getFileName(), buffer::getInputStream);
             avatar.setImageResource(resource);
         });
+        upload.addFileRemovedListener(event -> {
+            avatar.setImage(profile.getAvatar());
+        });
         upload.getStyle().setFontSize("10px");
         upload.getUploadButton().getStyle().setWidth("150px");
         upload.getUploadButton().getStyle().setHeight("auto");
