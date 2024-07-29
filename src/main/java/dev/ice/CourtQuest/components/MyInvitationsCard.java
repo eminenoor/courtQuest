@@ -10,7 +10,6 @@ import dev.ice.CourtQuest.services.InvitationService;
 
 public class MyInvitationsCard extends GeneralActivityCard {
 
-    private Button playersButton;
     private Button acceptButton;
     private Button declineButton;
     private Button inviterButton;

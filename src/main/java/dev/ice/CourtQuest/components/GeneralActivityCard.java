@@ -1,5 +1,6 @@
 package dev.ice.CourtQuest.components;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -26,6 +27,7 @@ public class GeneralActivityCard extends VerticalLayout {
     protected Span quotaLabel;
     protected Span quotaValue;
     protected VerticalLayout contentLayout;
+    protected Button playersButton;
 
     public GeneralActivityCard() {
     }
@@ -132,4 +134,6 @@ public class GeneralActivityCard extends VerticalLayout {
 
         add(contentLayout);
     }
+
+    public Button getPlayersButton() {return playersButton;}
 }

@@ -146,6 +146,8 @@ public class MyActivitiesView extends HorizontalLayout {
                 activityService.removeUserFromActivity(activity.getActivityId(), currentUserId);
                 refreshActivities();
             });
+            activityCard.getPlayersButton().addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("players/" + activity.getActivityId())));
+
 
             activityLayout.add(activityCard);
         }
