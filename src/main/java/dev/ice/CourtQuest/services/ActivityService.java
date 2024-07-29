@@ -121,10 +121,10 @@ public class ActivityService {
         Activity activity = activityRepository.findById(activityId).orElse(null);
         UserDB user = userRepository.findById(userId).orElse(null);
         if (activity != null && user != null) {
-            activity.getParticipants().add(user);
-            user.getActivities().add(activity);
-            userRepository.save(user);
-            return activityRepository.save(activity);
+            if (!activity.getParticipants().contains(user)) {
+                activity.addParticipant(user);
+            }
+            return activity;
         }
         return null;
     }
@@ -133,7 +133,6 @@ public class ActivityService {
         //Activity activity = activityRepository.findById(activityId).orElse(null);
         //UserDB user = userRepository.findById(userId).orElse(null);
         activity.addParticipant(user);
-        activityRepository.save(activity);
     }
 
     public List<Activity> getPublicActivities() {
