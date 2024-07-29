@@ -110,6 +110,7 @@ public class RequestsView extends HorizontalLayout {
 
         scrollableContainer.add(playersLayout);
         scrollableContainer.setWidth("900px");
+        scrollableContainer.setHeight("auto");
 
         HorizontalLayout requestsLayout = new HorizontalLayout(request1, scrollableContainer);
         requestsLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);

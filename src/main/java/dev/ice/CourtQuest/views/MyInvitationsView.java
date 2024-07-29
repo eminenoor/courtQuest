@@ -1,5 +1,6 @@
 package dev.ice.CourtQuest.views;
 
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -14,6 +15,8 @@ import jakarta.annotation.security.PermitAll;
 @Route("my-invitations")
 @PermitAll
 public class MyInvitationsView extends HorizontalLayout {
+
+    Div invitationContainer;
 
     public MyInvitationsView() {
         H1 currentActivitiesTitle = new H1("My Invitations");
@@ -83,7 +86,13 @@ public class MyInvitationsView extends HorizontalLayout {
                 true
         );
 
-        VerticalLayout mainContent = new VerticalLayout(headerLayout, invitation1); // Add the invitation card here
+        invitationContainer = new Div();
+        invitationContainer.getStyle().set("display", "grid");
+        invitationContainer.getStyle().set("grid-template-columns", "repeat(5, 1fr)");
+        invitationContainer.getStyle().set("gap", "16px");
+        invitationContainer.add(invitation1);
+
+        VerticalLayout mainContent = new VerticalLayout(headerLayout, invitationContainer); // Add the invitation card here
         mainContent.setWidthFull();
         mainContent.setAlignItems(Alignment.START);
         mainContent.setHeightFull();
