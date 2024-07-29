@@ -148,4 +148,13 @@ public class ActivityService {
             user.getActivities().remove(activity);
         }
     }
+
+    public List<UserDB> getUsersByActivityId(Long activityId) {
+        Activity activity = activityRepository.findById(activityId).orElse(null);
+        if (activity != null) {
+            Set<UserDB> participants = activity.getParticipants();
+            return new ArrayList<>(participants);
+        }
+        return new ArrayList<>();
+    }
 }

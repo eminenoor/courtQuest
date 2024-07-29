@@ -4,22 +4,42 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import dev.ice.CourtQuest.components.PlayerCard;
 import dev.ice.CourtQuest.components.PlayerCardInvite;
+import dev.ice.CourtQuest.entities.UserDB;
+import dev.ice.CourtQuest.services.ActivityService;
+import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Route("players")
+import java.util.List;
+import java.util.Optional;
+
+@Route("players/:activityId")
 @PermitAll
-public class PlayersView extends HorizontalLayout{
+public class PlayersView extends HorizontalLayout implements BeforeEnterObserver {
 
+    private Long activityId;
     Div playerContainer;
+    private final ActivityService activityService;
+    private final UserService userService;
 
-    public PlayersView(){
+    @Autowired
+    public PlayersView(ActivityService activityService, UserService userService) {
+        this.activityService = activityService;
+        this.userService = userService;
+        createLayout();
+    }
+
+    private void createLayout() {
         H1 profileTitle = new H1("Players");
 
         // Log out link
@@ -87,8 +107,6 @@ public class PlayersView extends HorizontalLayout{
         playerContainer.getStyle().set("grid-template-columns", "repeat(5, 1fr)");
         playerContainer.getStyle().set("gap", "16px");
 
-        //playerContainer.add(playerList);
-
         VerticalLayout mainContent = new VerticalLayout(headerLayout, playerContainer);
         headerLayout.getStyle().set("margin-bottom", "20px");
         mainContent.setWidthFull();
@@ -103,6 +121,33 @@ public class PlayersView extends HorizontalLayout{
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);
         setSizeFull();
+    }
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        Optional<Long> activityIdOpt = event.getRouteParameters().get("activityId").map(Long::parseLong);
+        if (activityIdOpt.isPresent()) {
+            activityId = activityIdOpt.get();
+            displayPlayers();
+        } else {
+            Notification.show("Activity ID is missing");
+        }
+    }
+
+    private void displayPlayers() {
+        List<UserDB> players = activityService.getUsersByActivityId(activityId);
+        playerContainer.removeAll();
+        for (UserDB player : players) {
+            PlayerCard playerCard = new PlayerCard(
+                    player.getFirst_name() + " " + player.getLast_name(),
+                    player.getDepartment(),
+                    player.getGender(),
+                    player.getAge(),
+                    player.getRating(),
+                    player.getRating()
+            );
+            playerContainer.add(playerCard);
+        }
     }
 
 }

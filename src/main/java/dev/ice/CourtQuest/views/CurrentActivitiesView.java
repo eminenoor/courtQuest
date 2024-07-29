@@ -111,6 +111,7 @@ public class CurrentActivitiesView extends HorizontalLayout {
                     activity.getParticipants().size() + "/" + activity.getQuota(),
                     activity.getStatus().equalsIgnoreCase("public")
             );
+            activityCard.getPlayersButton().addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("players/" + activity.getActivityId())));
             activityLayout.add(activityCard);
         }
 

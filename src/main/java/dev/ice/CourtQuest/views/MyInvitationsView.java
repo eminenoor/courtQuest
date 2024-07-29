@@ -129,6 +129,9 @@ public class MyInvitationsView extends HorizontalLayout {
                         invitationService
                 );
 
+                invitationCard.getPlayersButton().addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("players/" + invitation.getActivity().getActivityId())));
+
+
                 invitationCard.getAcceptButton().addClickListener(event -> {
                     System.out.println("Accept button clicked for invitation ID: " + invitation.getInvitationId());
                     invitationService.respondToInvitationVoid(invitation.getInvitationId(), "Accepted");
