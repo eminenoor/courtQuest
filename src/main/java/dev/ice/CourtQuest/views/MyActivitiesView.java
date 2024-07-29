@@ -9,9 +9,12 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.server.VaadinSession;
 import dev.ice.CourtQuest.components.MyActivityCard;
 import dev.ice.CourtQuest.entities.Activity;
+import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.services.ActivityService;
+import dev.ice.CourtQuest.services.InvitationService;
 import jakarta.annotation.security.PermitAll;
 
 import java.util.List;
@@ -20,9 +23,10 @@ import java.util.List;
 @PermitAll
 public class MyActivitiesView extends HorizontalLayout {
 
+    private final InvitationService invitationService;
     private ActivityService activityService;
 
-    public MyActivitiesView(ActivityService activityService) {
+    public MyActivitiesView(ActivityService activityService, InvitationService invitationService) {
         this.activityService = activityService;
 
         H1 currentActivitiesTitle = new H1("My Activities");
@@ -109,6 +113,10 @@ public class MyActivitiesView extends HorizontalLayout {
                     activity.getParticipants().size() + "/" + activity.getQuota(),
                     activity.getStatus().equalsIgnoreCase("public")
             );
+            activityCard.getInviteButton().addClickListener(e -> {
+                VaadinSession.getCurrent().setAttribute("activityId", activity.getActivityId());
+                getUI().ifPresent(ui -> ui.navigate("invite-players"));
+            });
             activityLayout.add(activityCard);
         }
 
@@ -122,5 +130,6 @@ public class MyActivitiesView extends HorizontalLayout {
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);
         setSizeFull();
+        this.invitationService = invitationService;
     }
 }

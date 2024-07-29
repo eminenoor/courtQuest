@@ -26,22 +26,22 @@ public class PlayerCardRequest extends PlayerCard{
         declineButton.getElement().getStyle().set("color", "white");
         declineButton.getStyle().setFontSize("15px");
 
-        acceptButton.getElement().addEventListener("mouseover", e -> {
-            acceptButton.getElement().getStyle().set("cursor", "pointer");
-        });
-
-        declineButton.getElement().addEventListener("mouseover", e -> {
-            declineButton.getElement().getStyle().set("cursor", "pointer");
-        });
-
         HorizontalLayout buttonsLayout = new HorizontalLayout(acceptButton, declineButton);
         buttonsLayout.setAlignItems(HorizontalLayout.Alignment.CENTER);
         buttonsLayout.getStyle().set("margin-top", "10px");
 
         setWidth("auto");
-        setHeight("370px");
+        setHeight("350px");
 
         add(buttonsLayout);
 
+    }
+
+    public Button getAcceptButton(){
+        return acceptButton;
+    }
+
+    public Button getDeclineButton(){
+        return declineButton;
     }
 }

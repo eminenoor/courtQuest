@@ -1,5 +1,6 @@
 package dev.ice.CourtQuest.services;
 
+import dev.ice.CourtQuest.entities.Activity;
 import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.repos.UserRepository;
 import dev.ice.CourtQuest.util.EmailUtil;
@@ -17,8 +18,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -117,5 +120,9 @@ public class UserService implements UserDetailsService {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         UserDB currentUser = userRepository.findByEmailWithActivities(username);
         return currentUser;
+    }
+
+    public List<UserDB> getAllExceptParticipants(Activity activity){
+        return null;
     }
 }

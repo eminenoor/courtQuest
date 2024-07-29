@@ -45,9 +45,10 @@ public class ActivityService {
         UserDB currentUser = userRepository.findByEmailWithActivities(username);
         if (currentUser != null) {
             activity.addParticipant(currentUser);
-            activityRepository.save(activity);
+            activity.setCreator(currentUser);
+            return activityRepository.save(activity);
         }
-        return activityRepository.save(activity);
+        return null;
     }
 
 
@@ -91,6 +92,19 @@ public class ActivityService {
         return activitiesList;
     }
 
+    public List<Activity> getMyFinishedActivities() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserDB currentUser = userRepository.findByEmailWithActivities(username);
+        Set<Activity> activities = currentUser.getActivities();
+        List<Activity> finishedActivitiesList = new ArrayList<>();
+        for (Activity activity : activities) {
+            if (activity.isFinished()) {
+                finishedActivitiesList.add(activity);
+            }
+        }
+        return finishedActivitiesList;
+    }
+
     public Activity joinActivity(Long activityId, Long userId) {
         Activity activity = activityRepository.findById(activityId).orElse(null);
         UserDB user = userRepository.findById(userId).orElse(null);
@@ -101,6 +115,13 @@ public class ActivityService {
             return activityRepository.save(activity);
         }
         return null;
+    }
+
+    public void acceptUser(Activity activity, UserDB user) {
+        //Activity activity = activityRepository.findById(activityId).orElse(null);
+        //UserDB user = userRepository.findById(userId).orElse(null);
+        activity.addParticipant(user);
+        activityRepository.save(activity);
     }
 
     public List<Activity> getPublicActivities() {
