@@ -1,6 +1,9 @@
 package dev.ice.CourtQuest.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
@@ -10,53 +13,38 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Setter
+    @Getter
     String message;
+    @Getter
+    @Setter
     String type; // e.g., "INVITATION", "ACTIVITY_UPDATE", "RATING", etc.
+    @Getter
+    @Setter
     Boolean isRead = false;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Getter
+    @Setter
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     UserDB user;
 
+    @Setter
+    @Getter
+    String activityName;
+    @Getter
+    @Setter
+    String activityDate;
+    @Setter
+    @Getter
+    String activityTime;
+    @Setter
+    @Getter
+    String activityPlace;
+
+
+    @Getter
+    @Setter
     Date createdDate;
 
-    public void setUser(UserDB user) {
-        this.user = user;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Boolean getIsRead() {
-        return isRead;
-    }
-
-    public void setIsRead(Boolean isRead) {
-        this.isRead = isRead;
-    }
-
-    public UserDB getUser() {
-        return user;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
 }

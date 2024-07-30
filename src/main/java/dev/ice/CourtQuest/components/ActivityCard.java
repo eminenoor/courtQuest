@@ -3,9 +3,12 @@ package dev.ice.CourtQuest.components;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import lombok.Getter;
 
 public class ActivityCard extends GeneralActivityCard {
-
+    @Getter
+    private Button playersButton;
+    @Getter
     private Button joinButton;
     private HorizontalLayout quotaJoinLayout;
 
@@ -40,10 +43,6 @@ public class ActivityCard extends GeneralActivityCard {
         detailsLayout.add(quotaJoinLayout);
         contentLayout = new VerticalLayout(topLayout, detailsLayout);
         finalizeLayout();
-    }
-
-    public Button getJoinButton() {
-        return joinButton;
     }
 
 }

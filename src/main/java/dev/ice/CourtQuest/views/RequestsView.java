@@ -4,6 +4,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -17,6 +18,7 @@ import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.services.ActivityService;
 import dev.ice.CourtQuest.services.RequestService;
 import dev.ice.CourtQuest.services.UserService;
+import dev.ice.CourtQuest.services.NotificationService;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,11 +33,14 @@ public class RequestsView extends HorizontalLayout {
     private final ActivityService activityService;
     private UserService userService;
     private RequestService requestService;
+    private NotificationService notificationService;
 
     @Autowired
-    public RequestsView(UserService userService, RequestService requestService, ActivityService activityService) {
+    public RequestsView(UserService userService, RequestService requestService, ActivityService activityService, NotificationService notificationService) {
         this.userService = userService;
         this.requestService = requestService;
+        this.activityService = activityService;
+        this.notificationService = notificationService;
 
         // Header
         H1 currentActivitiesTitle = new H1("Requests");
@@ -112,39 +117,73 @@ public class RequestsView extends HorizontalLayout {
         requestCardsLayout.setPadding(true);
         requestCardsLayout.setWidthFull();
 
-        HorizontalLayout playersLayout = new HorizontalLayout();
-
         // Create and add a RequestActivityCard for each request
         for (Request request : requestList) {
             Activity activity = request.getActivity();
+
+            // Horizontal layout to hold activity card and player cards
+            HorizontalLayout activityWithPlayersLayout = new HorizontalLayout();
+            activityWithPlayersLayout.setWidthFull();
+
             RequestActivityCard requestCard = new RequestActivityCard(
                     activity.getName(),
                     activity.getPlace(),
                     activity.getDate(),
                     activity.getTime(),
-                    activity.getQuota() + "/" + activity.getQuota(),
+                    activity.getParticipants().size() + "/" + activity.getQuota(),
                     true
             );
+            activityWithPlayersLayout.add(requestCard);
+
+            VerticalLayout playersLayout = new VerticalLayout();
             playersLayout.setWidth("max-content");
             UserDB player = request.getSender();
             PlayerCardRequest playerCard = new PlayerCardRequest(player.getUser_id(), player.getFirst_name(), player.getDepartment(), player.getGender(), player.getAge(), player.getRating(), 4.5);
             playerCard.getAcceptButton().addClickListener(e -> {
-                activityService.acceptUser(activity,player);
+                if (activity.getQuota() > activity.getParticipants().size()) {
+                    activityService.acceptUser(activity, player);
+                    notificationService.createNotification(
+                            player.getUser_id(),
+                            "your request to join the activity has been accepted",
+                            "acceptance",
+                            activity.getName(),
+                            activity.getDate(),
+                            activity.getTime(),
+                            activity.getPlace()
+                    );
+                    requestService.deleteRequest(request);
+                    requestCardsLayout.remove(activityWithPlayersLayout);
+                    Notification.show("Player added to activity.");
+                } else {
+                    Notification.show("No available quota.");
+                }
+            });
+            playerCard.getDeclineButton().addClickListener(e -> {
+                activityService.declineUser(activity, player);
+                notificationService.createNotification(
+                        player.getUser_id(),
+                        "your request to join the activity has been declined",
+                        "decline",
+                        activity.getName(),
+                        activity.getDate(),
+                        activity.getTime(),
+                        activity.getPlace()
+                );
+                requestService.deleteRequest(request);
+                requestCardsLayout.remove(activityWithPlayersLayout);
+                Notification.show("Player declined.");
             });
             playersLayout.add(playerCard);
-            requestCard.getStyle().setWidth("300px");
-            requestCard.getStyle().setHeight("200px");
-            requestCard.getStyle().set("margin-bottom", "20px");
-            requestCardsLayout.add(requestCard);
+
+            activityWithPlayersLayout.add(playersLayout);
+            requestCardsLayout.add(activityWithPlayersLayout);
         }
 
         // Make the layout scrollable
         Div scrollableContainer = new Div(requestCardsLayout);
         scrollableContainer.getStyle().set("overflow", "auto");
         scrollableContainer.setHeight("100%");
-
-        scrollableContainer.add(playersLayout);
-        scrollableContainer.setWidth("900px");
+        scrollableContainer.setWidth("100%");
 
         // Main content layout
         VerticalLayout mainContent = new VerticalLayout(headerLayout, scrollableContainer);
@@ -158,6 +197,5 @@ public class RequestsView extends HorizontalLayout {
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);
         setSizeFull();
-        this.activityService = activityService;
     }
 }

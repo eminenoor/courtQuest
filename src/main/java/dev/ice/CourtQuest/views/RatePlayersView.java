@@ -99,7 +99,8 @@ public class RatePlayersView extends HorizontalLayout {
                     activity.getName(),
                     activity.getTime(),
                     activity.getDate(),
-                    activity.getPlace()
+                    activity.getPlace(),
+                    activity.getActivityId()
             );
             activitiesLayout.add(activityCard);
         }

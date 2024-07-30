@@ -1,7 +1,10 @@
 package dev.ice.CourtQuest.controllers;
 
+import dev.ice.CourtQuest.entities.Notification;
 import dev.ice.CourtQuest.entities.UserDB;
+import dev.ice.CourtQuest.services.NotificationService;
 import dev.ice.CourtQuest.services.UserService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +14,7 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private UserService userService;
+    private NotificationService notificationService;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -66,7 +70,14 @@ public class UserController {
         return "user";
     }
 
-    public UserDB findUserByEmail(String emailValue) {
-        return userService.findUserByEmail(emailValue);
+    @GetMapping("/email")
+    public UserDB findUserByEmail(@RequestParam String email) {
+        return userService.findUserByEmail(email);
+    }
+
+    @GetMapping("/{user_id}/notifications")
+    @Transactional(readOnly = true)
+    public List<Notification> getUserNotifications(@PathVariable Long user_id) {
+        return notificationService.getUserNotifications(user_id);
     }
 }
