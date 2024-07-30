@@ -7,8 +7,8 @@ import com.vaadin.flow.component.button.Button;
 public class PlayerCardInvite extends PlayerCard{
     private Button inviteButton;
 
-    public PlayerCardInvite(String name, String department, String gender, int age, double selfRating, double generalRating) {
-        super(name, department, gender, age, selfRating, generalRating);
+    public PlayerCardInvite(Long userId, String name, String department, String gender, int age, double selfRating, double generalRating) {
+        super(userId, name, department, gender, age, selfRating, generalRating);
 
         inviteButton = new Button("Invite");
         inviteButton.getStyle().setWidth("auto");
