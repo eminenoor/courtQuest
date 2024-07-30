@@ -1,10 +1,7 @@
+// InvitePlayersView.java
 package dev.ice.CourtQuest.views;
 
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
@@ -14,54 +11,36 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.virtuallist.VirtualList;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.dom.ElementFactory;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.VaadinSession;
-import dev.ice.CourtQuest.components.PlayerCard;
-import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.components.PlayerCardInvite;
-import dev.ice.CourtQuest.components.PlayerCardRequest;
+import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.services.InvitationService;
 import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-@Route("invite-players")
+@Route("invite-players/:activityId")
 @PermitAll
-public class InvitePlayersView extends HorizontalLayout {
+public class InvitePlayersView extends HorizontalLayout implements BeforeEnterObserver {
 
-    /*
-    PlayerCardInvite player1 = new PlayerCardInvite("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIF0ePQThnXeyYbDWWcFFchDy4Oq2mW4m4OA&s", "DERBEDERBERK", "HAYAT", "M", 29, 5, 5);
-    PlayerCardInvite player = new PlayerCardInvite("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeujnl7lsLBPalSsz1LLXMY2hwKeNh_Lg_5w&s", "Metin Çalışkan", "CS", "M", 20, 5, 0.5);
-    PlayerCardInvite player2 = new PlayerCardInvite("İlke", "İlke Latifoğlu", "CS", "F", 20, 4, 4.5);
-    PlayerCardInvite player3 = new PlayerCardInvite("Emine", "Emine Noor", "CS", "F", 20, 3.5, 4);
-    PlayerCardInvite player4 = new PlayerCardInvite("Elif", "Elif Lara", "CS", "F", 20, 2.5, 5);
-    PlayerCardInvite player5 = new PlayerCardInvite("Murathan", "Murathan Işık", "CS", "M", 22, 5, 1);
-    PlayerCardInvite player6 = new PlayerCardInvite("Can", "Can Akpınar", "CS", "M", 22, 3.5, 4);
-    PlayerCardInvite player7 = new PlayerCardInvite("Ekin", "Ekin Köylü", "CS", "F", 20, 5, 3);
-    PlayerCardInvite[] playerList = {player1, player, player2, player3, player4, player5, player6};
+    private Long activityId;
+    private UserService userService;
+    private InvitationService invitationService;
 
-     */
-    Div playerContainer = new Div();
-    List<PlayerCardInvite> playerList = new ArrayList<>();
+    private Div playerContainer;
 
-    InvitationService invitationService;
-    UserService userService;
-
-    public InvitePlayersView(InvitationService invitationService, UserService userService){
-        this.invitationService = invitationService;
+    @Autowired
+    public InvitePlayersView(UserService userService, InvitationService invitationService) {
         this.userService = userService;
-
-        List<UserDB> allUsers = userService.getAllUsers();
-        for(UserDB user : allUsers){
-            playerList.add(new PlayerCardInvite(user.getUser_id(),user.getFirst_name(),user.getFirst_name(),user.getDepartment(),user.getGender(),user.getAge(),user.getRating(),2));
-        }
+        this.invitationService = invitationService;
 
         H1 profileTitle = new H1("Invite Players");
 
@@ -132,25 +111,12 @@ public class InvitePlayersView extends HorizontalLayout {
         searchButton.addClickListener(event -> search(searchField.getValue()));
         HorizontalLayout searchLayout = new HorizontalLayout(searchField, searchButton);
 
-
         playerContainer = new Div();
         playerContainer.getStyle().set("display", "grid");
         playerContainer.getStyle().set("grid-template-columns", "repeat(5, 1fr)");
         playerContainer.getStyle().set("gap", "16px");
 
-        UserDB user = userService.getCurrentUser();
-        Long activityId = (Long) VaadinSession.getCurrent().getAttribute("activityId");
-
-        for(PlayerCardInvite p: playerList){
-            p.getInviteButton().addClickListener(e ->{
-                System.out.println("activity id: " + user.getUser_id() + " " + p.getPlayerId() + " " + activityId);
-                invitationService.sendInvitation(user.getUser_id(),p.getPlayerId(),activityId);
-            });
-            playerContainer.add(p);
-        }
-
-
-        VerticalLayout mainContent = new VerticalLayout(headerLayout, searchLayout, playerContainer);
+        VerticalLayout mainContent = new VerticalLayout(profileTitle, searchLayout, playerContainer);
         headerLayout.getStyle().set("margin-bottom", "20px");
         mainContent.setWidthFull();
         mainContent.setAlignItems(Alignment.CENTER);
@@ -165,26 +131,47 @@ public class InvitePlayersView extends HorizontalLayout {
         setSizeFull();
     }
 
-    public void search(String name){
-        playerContainer.removeAll();
-        for (int i = 0; i < playerList.size(); i++) {
-            PlayerCard checkCard = (PlayerCard) playerList.get(i);
-            String check = (String) playerList.get(i).getName().toLowerCase();
-            String search = name.toLowerCase();
-            if(check.startsWith(search)){
-                playerContainer.add(playerList.get(i));
-            }
-        }
-
-        if(name.isEmpty()){
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        Optional<Long> activityIdOpt = event.getRouteParameters().get("activityId").map(Long::parseLong);
+        if (activityIdOpt.isPresent()) {
+            activityId = activityIdOpt.get();
             displayPlayers();
+        } else {
+            Notification.show("Activity ID is missing");
         }
     }
 
-    public void displayPlayers(){
-        for (PlayerCard playerCard : playerList) {
+    private void displayPlayers() {
+        List<UserDB> allUsers = userService.getAllUsers();
+        playerContainer.removeAll();
+        for (UserDB user : allUsers) {
+            PlayerCardInvite playerCard = new PlayerCardInvite(user.getFirst_name() + " " + user.getLast_name(), user.getDepartment(), user.getGender(), user.getAge(), user.getRating(), user.getRating());
+            playerCard.getInviteButton().addClickListener(event -> sendInvitation(user.getUser_id()));
             playerContainer.add(playerCard);
         }
     }
 
+    private void sendInvitation(Long recipientId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserDB currentUser = userService.findUserByEmail(username);
+        if (currentUser != null) {
+            invitationService.sendInvitation(currentUser.getUser_id(), recipientId, activityId);
+            Notification.show("Invitation sent");
+        } else {
+            Notification.show("Unable to send invitation. Please try again.");
+        }
+    }
+
+    public void search(String name) {
+        playerContainer.removeAll();
+        List<UserDB> allUsers = userService.getAllUsers();
+        for (UserDB user : allUsers) {
+            if ((user.getFirst_name() + " " + user.getLast_name()).toLowerCase().startsWith(name.toLowerCase())) {
+                PlayerCardInvite playerCard = new PlayerCardInvite(user.getFirst_name() + " " + user.getLast_name(), user.getDepartment(), user.getGender(), user.getAge(), user.getRating(), user.getRating());
+                playerCard.getInviteButton().addClickListener(event -> sendInvitation(user.getUser_id()));
+                playerContainer.add(playerCard);
+            }
+        }
+    }
 }

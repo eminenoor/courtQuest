@@ -6,8 +6,11 @@ import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.repos.ActivityRepository;
 import dev.ice.CourtQuest.repos.InvitationRepository;
 import dev.ice.CourtQuest.repos.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,13 +29,15 @@ public class InvitationService {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private ActivityService activityService;
+
+    @Transactional
     public Invitation sendInvitation(Long senderId, Long recipientId, Long activityId) {
-        System.out.println(senderId + " " + recipientId + " " + activityId);
         UserDB sender = userRepository.findById(senderId).orElse(null);
         UserDB recipient = userRepository.findById(recipientId).orElse(null);
         Activity activity = activityRepository.findById(activityId).orElse(null);
 
-        //System.out.println("sender: " + sender.getUser_id() + "recipient: " + recipient.getUser_id() + "activity id: " + activity.getActivityId());
         if (sender != null && recipient != null && activity != null) {
             Invitation invitation = new Invitation();
             invitation.setSender(sender);
@@ -41,13 +46,14 @@ public class InvitationService {
             invitation.setStatus("Pending");
             invitationRepository.save(invitation);
 
-            //notificationService.createNotification(recipientId, "You have a new invitation from " + sender.getFirst_name(), "INVITATION");
+            // notificationService.createNotification(recipientId, "You have a new invitation from " + sender.getFirst_name(), "INVITATION");
 
             return invitation;
         }
         return null;
     }
 
+    @Transactional(readOnly = true)
     public List<Invitation> getUserInvitations(Long userId) {
         UserDB user = userRepository.findById(userId).orElse(null);
         if (user != null) {
@@ -56,14 +62,41 @@ public class InvitationService {
         return null;
     }
 
+    @Transactional
     public Invitation respondToInvitation(Long invitationId, String status) {
         return invitationRepository.findById(invitationId).map(invitation -> {
             invitation.setStatus(status);
             invitationRepository.save(invitation);
 
-            //notificationService.createNotification(invitation.getSender().getUser_id(), "Your invitation has been " + status.toLowerCase(), "INVITATION_RESPONSE");
+            notificationService.createNotification(invitation.getSender().getUser_id(), "Your invitation has been " + status.toLowerCase(), "INVITATION_RESPONSE");
 
             return invitation;
         }).orElse(null);
     }
+
+    @Transactional
+    public void respondToInvitationVoid(Long invitationId, String response) {
+        try {
+            Invitation invitation = invitationRepository.findById(invitationId).orElse(null);
+            if (invitation != null) {
+                UserDB user = invitation.getRecipient();
+                Activity activity = invitation.getActivity();
+
+                if ("Accepted".equals(response)) {
+                    activityService.addParticipant(activity.getActivityId(), user.getUser_id());
+                }
+                invitationRepository.deleteById(invitationId);
+            } else {
+                System.out.println("Invitation with ID " + invitationId + " not found.");
+            }
+        } catch (Exception e) {
+            System.err.println("Exception occurred while deleting invitation with ID " + invitationId);
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
 }

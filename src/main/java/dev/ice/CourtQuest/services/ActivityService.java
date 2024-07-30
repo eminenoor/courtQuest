@@ -8,6 +8,7 @@ import dev.ice.CourtQuest.entities.UserDB;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,16 @@ public class ActivityService {
     @Autowired
     private UserRepository userRepository;
 
+    @Transactional
+    public void addParticipant(Long activityId, Long userId) {
+        Activity activity = activityRepository.findById(activityId).orElse(null);
+        UserDB user = userRepository.findById(userId).orElse(null);
+        if (activity != null && user != null) {
+            if (!activity.getParticipants().contains(user)) {
+                activity.addParticipant(user);
+            }
+        }
+    }
 
     /*
     public Activity createActivity(Long userId, Activity activity) {
@@ -52,6 +63,7 @@ public class ActivityService {
     }
 
 
+    @Transactional(readOnly = true)
     public Activity getActivity(Long activityId) {
         return activityRepository.findById(activityId).orElse(null);
     }
@@ -109,10 +121,10 @@ public class ActivityService {
         Activity activity = activityRepository.findById(activityId).orElse(null);
         UserDB user = userRepository.findById(userId).orElse(null);
         if (activity != null && user != null) {
-            activity.getParticipants().add(user);
-            user.getActivities().add(activity);
-            userRepository.save(user);
-            return activityRepository.save(activity);
+            if (!activity.getParticipants().contains(user)) {
+                activity.addParticipant(user);
+            }
+            return activity;
         }
         return null;
     }
@@ -121,10 +133,28 @@ public class ActivityService {
         //Activity activity = activityRepository.findById(activityId).orElse(null);
         //UserDB user = userRepository.findById(userId).orElse(null);
         activity.addParticipant(user);
-        activityRepository.save(activity);
     }
 
     public List<Activity> getPublicActivities() {
         return activityRepository.findByStatus("Public");
+    }
+
+    @Transactional
+    public void removeUserFromActivity(Long activityId, Long userId) {
+        Activity activity = activityRepository.findById(activityId).orElse(null);
+        UserDB user = userRepository.findById(userId).orElse(null);
+        if (activity != null && user != null) {
+            activity.getParticipants().remove(user);
+            user.getActivities().remove(activity);
+        }
+    }
+
+    public List<UserDB> getUsersByActivityId(Long activityId) {
+        Activity activity = activityRepository.findById(activityId).orElse(null);
+        if (activity != null) {
+            Set<UserDB> participants = activity.getParticipants();
+            return new ArrayList<>(participants);
+        }
+        return new ArrayList<>();
     }
 }

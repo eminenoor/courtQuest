@@ -195,14 +195,13 @@ public class MakeReservationView extends VerticalLayout {
             }
         });
         doneButton.addClickListener(e -> {
-            // Get form data
+
             String sport = sports.getValue();
             String court = courtField.getValue();
             LocalDate selectedDate = date.getValue();
             String selectedTime = time.getValue();
             String visibilityStatus = visibility.getValue();
             int quotaValue = Integer.parseInt(quota.getValue());
-            // Call the service to create and save the activity
             activityService.createActivity(sport, visibilityStatus, court, selectedDate.toString(), selectedTime, quotaValue);
 
             Notification.show("Reservation made!");

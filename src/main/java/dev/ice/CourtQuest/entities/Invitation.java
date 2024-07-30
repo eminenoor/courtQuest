@@ -24,6 +24,4 @@ public class Invitation {
     private Activity activity;
 
     private String status; // "Pending", "Accepted", "Declined"
-
-    // Getters and Setters
 }
