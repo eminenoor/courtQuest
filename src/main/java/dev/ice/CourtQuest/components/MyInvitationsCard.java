@@ -27,17 +27,17 @@ public class MyInvitationsCard extends GeneralActivityCard {
 
         inviterSpan = new Span(inviter + " has invited you to a game");
 
-        inviterButton = new Button(inviterSpan);
-        inviterButton.getElement().getStyle().set("color", "white");
-        inviterButton.getElement().getStyle().set("padding", "10px 20px");
-        inviterButton.getElement().getStyle().set("border-radius", "10px");
-        inviterButton.getElement().getStyle().set("background-color", "#1E3A8A");
-        inviterButton.getElement().addEventListener("mouseover", e -> {
-            inviterButton.getElement().getStyle().set("cursor", "pointer");
-        });
-        inviterButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("profile")));
-
-        inviterLayout = new HorizontalLayout(inviterButton);
+//        inviterButton = new Button(inviterSpan);
+        inviterSpan.getElement().getStyle().set("color", "white");
+        inviterSpan.getElement().getStyle().set("padding", "10px 20px");
+        inviterSpan.getElement().getStyle().set("border-radius", "10px");
+        inviterSpan.getElement().getStyle().set("background-color", "#1E3A8A");
+//        inviterButton.getElement().addEventListener("mouseover", e -> {
+//            inviterButton.getElement().getStyle().set("cursor", "pointer");
+//        });
+//        inviterButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("profile")));
+//
+        inviterLayout = new HorizontalLayout(inviterSpan);
         inviterLayout.setWidthFull();
         inviterLayout.setJustifyContentMode(JustifyContentMode.START);
 
@@ -69,7 +69,7 @@ public class MyInvitationsCard extends GeneralActivityCard {
         buttonsLayout.setWidthFull();
 
         detailsLayout.add(buttonsLayout);
-        contentLayout = new VerticalLayout(inviterLayout, detailsLayout);
+        contentLayout = new VerticalLayout(inviterSpan, detailsLayout);
         finalizeLayout();
         setWidth("350px");
         setHeight("90%");
