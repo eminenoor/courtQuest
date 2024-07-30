@@ -32,7 +32,6 @@ public class RequestService {
         }
         return null;
     }
-
     public void joinActivity(Long senderId, Long recipientId, Long activityId) {
         UserDB sender = userRepository.findById(senderId).orElse(null);
         UserDB recipient = userRepository.findById(recipientId).orElse(null);

@@ -27,10 +27,12 @@ public class InvitationService {
     private NotificationService notificationService;
 
     public Invitation sendInvitation(Long senderId, Long recipientId, Long activityId) {
+        System.out.println(senderId + " " + recipientId + " " + activityId);
         UserDB sender = userRepository.findById(senderId).orElse(null);
         UserDB recipient = userRepository.findById(recipientId).orElse(null);
         Activity activity = activityRepository.findById(activityId).orElse(null);
 
+        //System.out.println("sender: " + sender.getUser_id() + "recipient: " + recipient.getUser_id() + "activity id: " + activity.getActivityId());
         if (sender != null && recipient != null && activity != null) {
             Invitation invitation = new Invitation();
             invitation.setSender(sender);
@@ -39,7 +41,7 @@ public class InvitationService {
             invitation.setStatus("Pending");
             invitationRepository.save(invitation);
 
-            notificationService.createNotification(recipientId, "You have a new invitation from " + sender.getFirst_name(), "INVITATION");
+            //notificationService.createNotification(recipientId, "You have a new invitation from " + sender.getFirst_name(), "INVITATION");
 
             return invitation;
         }
@@ -59,7 +61,7 @@ public class InvitationService {
             invitation.setStatus(status);
             invitationRepository.save(invitation);
 
-            notificationService.createNotification(invitation.getSender().getUser_id(), "Your invitation has been " + status.toLowerCase(), "INVITATION_RESPONSE");
+            //notificationService.createNotification(invitation.getSender().getUser_id(), "Your invitation has been " + status.toLowerCase(), "INVITATION_RESPONSE");
 
             return invitation;
         }).orElse(null);

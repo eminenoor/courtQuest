@@ -31,5 +31,4 @@ public class Request {
     private Activity activity;
 
     private String status; // "Pending", "Accepted", "Declined"
-
 }

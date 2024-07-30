@@ -20,15 +20,23 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.dom.ElementFactory;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.server.VaadinSession;
 import dev.ice.CourtQuest.components.PlayerCard;
+import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.components.PlayerCardInvite;
 import dev.ice.CourtQuest.components.PlayerCardRequest;
+import dev.ice.CourtQuest.services.InvitationService;
+import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Route("invite-players")
 @PermitAll
 public class InvitePlayersView extends HorizontalLayout {
 
+    /*
     PlayerCardInvite player1 = new PlayerCardInvite("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIF0ePQThnXeyYbDWWcFFchDy4Oq2mW4m4OA&s", "DERBEDERBERK", "HAYAT", "M", 29, 5, 5);
     PlayerCardInvite player = new PlayerCardInvite("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeujnl7lsLBPalSsz1LLXMY2hwKeNh_Lg_5w&s", "Metin Çalışkan", "CS", "M", 20, 5, 0.5);
     PlayerCardInvite player2 = new PlayerCardInvite("İlke", "İlke Latifoğlu", "CS", "F", 20, 4, 4.5);
@@ -38,9 +46,23 @@ public class InvitePlayersView extends HorizontalLayout {
     PlayerCardInvite player6 = new PlayerCardInvite("Can", "Can Akpınar", "CS", "M", 22, 3.5, 4);
     PlayerCardInvite player7 = new PlayerCardInvite("Ekin", "Ekin Köylü", "CS", "F", 20, 5, 3);
     PlayerCardInvite[] playerList = {player1, player, player2, player3, player4, player5, player6};
-    Div playerContainer = new Div();
 
-    public InvitePlayersView(){
+     */
+    Div playerContainer = new Div();
+    List<PlayerCardInvite> playerList = new ArrayList<>();
+
+    InvitationService invitationService;
+    UserService userService;
+
+    public InvitePlayersView(InvitationService invitationService, UserService userService){
+        this.invitationService = invitationService;
+        this.userService = userService;
+
+        List<UserDB> allUsers = userService.getAllUsers();
+        for(UserDB user : allUsers){
+            playerList.add(new PlayerCardInvite(user.getUser_id(),user.getFirst_name(),user.getFirst_name(),user.getDepartment(),user.getGender(),user.getAge(),user.getRating(),2));
+        }
+
         H1 profileTitle = new H1("Invite Players");
 
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class);
@@ -116,9 +138,17 @@ public class InvitePlayersView extends HorizontalLayout {
         playerContainer.getStyle().set("grid-template-columns", "repeat(5, 1fr)");
         playerContainer.getStyle().set("gap", "16px");
 
-        for (PlayerCard playerCard : playerList) {
-            playerContainer.add(playerCard);
+        UserDB user = userService.getCurrentUser();
+        Long activityId = (Long) VaadinSession.getCurrent().getAttribute("activityId");
+
+        for(PlayerCardInvite p: playerList){
+            p.getInviteButton().addClickListener(e ->{
+                System.out.println("activity id: " + user.getUser_id() + " " + p.getPlayerId() + " " + activityId);
+                invitationService.sendInvitation(user.getUser_id(),p.getPlayerId(),activityId);
+            });
+            playerContainer.add(p);
         }
+
 
         VerticalLayout mainContent = new VerticalLayout(headerLayout, searchLayout, playerContainer);
         headerLayout.getStyle().set("margin-bottom", "20px");
@@ -133,17 +163,16 @@ public class InvitePlayersView extends HorizontalLayout {
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);
         setSizeFull();
-
     }
 
     public void search(String name){
         playerContainer.removeAll();
-        for (int i = 0; i < playerList.length; i++) {
-            PlayerCard checkCard = (PlayerCard) playerList[i];
-            String check = (String) playerList[i].getName().toLowerCase();
+        for (int i = 0; i < playerList.size(); i++) {
+            PlayerCard checkCard = (PlayerCard) playerList.get(i);
+            String check = (String) playerList.get(i).getName().toLowerCase();
             String search = name.toLowerCase();
             if(check.startsWith(search)){
-                playerContainer.add(playerList[i]);
+                playerContainer.add(playerList.get(i));
             }
         }
 
