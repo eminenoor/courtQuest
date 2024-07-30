@@ -1,7 +1,7 @@
-package com.project.courtQuest.controllers;
+package dev.ice.CourtQuest.controllers;
 
-import com.project.courtQuest.entities.Rating;
-import com.project.courtQuest.services.RatingService;
+import dev.ice.CourtQuest.entities.Rating;
+import dev.ice.CourtQuest.services.RatingService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

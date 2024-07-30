@@ -1,4 +1,4 @@
-package com.project.courtQuest.entities;
+package dev.ice.CourtQuest.entities;
 
 import jakarta.persistence.*;
 
@@ -16,11 +16,11 @@ public class Notification {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    User user;
+    UserDB user;
 
     Date createdDate;
 
-    public void setUser(User user) {
+    public void setUser(UserDB user) {
         this.user = user;
     }
 
@@ -48,7 +48,7 @@ public class Notification {
         this.isRead = isRead;
     }
 
-    public User getUser() {
+    public UserDB getUser() {
         return user;
     }
 

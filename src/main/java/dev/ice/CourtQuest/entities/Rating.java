@@ -1,4 +1,4 @@
-package com.project.courtQuest.entities;
+package dev.ice.CourtQuest.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -13,11 +13,11 @@ public class Rating {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rated_user_id")
-    private User ratedUser;
+    private UserDB ratedUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rating_user_id")
-    private User ratingUser;
+    private UserDB ratingUser;
 
     private Double rating;
 

@@ -1,20 +1,32 @@
 package dev.ice.CourtQuest.views;
 
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import dev.ice.CourtQuest.components.RatePlayersCard;
+import dev.ice.CourtQuest.entities.Activity;
+import dev.ice.CourtQuest.services.ActivityService;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @Route("rate-players")
 @PermitAll
 public class RatePlayersView extends HorizontalLayout {
 
-    public RatePlayersView() {
+    private final ActivityService activityService;
+
+    @Autowired
+    public RatePlayersView(ActivityService activityService) {
+        this.activityService = activityService;
+
         H1 currentActivitiesTitle = new H1("Rate Players");
 
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class); // Assuming LogoutView is the class handling logout
@@ -72,27 +84,40 @@ public class RatePlayersView extends HorizontalLayout {
 
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
-        RatePlayersCard activity1 = new RatePlayersCard(
-                "volleyball",
-                "15:00-17:00",
-                "12.07.2024",
-                "Dormitory Sports Hall"
-        );
+        // Fetch finished activities
+        List<Activity> finishedActivities = activityService.getMyFinishedActivities();
 
-        RatePlayersCard activity2 = new RatePlayersCard(
-                "basketball",
-                "12:00-13:00",
-                "13.07.2024",
-                "Main Sports Hall"
-        );
+        // Create layout to hold RatePlayersCard components
+        VerticalLayout activitiesLayout = new VerticalLayout();
+        activitiesLayout.setSpacing(true);
+        activitiesLayout.setPadding(true);
+        activitiesLayout.setWidthFull();
 
-        VerticalLayout mainContent = new VerticalLayout(headerLayout, activity1, activity2);
+        // Create RatePlayersCard for each finished activity
+        for (Activity activity : finishedActivities) {
+            RatePlayersCard activityCard = new RatePlayersCard(
+                    activity.getName(),
+                    activity.getTime(),
+                    activity.getDate(),
+                    activity.getPlace()
+            );
+            activitiesLayout.add(activityCard);
+        }
+
+        // Make the layout scrollable
+        Div scrollableContainer = new Div(activitiesLayout);
+        scrollableContainer.getStyle().set("overflow", "auto");
+        scrollableContainer.setHeight("100%");
+
+        VerticalLayout mainContent = new VerticalLayout(headerLayout, scrollableContainer);
         mainContent.setWidthFull();
         mainContent.setAlignItems(Alignment.START);
+        mainContent.setHeightFull();
+        mainContent.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+        mainContent.getStyle().set("overflow", "auto");
 
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);
         setSizeFull();
-
     }
 }

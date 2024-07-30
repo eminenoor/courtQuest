@@ -1,5 +1,6 @@
 package dev.ice.CourtQuest.views;
 
+import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H1;
@@ -59,7 +60,7 @@ public class RatePlayersDetailedView extends VerticalLayout {
     }
 
     private VerticalLayout createPlayerLayout(String playerName) {
-        Image profileImage = new Image("https://via.placeholder.com/50", "Profile Image");
+        Avatar profileImage = new Avatar("https://via.placeholder.com/50", "Profile Image");
         profileImage.getStyle().set("border-radius", "50%");
 
         Span playerNameLabel = new Span(playerName);

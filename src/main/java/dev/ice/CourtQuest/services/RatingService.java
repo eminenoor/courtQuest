@@ -1,9 +1,9 @@
-package com.project.courtQuest.services;
+package dev.ice.CourtQuest.services;
 
-import com.project.courtQuest.entities.Rating;
-import com.project.courtQuest.entities.User;
-import com.project.courtQuest.repos.RatingRepository;
-import com.project.courtQuest.repos.UserRepository;
+import dev.ice.CourtQuest.entities.Rating;
+import dev.ice.CourtQuest.entities.UserDB;
+import dev.ice.CourtQuest.repos.RatingRepository;
+import dev.ice.CourtQuest.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +19,8 @@ public class RatingService {
     private UserRepository userRepository;
 
     public Rating rateUser(Long ratingUserId, Long ratedUserId, Double ratingValue) {
-        User ratingUser = userRepository.findById(ratingUserId).orElse(null);
-        User ratedUser = userRepository.findById(ratedUserId).orElse(null);
+        UserDB ratingUser = userRepository.findById(ratingUserId).orElse(null);
+        UserDB ratedUser = userRepository.findById(ratedUserId).orElse(null);
 
         if (ratingUser != null && ratedUser != null) {
             Rating rating = new Rating();
@@ -33,7 +33,7 @@ public class RatingService {
     }
 
     public List<Rating> getRatingsForUser(Long ratedUserId) {
-        User ratedUser = userRepository.findById(ratedUserId).orElse(null);
+        UserDB ratedUser = userRepository.findById(ratedUserId).orElse(null);
         if (ratedUser != null) {
             return ratingRepository.findByRatedUser(ratedUser);
         }

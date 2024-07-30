@@ -6,7 +6,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class ActivityCard extends GeneralActivityCard {
 
-    private Button playersButton;
     private Button joinButton;
     private HorizontalLayout quotaJoinLayout;
 
@@ -42,4 +41,9 @@ public class ActivityCard extends GeneralActivityCard {
         contentLayout = new VerticalLayout(topLayout, detailsLayout);
         finalizeLayout();
     }
+
+    public Button getJoinButton() {
+        return joinButton;
+    }
+
 }

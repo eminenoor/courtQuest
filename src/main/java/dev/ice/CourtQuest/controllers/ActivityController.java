@@ -1,7 +1,7 @@
-package com.project.courtQuest.controllers;
+package dev.ice.CourtQuest.controllers;
 
-import com.project.courtQuest.entities.Activity;
-import com.project.courtQuest.services.ActivityService;
+import dev.ice.CourtQuest.entities.Activity;
+import dev.ice.CourtQuest.services.ActivityService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,10 +17,12 @@ public class ActivityController {
     @Autowired
     private ActivityService activityService;
 
+    /*
     @PostMapping
     public Activity createActivity(@RequestParam Long userId, @RequestBody Activity activity) {
         return activityService.createActivity(userId, activity);
     }
+     */
 
     @GetMapping("/{activityId}")
     public Activity getActivity(@PathVariable Long activityId) {
