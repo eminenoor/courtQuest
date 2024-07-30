@@ -1,6 +1,7 @@
 package dev.ice.CourtQuest.views;
 
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
@@ -11,15 +12,20 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Route("profile")
+import java.util.Optional;
+
+@Route("user_profile/:userId")
 @PermitAll
-public class MyProfileView extends HorizontalLayout {
+public class UserProfileView extends VerticalLayout implements BeforeEnterObserver {
 
     private Text nameValue;
     private Text ageValue;
@@ -33,78 +39,42 @@ public class MyProfileView extends HorizontalLayout {
     private Span departmentField;
     private Span emailField;
 
-    UserService userService;
+    private UserService userService;
+    private Long userId;
 
-    public MyProfileView(UserService userService) {
+    @Autowired
+    public UserProfileView(UserService userService) {
         this.userService = userService;
-        H1 profileTitle = new H1("My Profile");
 
-        RouterLink logoutLink = new RouterLink("Log out", LogoutView.class);
-        logoutLink.getStyle().set("margin-right", "auto");
+        nameValue = new Text("");
+        ageValue = new Text("");
+        genderValue = new Text("");
+        departmentValue = new Text("");
+        emailValue = new Text("");
 
-        Icon bellIcon = new Icon(VaadinIcon.BELL);
-        bellIcon.getStyle().set("cursor", "pointer");
-        bellIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("notifications")));
+        createLayout();
+    }
 
-        Icon profileIcon = new Icon(VaadinIcon.USER);
-        profileIcon.getStyle().set("cursor", "pointer");
-        profileIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("profile")));
+    private void createLayout() {
+        H1 profileTitle = new H1("Profile");
 
-        HorizontalLayout topRightIcons = new HorizontalLayout(logoutLink, bellIcon, profileIcon);
-        topRightIcons.getStyle().set("margin-left", "auto"); // Push to the right
+        Icon crossIcon = new Icon(VaadinIcon.CLOSE);
+        crossIcon.getStyle().set("cursor", "pointer");
+        crossIcon.addClickListener(e -> UI.getCurrent().getPage().getHistory().back());
 
-        HorizontalLayout headerLayout = new HorizontalLayout(profileTitle, topRightIcons);
+        HorizontalLayout headerLayout = new HorizontalLayout(profileTitle);
         headerLayout.setWidthFull();
-        headerLayout.setAlignItems(Alignment.CENTER);
+        headerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        headerLayout.setSpacing(true);
 
-        VerticalLayout iconBar = new VerticalLayout();
-        iconBar.setWidth("50px");
-        iconBar.getStyle().set("background-color", "#1E3A8A");
-        iconBar.getStyle().set("height", "100vh");
-
-        Icon groupIcon = new Icon(VaadinIcon.GROUP);
-        groupIcon.getStyle().set("cursor", "pointer");
-        groupIcon.getStyle().set("color", "white");
-        groupIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("")));
-
-        Icon calendarIcon = new Icon(VaadinIcon.CALENDAR);
-        calendarIcon.getStyle().set("cursor", "pointer");
-        calendarIcon.getStyle().set("color", "white");
-        calendarIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("my-activities")));
-
-        Icon envelopeIcon = new Icon(VaadinIcon.ENVELOPE);
-        envelopeIcon.getStyle().set("cursor", "pointer");
-        envelopeIcon.getStyle().set("color", "white");
-        envelopeIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("my-invitations")));
-
-        Icon checkIcon = new Icon(VaadinIcon.CHECK);
-        checkIcon.getStyle().set("cursor", "pointer");
-        checkIcon.getStyle().set("color", "white");
-        checkIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("requests")));
-
-        Icon plusIcon = new Icon(VaadinIcon.PLUS);
-        plusIcon.getStyle().set("cursor", "pointer");
-        plusIcon.getStyle().set("color", "white");
-        plusIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("make-reservation")));
-
-        Icon starIcon = new Icon(VaadinIcon.STAR);
-        starIcon.getStyle().set("cursor", "pointer");
-        starIcon.getStyle().set("color", "white");
-        starIcon.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("rate-players")));
-
-        iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
+        HorizontalLayout headerContainer = new HorizontalLayout(headerLayout, crossIcon);
+        headerContainer.setWidthFull();
+        headerContainer.setAlignItems(FlexComponent.Alignment.START);
+        headerContainer.expand(headerLayout);
+        crossIcon.getElement().getStyle().set("margin-left", "auto");
 
         Image profilePicture = new Image("images/profile-picture-placeholder.png", "Profile Picture");
         profilePicture.setWidth("150px");
-
-        RouterLink editProfileLink = new RouterLink("Edit Profile", EditProfileView.class);
-
-        UserDB user = userService.getCurrentUser();
-        nameValue = new Text(user.getFirst_name() + " " + user.getLast_name());
-        ageValue = new Text(Integer.toString(user.getAge()));
-        genderValue = new Text(user.getGender());
-        departmentValue = new Text(user.getDepartment());
-        emailValue = new Text(user.getEmail());
 
         Span nameValueSpan = new Span(nameValue);
         nameValueSpan.getElement().getStyle().set("font-size", "24px");
@@ -126,22 +96,9 @@ public class MyProfileView extends HorizontalLayout {
         avatar.setHeight("150px");
         avatar.getElement().getStyle().set("margin-top", "0");
 
-        Button editProfileButton = new Button("Edit Profile");
-        editProfileButton.getStyle().setBackgroundColor("#e6e6e6");
-        editProfileButton.getElement().getStyle().set("margin-top", "0");
-        editProfileButton.getElement().getStyle().setFontSize("15px");
-        editProfileButton.getElement().getStyle().set("color", "#3F51B5");
-        editProfileButton.getStyle().setWidth("auto");
-        editProfileButton.getStyle().setHeight("20px");
-
-        editProfileButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("edit-profile")));
-        editProfileButton.getElement().addEventListener("mouseover", e -> {
-            editProfileButton.getElement().getStyle().set("cursor", "pointer");
-        });
-
         VerticalLayout avatarLayout = new VerticalLayout();
-        avatarLayout.add(avatar, editProfileButton);
-        avatarLayout.setAlignItems(FlexComponent.Alignment.START); // Align items to start
+        avatarLayout.add(avatar);
+        avatarLayout.setAlignItems(FlexComponent.Alignment.START);
         avatarLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         avatarLayout.getStyle().set("margin-left", "0px");
         avatarLayout.setPadding(false);
@@ -176,13 +133,13 @@ public class MyProfileView extends HorizontalLayout {
                 departmentLayout,
                 emailLayout
         );
+
         profileDetails.setAlignItems(FlexComponent.Alignment.START);
         profileDetails.setAlignItems(VerticalLayout.Alignment.START);
         profileDetails.setSpacing(true);
         avatarLayout.getStyle().set("margin-bottom", "20px");
         profileDetails.getElement().getStyle().set("padding", "10px");
 
-        // Ratings
         H1 personalRatingsTitle = new H1("Personal Ratings");
         personalRatingsTitle.getElement().getStyle().set("font-size", "30px");
 
@@ -193,6 +150,7 @@ public class MyProfileView extends HorizontalLayout {
                 createPersonalRatingComponent("Basketball", 4.0),
                 createPersonalRatingComponent("Tennis", 3.0)
         );
+
         personalRatingsTitle.getStyle().set("margin-bottom", "25px");
         personalRatings.getElement().getStyle().set("background-color", "#ADD8E6");
         personalRatings.getElement().getStyle().set("padding", "50px");
@@ -203,7 +161,6 @@ public class MyProfileView extends HorizontalLayout {
         personalRatings.setAlignItems(FlexComponent.Alignment.BASELINE);
         personalRatings.setJustifyContentMode(FlexComponent.JustifyContentMode.AROUND);
 
-        // Ratings
         H1 generalRatingsTitle = new H1("General Ratings");
         generalRatingsTitle.getElement().getStyle().set("font-size", "30px");
 
@@ -214,6 +171,7 @@ public class MyProfileView extends HorizontalLayout {
                 createGeneralRatingComponent("Basketball", 4.0),
                 createGeneralRatingComponent("Tennis", 5.0)
         );
+
         generalRatingsTitle.getStyle().set("margin-bottom", "25px");
         generalRatings.getElement().getStyle().set("background-color", "#ADD8E6");
         generalRatings.getElement().getStyle().set("padding", "50px");
@@ -230,16 +188,43 @@ public class MyProfileView extends HorizontalLayout {
         profileAndRatings.setSpacing(true);
         profileAndRatings.setWidthFull();
 
-        VerticalLayout mainContent = new VerticalLayout(headerLayout, profileAndRatings);
+        VerticalLayout mainContent = new VerticalLayout(headerContainer, profileAndRatings);
         mainContent.setWidthFull();
         mainContent.setAlignItems(FlexComponent.Alignment.START);
         mainContent.setSpacing(true);
 
         // Add components to the root layout
-        add(iconBar, mainContent);
+        add(mainContent);
         setAlignItems(FlexComponent.Alignment.START);
         setSizeFull();
         getElement().getStyle().set("overflow", "hidden");
+    }
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        Optional<Long> userIdOpt = event.getRouteParameters().get("userId").map(Long::parseLong);
+        if (userIdOpt.isPresent()) {
+            userId = userIdOpt.get();
+            loadUserProfile();
+        } else {
+            H1 error = new H1("User ID is missing");
+            add(error);
+        }
+    }
+
+    private void loadUserProfile() {
+        UserDB user = userService.getUser(userId);
+        if (user != null) {
+            nameValue.setText(user.getFirst_name() + " " + user.getLast_name());
+            ageValue.setText(Integer.toString(user.getAge()));
+            genderValue.setText(user.getGender());
+            departmentValue.setText(user.getDepartment());
+            emailValue.setText(user.getEmail());
+            avatar.setName(user.getFirst_name() + " " + user.getLast_name());
+        } else {
+            H1 error = new H1("User not found");
+            add(error);
+        }
     }
 
     private HorizontalLayout createPersonalRatingComponent(String sport, double rating) {
@@ -259,7 +244,6 @@ public class MyProfileView extends HorizontalLayout {
             star.setSize("30px");
             ratingLayout.add(star);
             ratingLayout.getElement().getStyle().set("margin-bottom", "15px");
-
         }
         return ratingLayout;
     }
@@ -281,7 +265,6 @@ public class MyProfileView extends HorizontalLayout {
             star.setSize("30px");
             ratingLayout.add(star);
             ratingLayout.getElement().getStyle().set("margin-bottom", "15px");
-
         }
         return ratingLayout;
     }
@@ -299,23 +282,23 @@ public class MyProfileView extends HorizontalLayout {
     }
 
     public String getAgeValue() {
-        return new String(ageValue.getText());
+        return ageValue.getText();
     }
 
     public String getDepartmentValue() {
-        return new String(departmentValue.getText());
+        return departmentValue.getText();
     }
 
     public String getNameValue() {
-        return new String(nameValue.getText());
+        return nameValue.getText();
     }
 
     public String getGenderValue() {
-        return new String(genderValue.getText());
+        return genderValue.getText();
     }
 
     public String getEmailValue() {
-        return new String(emailValue.getText());
+        return emailValue.getText();
     }
 
     public void setNameValue(String nameValue) {

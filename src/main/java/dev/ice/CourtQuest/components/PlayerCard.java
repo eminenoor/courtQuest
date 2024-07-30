@@ -23,11 +23,12 @@ public class PlayerCard extends VerticalLayout implements Comparable<PlayerCard>
     private HorizontalLayout selfRatingLayout;
     private HorizontalLayout generalRatingLayout;
     private Button nameButton;
+    private Long userId;
 
-    public PlayerCard(String name, String department, String gender, int age, double selfRating, double generalRating) {
+    public PlayerCard(Long userId, String name, String department, String gender, int age, double selfRating, double generalRating) {
 //        this.avatar = new Avatar(name);
 //        this.avatar.setImage(avatarUrl);
-
+        this.userId = userId;
         this.name = new Span(name);
         this.name.getElement().getStyle().set("font-weight", "bold").set("color", "white");
         this.nameButton = new Button(name);
@@ -36,7 +37,8 @@ public class PlayerCard extends VerticalLayout implements Comparable<PlayerCard>
         this.nameButton.getElement().addEventListener("mouseover", e -> {
             nameButton.getElement().getStyle().set("cursor", "pointer");
         });
-        this.nameButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("profile")));
+
+        this.nameButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("user_profile/" + userId)));
 
         this.department = new Span(department);
         this.department.getElement().getStyle().set("font-weight", "bold");
@@ -158,4 +160,5 @@ public class PlayerCard extends VerticalLayout implements Comparable<PlayerCard>
     public int compareTo(PlayerCard other) {
         return Double.compare(other.getAverageRating(), this.getAverageRating());
     }
+
 }

@@ -139,6 +139,7 @@ public class PlayersView extends HorizontalLayout implements BeforeEnterObserver
         playerContainer.removeAll();
         for (UserDB player : players) {
             PlayerCard playerCard = new PlayerCard(
+                    player.getUser_id(),
                     player.getFirst_name() + " " + player.getLast_name(),
                     player.getDepartment(),
                     player.getGender(),
