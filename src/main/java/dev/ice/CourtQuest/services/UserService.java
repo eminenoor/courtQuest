@@ -153,6 +153,7 @@ public class UserService implements UserDetailsService {
             foundUser.setFirst_name(newUser.getFirst_name());
             foundUser.setLast_name(newUser.getLast_name());
             foundUser.setAge(newUser.getAge());
+            foundUser.setReceivedRatings(newUser.getReceivedRatings());
             foundUser.setBirth_date(newUser.getBirth_date());
             foundUser.setDepartment(newUser.getDepartment());
             foundUser.setAvatar(newUser.getAvatar());

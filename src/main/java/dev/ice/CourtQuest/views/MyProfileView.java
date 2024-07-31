@@ -13,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import dev.ice.CourtQuest.entities.Rating;
 import com.vaadin.flow.server.StreamResource;
 import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.services.UserService;
@@ -198,12 +199,18 @@ public class MyProfileView extends HorizontalLayout {
         H1 personalRatingsTitle = new H1("Personal Ratings");
         personalRatingsTitle.getElement().getStyle().set("font-size", "30px");
 
+        Rating rating = user.getReceivedRatings();
+        double volleyballPersonal = rating.getRatingVolleyballPersonal();
+        double footballPersonal = rating.getRatingFootballPersonal();
+        double basketballPersonal = rating.getRatingBasketballPersonal();
+        double tennisPersonal = rating.getRatingTennisPersonal();
+
         VerticalLayout personalRatings = new VerticalLayout(
                 personalRatingsTitle,
-                createPersonalRatingComponent("Volleyball", 4.5),
-                createPersonalRatingComponent("Football", 3.5),
-                createPersonalRatingComponent("Basketball", 4.0),
-                createPersonalRatingComponent("Tennis", 3.0)
+                createPersonalRatingComponent("Volleyball", volleyballPersonal),
+                createPersonalRatingComponent("Football", footballPersonal),
+                createPersonalRatingComponent("Basketball", basketballPersonal),
+                createPersonalRatingComponent("Tennis", tennisPersonal)
         );
         personalRatingsTitle.getStyle().set("margin-bottom", "25px");
         personalRatings.getElement().getStyle().set("background-color", "#ADD8E6");
@@ -219,12 +226,16 @@ public class MyProfileView extends HorizontalLayout {
         H1 generalRatingsTitle = new H1("General Ratings");
         generalRatingsTitle.getElement().getStyle().set("font-size", "30px");
 
+        double volleyballGeneral = rating.getRatingVolleyball();
+        double footballGeneral = rating.getRatingFootball();
+        double basketballGeneral = rating.getRatingBasketball();
+        double tennisGeneral = rating.getRatingTennis();
         VerticalLayout generalRatings = new VerticalLayout(
                 generalRatingsTitle,
-                createGeneralRatingComponent("Volleyball", 2.5),
-                createGeneralRatingComponent("Football", 1.5),
-                createGeneralRatingComponent("Basketball", 4.0),
-                createGeneralRatingComponent("Tennis", 5.0)
+                createGeneralRatingComponent("Volleyball", volleyballGeneral),
+                createGeneralRatingComponent("Football", footballGeneral),
+                createGeneralRatingComponent("Basketball", basketballGeneral),
+                createGeneralRatingComponent("Tennis", tennisGeneral)
         );
         generalRatingsTitle.getStyle().set("margin-bottom", "25px");
         generalRatings.getElement().getStyle().set("background-color", "#ADD8E6");
@@ -356,4 +367,5 @@ public class MyProfileView extends HorizontalLayout {
     public void setEmailValue(String emailValue) {
         this.emailValue = new Text(emailValue);
     }
+
 }

@@ -1,6 +1,5 @@
 package dev.ice.CourtQuest.views;
 
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -14,22 +13,20 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.StreamResource;
 import dev.ice.CourtQuest.entities.UserDB;
+import dev.ice.CourtQuest.entities.Rating;
 import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -45,12 +42,13 @@ public class EditProfileView extends HorizontalLayout {
     private UserService userService;
     private UserDB currentUser;
     private byte[] avatarData;
-    MyProfileView profile;
+    private MyProfileView profile;
 
     @Autowired
     public EditProfileView(UserService userService) {
         this.userService = userService;
-        profile = new MyProfileView(userService);
+        this.profile = new MyProfileView(userService);
+
         H1 profileTitle = new H1("Edit Profile");
 
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class);
@@ -110,9 +108,9 @@ public class EditProfileView extends HorizontalLayout {
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
         avatar = new Avatar();
-        if(profile.getAvatar().getImage() != null){
+        if (profile.getAvatar().getImage() != null) {
             avatar.setImageResource(profile.getAvatar().getImageResource());
-        }else{
+        } else {
             avatar.setName(profile.getNameValue() + " " + profile.getLastNameValue());
         }
         avatar.setWidth("120px");
@@ -150,7 +148,7 @@ public class EditProfileView extends HorizontalLayout {
         deleteAvatarButton.addClickListener(e -> {
             avatar.setImage(null);
             avatar.setName(profile.getNameValue() + " " + profile.getLastNameValue());
-            avatarData = null;;
+            avatarData = null;
         });
 
         nameField = new TextField("Name");
@@ -206,7 +204,6 @@ public class EditProfileView extends HorizontalLayout {
         deleteAvatarButton.getElement().getStyle().set("bottom", "0");
         deleteAvatarButton.getElement().getStyle().set("right", "0");
         avatarContainer.getElement().getStyle().set("position", "relative");
-        //avatarContainer.getElement().getStyle().set("display", "inline-block");
         avatarContainer.add(avatar, deleteAvatarButton);
 
         VerticalLayout avatarLayout = new VerticalLayout(avatarContainer, upload);
@@ -219,10 +216,7 @@ public class EditProfileView extends HorizontalLayout {
         personalInformationLayout.setSpacing(false);
         personalInformationLayout.setPadding(true);
 
-        VerticalLayout profileDetails = new VerticalLayout(
-                avatarLayout,
-                personalInformationLayout
-        );
+        VerticalLayout profileDetails = new VerticalLayout(avatarLayout, personalInformationLayout);
 
         profileDetails.setAlignItems(FlexComponent.Alignment.START);
         profileDetails.setSpacing(false);
@@ -236,7 +230,6 @@ public class EditProfileView extends HorizontalLayout {
         // Ratings
         H1 personalRatingsTitle = new H1("Personal Ratings");
         personalRatingsTitle.getStyle().set("font-size", "30px");
-        //personalRatingsTitle.getStyle().set("margin-bottom", "30px");
 
         Div line = new Div();
         line.setHeight("1.5px");
@@ -248,13 +241,19 @@ public class EditProfileView extends HorizontalLayout {
         titleLine.getStyle().set("margin-bottom", "30px");
         titleLine.setAlignItems(FlexComponent.Alignment.CENTER);
 
+        UserDB user = userService.getCurrentUser();
+        Rating rating = user.getReceivedRatings();
+        double volleyballPersonal = rating.getRatingVolleyballPersonal();
+        double footballPersonal = rating.getRatingFootballPersonal();
+        double basketballPersonal = rating.getRatingBasketballPersonal();
+        double tennisPersonal = rating.getRatingTennisPersonal();
+
         VerticalLayout personalRatings = new VerticalLayout(
                 titleLine,
-                //personalRatingsTitle,
-                createEditableRatingComponent("Volleyball", 4.5),
-                createEditableRatingComponent("Football", 3.5),
-                createEditableRatingComponent("Basketball", 4.0),
-                createEditableRatingComponent("Tennis", 3.0)
+                createEditableRatingComponent("Volleyball", volleyballPersonal),
+                createEditableRatingComponent("Football", footballPersonal),
+                createEditableRatingComponent("Basketball", basketballPersonal),
+                createEditableRatingComponent("Tennis", tennisPersonal)
         );
         personalRatings.getStyle().set("background-color", "#ADD8E6");
         personalRatings.getStyle().set("padding", "50px");
@@ -298,7 +297,6 @@ public class EditProfileView extends HorizontalLayout {
     private HorizontalLayout createEditableRatingComponent(String sport, double rating) {
         HorizontalLayout ratingLayout = new HorizontalLayout();
         ratingLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        //ratingLayout.setJustifyContentMode(JustifyContentMode.AROUND);
         Span sportText = new Span(sport + ": ");
         ratingLayout.add(sportText);
         ratingLayout.setSpacing(false);
@@ -315,10 +313,10 @@ public class EditProfileView extends HorizontalLayout {
             star.addClickListener(e -> {
                 double newRating = Double.parseDouble(star.getElement().getProperty("data-rating"));
                 updateStars(ratingLayout, newRating);
+                saveRating(sport, newRating);
             });
             ratingLayout.add(star);
             ratingLayout.getStyle().set("margin-bottom", "15px");
-
         }
         return ratingLayout;
     }
@@ -329,6 +327,29 @@ public class EditProfileView extends HorizontalLayout {
             int starRating = Integer.parseInt(star.getElement().getProperty("data-rating"));
             star.setColor(starRating <= newRating ? "yellow" : "gray");
         }
+    }
+
+    private void saveRating(String sport, double newRating) {
+        UserDB currentUser = userService.getCurrentUser();
+        Rating userRating = currentUser.getReceivedRatings();
+
+        switch (sport) {
+            case "Volleyball":
+                userRating.setRatingVolleyballPersonal(newRating);
+                break;
+            case "Football":
+                userRating.setRatingFootballPersonal(newRating);
+                break;
+            case "Basketball":
+                userRating.setRatingBasketballPersonal(newRating);
+                break;
+            case "Tennis":
+                userRating.setRatingTennisPersonal(newRating);
+                break;
+        }
+
+        // Save the updated rating to the database
+        userService.editUser(currentUser.getUser_id(), currentUser);
     }
 
     private void saveChanges() {
@@ -346,7 +367,7 @@ public class EditProfileView extends HorizontalLayout {
             changesMade = true;
         }
 
-        if(birthDateField.getValue() != null && !birthDateField.getValue().toString().equals(currentUser.getBirth_date())) {
+        if (birthDateField.getValue() != null && !birthDateField.getValue().toString().equals(currentUser.getBirth_date())) {
             currentUser.setBirth_date(birthDateField.getValue().toString());
             currentUser.setAge(calculateAge(birthDateField.getValue()));
             changesMade = true;
@@ -357,7 +378,7 @@ public class EditProfileView extends HorizontalLayout {
             changesMade = true;
         }
 
-        if(avatar != profile.getAvatar()){
+        if (avatarData != null && !avatarData.equals(currentUser.getAvatar())) {
             currentUser.setAvatar(avatarData);
             changesMade = true;
         }
@@ -373,13 +394,10 @@ public class EditProfileView extends HorizontalLayout {
     }
 
     private int calculateAge(LocalDate birthDate) {
-        if ((birthDate != null)) {
+        if (birthDate != null) {
             return Period.between(birthDate, LocalDate.now()).getYears();
         } else {
             return 0;
         }
     }
-
-
-
 }
