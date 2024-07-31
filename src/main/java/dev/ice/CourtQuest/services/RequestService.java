@@ -53,4 +53,8 @@ public class RequestService {
     public void deleteRequest(Request request) {
         requestRepository.delete(request);
     }
+
+    public void deleteRequestById(Request request) {
+        requestRepository.deleteById(request.getRequestId());
+    }
 }

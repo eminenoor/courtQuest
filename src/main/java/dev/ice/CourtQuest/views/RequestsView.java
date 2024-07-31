@@ -141,7 +141,8 @@ public class RequestsView extends HorizontalLayout {
             PlayerCardRequest playerCard = new PlayerCardRequest(player.getUser_id(), player.getFirst_name(), player.getDepartment(), player.getGender(), player.getAge(), player.getRating(), 4.5);
             playerCard.getAcceptButton().addClickListener(e -> {
                 if (activity.getQuota() > activity.getParticipants().size()) {
-                    activityService.acceptUser(activity, player);
+                    //activityService.acceptUser(activity, player);
+                    activityService.addParticipant(activity.getActivityId(), player.getUser_id());
                     notificationService.createNotification(
                             player.getUser_id(),
                             "your request to join the activity has been accepted",
@@ -151,7 +152,8 @@ public class RequestsView extends HorizontalLayout {
                             activity.getTime(),
                             activity.getPlace()
                     );
-                    requestService.deleteRequest(request);
+                    //requestService.deleteRequest(request);
+                    requestService.deleteRequestById(request);
                     requestCardsLayout.remove(activityWithPlayersLayout);
                     Notification.show("Player added to activity.");
                 } else {
