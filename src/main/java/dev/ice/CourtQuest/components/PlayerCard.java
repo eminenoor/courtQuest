@@ -10,6 +10,10 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.server.StreamResource;
+import dev.ice.CourtQuest.views.MyProfileView;
+
+import java.io.ByteArrayInputStream;
 
 public class PlayerCard extends VerticalLayout implements Comparable<PlayerCard> {
 
@@ -24,13 +28,25 @@ public class PlayerCard extends VerticalLayout implements Comparable<PlayerCard>
     private HorizontalLayout generalRatingLayout;
     private Button nameButton;
     private Long userId;
+    private Avatar avatar;
 
-    public PlayerCard(Long userId, String name, String department, String gender, int age, double selfRating, double generalRating) {
-//        this.avatar = new Avatar(name);
-//        this.avatar.setImage(avatarUrl);
+    public PlayerCard(Long userId, byte[] avatarData, String name, String department, String gender, int age, double selfRating, double generalRating) {
+
         this.userId = userId;
         this.name = new Span(name);
         this.name.getElement().getStyle().set("font-weight", "bold").set("color", "white");
+        this.avatar = new Avatar();
+        if(avatarData != null) {
+            StreamResource resource = new StreamResource("avatar", () -> new ByteArrayInputStream(avatarData));
+            this.avatar.setImageResource(resource);
+        }else{
+            this.avatar.setName(name);
+        }
+        this.department = new Span(department);
+        this.selfRating = selfRating;
+        this.generalRating = generalRating;
+        setGender(gender);
+
         this.nameButton = new Button(name);
         this.nameButton.getStyle().setBackgroundColor("#5566c3");
         this.nameButton.getElement().getStyle().set("font-weight", "bold").set("color", "white");
@@ -40,25 +56,20 @@ public class PlayerCard extends VerticalLayout implements Comparable<PlayerCard>
 
         this.nameButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("user_profile/" + userId)));
 
-        this.department = new Span(department);
         this.department.getElement().getStyle().set("font-weight", "bold");
         this.age = new Span(String.valueOf(age));
         this.age.getElement().getStyle().set("font-weight", "bold");
-
-        this.selfRating = selfRating;
-        this.generalRating = generalRating;
 
         this.selfRatingLayout = createRatingLayout(selfRating, false);
         this.generalRatingLayout = createRatingLayout(generalRating, true);
 
         Span selfRatingSpan = new Span("Self Rating:");
 
-        setGender(gender);
         this.gender.getElement().getStyle().set("font-weight", "bold");
 
-//        avatar.getElement().getStyle().setWidth("100px");
-//        avatar.getElement().getStyle().setHeight("100px");
-//        avatar.getElement().getStyle().set("color", "white");
+        avatar.getElement().getStyle().setWidth("100px");
+        avatar.getElement().getStyle().setHeight("100px");
+        avatar.getElement().getStyle().set("color", "white");
 
         HorizontalLayout infoLayout = new HorizontalLayout();
         infoLayout.add(this.department, this.gender, this.age);
@@ -74,7 +85,7 @@ public class PlayerCard extends VerticalLayout implements Comparable<PlayerCard>
         line.setWidth("80%");
         line.getStyle().set("background-color", "white");
 
-        add(this.nameButton, line, infoLayout,
+        add(this.avatar, this.nameButton, line, infoLayout,
                 new Span("Personal Rating:"), this.selfRatingLayout,
                 new Span("General Rating:"), this.generalRatingLayout);
 

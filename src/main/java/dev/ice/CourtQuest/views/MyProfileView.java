@@ -13,9 +13,15 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.server.StreamResource;
 import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
+
+import java.io.ByteArrayInputStream;
+import java.util.Base64;
+
+import java.time.LocalDate;
 
 @Route("profile")
 @PermitAll
@@ -121,7 +127,13 @@ public class MyProfileView extends HorizontalLayout {
         Span emailValueSpan = new Span(emailValue);
         emailValueSpan.getElement().getStyle().set("font-size", "24px");
 
-        avatar = new Avatar(nameValue.getText());
+        if(user.getAvatar() == null){
+            avatar = new Avatar(nameValue.getText());
+        }else{
+            StreamResource resource = new StreamResource("avatar", () -> new ByteArrayInputStream(user.getAvatar()));
+            avatar = new Avatar();
+            avatar.setImageResource(resource);
+        }
         avatar.setWidth("150px");
         avatar.setHeight("150px");
         avatar.getElement().getStyle().set("margin-top", "0");
@@ -294,8 +306,8 @@ public class MyProfileView extends HorizontalLayout {
         return span;
     }
 
-    public String getAvatar() {
-        return avatar.getImage();
+    public Avatar getAvatar() {
+        return avatar;
     }
 
     public String getAgeValue() {
@@ -307,7 +319,13 @@ public class MyProfileView extends HorizontalLayout {
     }
 
     public String getNameValue() {
-        return new String(nameValue.getText());
+        UserDB user = userService.getCurrentUser();
+        return user.getFirst_name();
+    }
+
+    public String getLastNameValue(){
+        UserDB user = userService.getCurrentUser();
+        return user.getLast_name();
     }
 
     public String getGenderValue() {
@@ -316,6 +334,11 @@ public class MyProfileView extends HorizontalLayout {
 
     public String getEmailValue() {
         return new String(emailValue.getText());
+    }
+
+    public String getBirthDate(){
+        UserDB user = userService.getCurrentUser();
+        return user.getBirth_date();
     }
 
     public void setNameValue(String nameValue) {

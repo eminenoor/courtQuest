@@ -84,6 +84,7 @@ public class UserService implements UserDetailsService {
             foundUser.setBirth_date(newUser.getBirth_date());
             foundUser.setDepartment(newUser.getDepartment());
             foundUser.setRating(newUser.getRating());
+            foundUser.setAvatar(newUser.getAvatar());
             return userRepository.save(foundUser);
         } else {
             return null;
@@ -140,4 +141,24 @@ public class UserService implements UserDetailsService {
         return currentUser;
     }
 
+
+    public List<UserDB> getAllExceptParticipants(Activity activity){
+        return null;
+    }
+
+    public UserDB editUser(Long user_id, UserDB newUser) {
+        Optional<UserDB> user = userRepository.findById(user_id);
+        if(user.isPresent()) {
+            UserDB foundUser = user.get();
+            foundUser.setFirst_name(newUser.getFirst_name());
+            foundUser.setLast_name(newUser.getLast_name());
+            foundUser.setAge(newUser.getAge());
+            foundUser.setBirth_date(newUser.getBirth_date());
+            foundUser.setDepartment(newUser.getDepartment());
+            foundUser.setAvatar(newUser.getAvatar());
+            return userRepository.save(foundUser);
+        } else {
+            return null;
+        }
+    }
 }

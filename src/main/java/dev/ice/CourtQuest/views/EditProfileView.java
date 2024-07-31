@@ -4,6 +4,7 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
@@ -18,6 +19,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.StreamResource;
+import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
 import com.vaadin.flow.component.upload.Upload;
@@ -25,16 +27,24 @@ import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.Period;
+
 @Route("edit-profile")
 @PermitAll
 public class EditProfileView extends HorizontalLayout {
 
     private TextField nameField;
-    private TextField ageField;
+    private TextField lastNameField;
+    private DatePicker birthDateField;
     private ComboBox<String> departmentField;
-    private EmailField emailField;
     private Avatar avatar;
     private UserService userService;
+    private UserDB currentUser;
+    private byte[] avatarData;
     MyProfileView profile;
 
     @Autowired
@@ -99,34 +109,62 @@ public class EditProfileView extends HorizontalLayout {
 
         iconBar.add(groupIcon, calendarIcon, envelopeIcon, checkIcon, plusIcon, starIcon);
 
-        avatar = new Avatar(profile.getNameValue());
-        //avatar.setImageResource(new StreamResource("avatar.png", () -> getClass().getResourceAsStream("/images/avatar.png")));
-        avatar.setWidth("150px");
-        avatar.setHeight("150px");
+        avatar = new Avatar();
+        if(profile.getAvatar().getImage() != null){
+            avatar.setImageResource(profile.getAvatar().getImageResource());
+        }else{
+            avatar.setName(profile.getNameValue() + " " + profile.getLastNameValue());
+        }
+        avatar.setWidth("120px");
+        avatar.setHeight("120px");
 
         MemoryBuffer buffer = new MemoryBuffer();
         Upload upload = new Upload(buffer);
-        //upload.setAcceptedFileTypes("image/jpeg", "image/png", "image/gif");
-        upload.setUploadButton(new Button("Upload Avatar"));
+        upload.setAcceptedFileTypes("image/jpeg", "image/png");
+        Button uploadButton = new Button("Upload Image");
+        upload.setUploadButton(uploadButton);
         upload.setDropAllowed(false);
         upload.addSucceededListener(event -> {
-            StreamResource resource = new StreamResource(event.getFileName(), buffer::getInputStream);
-            avatar.setImageResource(resource);
+            try (InputStream inputStream = buffer.getInputStream()) {
+                avatarData = inputStream.readAllBytes();
+                StreamResource resource = new StreamResource(event.getFileName(), () -> buffer.getInputStream());
+                avatar.setImageResource(resource);
+            } catch (IOException ex) {
+                Notification.show("Error uploading image: " + ex.getMessage());
+            }
         });
         upload.addFileRemovedListener(event -> {
-            avatar.setImage(profile.getAvatar());
+            avatar.setImageResource(profile.getAvatar().getImageResource());
+            avatarData = null;
         });
-        upload.getStyle().setFontSize("10px");
-        upload.getUploadButton().getStyle().setWidth("150px");
+        uploadButton.getStyle().set("font-size", "12px");
+        upload.getUploadButton().getStyle().setWidth("120px");
         upload.getUploadButton().getStyle().setHeight("auto");
+
+        Icon redCrossIcon = VaadinIcon.CLOSE.create();
+        redCrossIcon.getElement().getStyle().set("color", "red");
+        Button deleteAvatarButton = new Button(redCrossIcon);
+        deleteAvatarButton.getStyle().setWidth("5px");
+        deleteAvatarButton.getStyle().setHeight("5px");
+        deleteAvatarButton.getStyle().setBackgroundColor("white");
+        deleteAvatarButton.addClickListener(e -> {
+            avatar.setImage(null);
+            avatar.setName(profile.getNameValue() + " " + profile.getLastNameValue());
+            avatarData = null;;
+        });
 
         nameField = new TextField("Name");
         nameField.setValue(profile.getNameValue());
         nameField.setWidthFull();
 
-        ageField = new TextField("Age");
-        ageField.setValue(profile.getAgeValue());
-        ageField.setWidthFull();
+        lastNameField = new TextField("Last Name");
+        lastNameField.setValue(profile.getLastNameValue());
+        lastNameField.setWidthFull();
+
+        birthDateField = new DatePicker("Birthday");
+        birthDateField.setValue(LocalDate.parse(profile.getBirthDate()));
+        birthDateField.setWidthFull();
+        birthDateField.setMax(LocalDate.now());
 
         String[] departments = {
                 "AMER",  // American Culture and Literature
@@ -163,24 +201,37 @@ public class EditProfileView extends HorizontalLayout {
         departmentField.setValue(profile.getDepartmentValue());
         departmentField.setWidthFull();
 
-        emailField = new EmailField("Email");
-        emailField.setValue(profile.getEmailValue());
-        emailField.setWidthFull();
+        Div avatarContainer = new Div();
+        deleteAvatarButton.getElement().getStyle().set("position", "absolute");
+        deleteAvatarButton.getElement().getStyle().set("bottom", "0");
+        deleteAvatarButton.getElement().getStyle().set("right", "0");
+        avatarContainer.getElement().getStyle().set("position", "relative");
+        //avatarContainer.getElement().getStyle().set("display", "inline-block");
+        avatarContainer.add(avatar, deleteAvatarButton);
+
+        VerticalLayout avatarLayout = new VerticalLayout(avatarContainer, upload);
+        avatarLayout.setAlignItems(FlexComponent.Alignment.START);
+        avatarLayout.getStyle().set("padding-left", "10px");
+        avatarLayout.setPadding(false);
+
+        VerticalLayout personalInformationLayout = new VerticalLayout(nameField, lastNameField, birthDateField, departmentField);
+        personalInformationLayout.setAlignItems(FlexComponent.Alignment.START);
+        personalInformationLayout.setSpacing(false);
+        personalInformationLayout.setPadding(true);
 
         VerticalLayout profileDetails = new VerticalLayout(
-                avatar,
-                upload,
-                nameField,
-                ageField,
-                departmentField,
-                emailField
+                avatarLayout,
+                personalInformationLayout
         );
 
         profileDetails.setAlignItems(FlexComponent.Alignment.START);
         profileDetails.setSpacing(false);
-        profileDetails.getStyle().set("padding", "10px");
+        profileDetails.setPadding(false);
+        profileDetails.getStyle().set("gap", "0px");
         profileDetails.getStyle().set("max-width", "300px");
         profileDetails.getStyle().set("margin-right", "100px");
+
+        avatarLayout.getStyle().set("margin-bottom", "0px");
 
         // Ratings
         H1 personalRatingsTitle = new H1("Personal Ratings");
@@ -231,9 +282,11 @@ public class EditProfileView extends HorizontalLayout {
         buttonLayout.getStyle().set("transform", "translateX(-50%)");
 
         VerticalLayout mainContent = new VerticalLayout(headerLayout, profileAndRatings);
+        profileAndRatings.getStyle().set("margin-top", "0px");
+        headerLayout.getStyle().set("margin-bottom", "0px");
         mainContent.setWidthFull();
         mainContent.setAlignItems(FlexComponent.Alignment.START);
-        mainContent.setSpacing(true);
+        mainContent.setSpacing(false);
         mainContent.getStyle().set("position", "relative");
 
         add(iconBar, mainContent, buttonLayout);
@@ -281,29 +334,52 @@ public class EditProfileView extends HorizontalLayout {
     private void saveChanges() {
         boolean changesMade = false;
 
-        if (!nameField.getValue().equals(profile.getNameValue())) {
-            profile.setNameValue(nameField.getValue());
+        UserDB currentUser = userService.getCurrentUser();
+
+        if (nameField.getValue() != null && !nameField.getValue().equals(currentUser.getFirst_name())) {
+            currentUser.setFirst_name(nameField.getValue());
             changesMade = true;
         }
-        if (!ageField.getValue().equals(profile.getAgeValue())) {
-            profile.setAgeValue(ageField.getValue());
+
+        if (lastNameField.getValue() != null && !lastNameField.getValue().equals(currentUser.getLast_name())) {
+            currentUser.setLast_name(lastNameField.getValue());
             changesMade = true;
         }
-        if (!departmentField.getValue().equals(profile.getDepartmentValue())) {
-            profile.setDepartmentValue(departmentField.getValue());
+
+        if(birthDateField.getValue() != null && !birthDateField.getValue().toString().equals(currentUser.getBirth_date())) {
+            currentUser.setBirth_date(birthDateField.getValue().toString());
+            currentUser.setAge(calculateAge(birthDateField.getValue()));
             changesMade = true;
         }
-        if (!emailField.getValue().equals(profile.getEmailValue())) {
-            profile.setEmailValue(emailField.getValue());
+
+        if (departmentField.getValue() != null && !departmentField.getValue().equals(currentUser.getDepartment())) {
+            currentUser.setDepartment(departmentField.getValue());
+            changesMade = true;
+        }
+
+        if(avatar != profile.getAvatar()){
+            currentUser.setAvatar(avatarData);
             changesMade = true;
         }
 
         if (changesMade) {
-            Notification.show("Changes saved successfully!", 3000, Notification.Position.MIDDLE)
+            userService.editUser(currentUser.getUser_id(), currentUser);
+            Notification.show("Changes saved successfully!", 2000, Notification.Position.MIDDLE)
                     .addOpenedChangeListener(e -> getUI().ifPresent(ui -> ui.navigate("profile")));
         } else {
-            Notification.show("No Changes Made!", 3000, Notification.Position.MIDDLE)
+            Notification.show("No Changes Made!", 2000, Notification.Position.MIDDLE)
                     .addOpenedChangeListener(e -> getUI().ifPresent(ui -> ui.navigate("profile")));
         }
     }
+
+    private int calculateAge(LocalDate birthDate) {
+        if ((birthDate != null)) {
+            return Period.between(birthDate, LocalDate.now()).getYears();
+        } else {
+            return 0;
+        }
+    }
+
+
+
 }

@@ -24,6 +24,9 @@ public class UserDB {
     private String last_name;
     private String password;
     private Double rating;
+    @Lob
+    @Column(name = "avatar", columnDefinition = "MEDIUMBLOB")
+    private byte[] avatar;
 
     public Long getUser_id() {
         return user_id;
@@ -98,15 +101,23 @@ public class UserDB {
     }
 
 
-    /*
-    @ManyToMany
-    @JoinTable(
-            name = "user_activities",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "activity_id"))
-    private Set<Activity> activities = new HashSet<>();
+    public byte[] getAvatar() {
+        return avatar;
+    }
 
-     */
+    public void setAvatar(byte[] avatar) {
+        this.avatar = avatar;
+    }
+
+    /*
+        @ManyToMany
+        @JoinTable(
+                name = "user_activities",
+                joinColumns = @JoinColumn(name = "user_id"),
+                inverseJoinColumns = @JoinColumn(name = "activity_id"))
+        private Set<Activity> activities = new HashSet<>();
+
+         */
     @ManyToMany(mappedBy = "participants", fetch = FetchType.EAGER)
     private Set<Activity> activities = new HashSet<>();
 
