@@ -75,7 +75,6 @@ public class GeneralActivityCard extends VerticalLayout {
         timeLayout = new HorizontalLayout(timeLabel, timeValue);
         quotaLayout = new HorizontalLayout(quotaLabel, quotaValue);
 
-        // Adjust the margins to ensure equal spacing
         placeLayout.getStyle().set("margin-bottom", "10px");
         dateLayout.getStyle().set("margin-bottom", "10px");
         timeLayout.getStyle().set("margin-bottom", "5px");
@@ -113,17 +112,15 @@ public class GeneralActivityCard extends VerticalLayout {
         timeLayout = new HorizontalLayout(timeLabel, timeValue);
         quotaLayout = new HorizontalLayout(quotaLabel, quotaValue);
 
-        // Adjust the margins to ensure equal spacing
         sportLayout.getStyle().set("margin-bottom", "10px");
         placeLayout.getStyle().set("margin-bottom", "10px");
         dateLayout.getStyle().set("margin-bottom", "10px");
-        timeLayout.getStyle().set("margin-bottom", "10px");
-        quotaLayout.getStyle().set("margin-bottom", "10px");
+        timeLayout.getStyle().set("margin-bottom", "5px");
 
         detailsLayout = new VerticalLayout(sportLayout, placeLayout, dateLayout, timeLayout, quotaLayout);
         detailsLayout.setSpacing(false);
         detailsLayout.setPadding(false);
-        detailsLayout.getStyle().set("gap", "5px"); // Ensure equal spacing
+        detailsLayout.getStyle().set("gap", "5px");
     }
 
     public void finalizeLayout() {

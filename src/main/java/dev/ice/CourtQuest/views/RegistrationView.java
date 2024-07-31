@@ -4,8 +4,8 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -15,10 +15,10 @@ import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import dev.ice.CourtQuest.controllers.UserController;
 import dev.ice.CourtQuest.entities.UserDB;
-
 
 import java.time.LocalDate;
 
@@ -44,6 +44,8 @@ public class RegistrationView extends VerticalLayout {
         TextField department = new TextField("Department");
         RadioButtonGroup<String> gender = new RadioButtonGroup<>();
         EmailField email = new EmailField("Email Address");
+        email.setValue((String) VaadinSession.getCurrent().getAttribute("email"));
+        email.setReadOnly(true);
         PasswordField passwordField = new PasswordField("Password");
         Button registerButton = new Button("Register");
 
@@ -70,36 +72,21 @@ public class RegistrationView extends VerticalLayout {
         buttonLayout.add(registerButton);
 
         registerButton.addClickListener(e -> {
-            if (validateForm(firstName, lastName, birthday, department, gender, email, passwordField)) {
+            if (validateForm(firstName, lastName, birthday, department, gender, passwordField)) {
                 try {
                     String emailValue = email.getValue();
-                    String email1 = email.getValue();
                     if (emailValue.contains("ug.bilkent.edu.tr")) {
-                        UserDB existingUser = userController.findUserByEmail(emailValue);
-                        if (existingUser != null) {
-                            existingUser.setFirst_name(firstName.getValue());
-                            existingUser.setLast_name(lastName.getValue());
-                            existingUser.setBirth_date(birthday.getValue().toString());
-                            existingUser.setDepartment(department.getValue());
-                            existingUser.setGender(gender.getValue());
-                            existingUser.setPassword(passwordField.getValue());
-                            existingUser.setAge(LocalDate.now().getYear() - birthday.getValue().getYear());
-                            userController.updateUser(existingUser.getUser_id(), existingUser);
-                            Notification.show("User updated successfully!");
-                        } else {
-                            UserDB newUser = new UserDB();
-                            newUser.setFirst_name(firstName.getValue());
-                            newUser.setLast_name(lastName.getValue());
-                            newUser.setBirth_date(birthday.getValue().toString());
-                            newUser.setDepartment(department.getValue());
-                            newUser.setGender(gender.getValue());
-                            newUser.setEmail(email.getValue());
-                            newUser.setPassword(passwordField.getValue());
-                            newUser.setAge(LocalDate.now().getYear() - birthday.getValue().getYear());
-                            newUser.setRating(0.0);
-                            userController.createUser(newUser);
-                            Notification.show("Registration successful!");
-                        }
+                        UserDB newUser = new UserDB();
+                        newUser.setFirst_name(firstName.getValue());
+                        newUser.setLast_name(lastName.getValue());
+                        newUser.setBirth_date(birthday.getValue().toString());
+                        newUser.setDepartment(department.getValue());
+                        newUser.setGender(gender.getValue());
+                        newUser.setPassword(passwordField.getValue());
+                        newUser.setAge(LocalDate.now().getYear() - birthday.getValue().getYear());
+                        newUser.setRating(0.0);
+                        userController.createUser(newUser);
+                        Notification.show("Registration successful!");
                         getUI().ifPresent(ui -> ui.navigate("login"));
                     } else {
                         Notification.show("You should register with your Bilkent email!");
@@ -118,9 +105,9 @@ public class RegistrationView extends VerticalLayout {
 
         VerticalLayout formContainer = new VerticalLayout(headerLayout, formLayout, buttonLayout);
         formContainer.setAlignItems(Alignment.START);
-        formContainer.setWidth("600px"); // Set a max-width for the form container
+        formContainer.setWidth("600px");
         formContainer.setPadding(false);
-        formContainer.getStyle().set("margin", "0 auto"); // Center the form container horizontally
+        formContainer.getStyle().set("margin", "0 auto");
 
         add(formContainer);
         setAlignItems(Alignment.CENTER);
@@ -128,7 +115,7 @@ public class RegistrationView extends VerticalLayout {
         setSizeFull();
     }
 
-    private boolean validateForm(TextField firstName, TextField lastName, DatePicker birthday, TextField department, RadioButtonGroup<String> gender, EmailField email, PasswordField passwordField) {
+    private boolean validateForm(TextField firstName, TextField lastName, DatePicker birthday, TextField department, RadioButtonGroup<String> gender, PasswordField passwordField) {
         boolean isValid = true;
         if (firstName.isEmpty()) {
             firstName.setErrorMessage("First name is required");
@@ -153,11 +140,6 @@ public class RegistrationView extends VerticalLayout {
         if (gender.isEmpty()) {
             gender.setErrorMessage("Gender is required");
             gender.setInvalid(true);
-            isValid = false;
-        }
-        if (email.isEmpty()) {
-            email.setErrorMessage("Email is required");
-            email.setInvalid(true);
             isValid = false;
         }
         if (passwordField.isEmpty()) {
