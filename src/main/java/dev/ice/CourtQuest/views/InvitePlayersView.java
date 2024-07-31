@@ -150,6 +150,8 @@ public class InvitePlayersView extends HorizontalLayout implements BeforeEnterOb
 
     private void displayPlayers() {
         List<UserDB> allUsers = userService.getAllUsers();
+        UserDB current = userService.getCurrentUser();
+        allUsers.remove(current);
         playerContainer.removeAll();
         for (UserDB user : allUsers) {
             PlayerCardInvite playerCard = new PlayerCardInvite(user.getUser_id(), user.getAvatar(), user.getFirst_name() + " " + user.getLast_name(), user.getDepartment(), user.getGender(), user.getAge(), user.getRating(), user.getRating());

@@ -116,6 +116,11 @@ public class CurrentActivitiesView extends HorizontalLayout {
         activityLayout.setSpacing(true);
 
         List<Activity> publicActivities = activityService.getPublicActivities();
+        List<Activity> myActivities = activityService.getMyActivities();
+        for(int i = 0; i < myActivities.size(); i++) {
+            publicActivities.remove(myActivities.get(i));
+        }
+
         for (Activity activity : publicActivities) {
             ActivityCard activityCard = new ActivityCard(
                     activity.getName(),

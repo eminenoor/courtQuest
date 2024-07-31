@@ -50,7 +50,7 @@ public class InvitationService {
             invitation.setStatus("Pending");
             invitationRepository.save(invitation);
 
-            String message = "you have a new invitation from " + sender.getFirst_name();
+            String message = "You have a new invitation from " + sender.getFirst_name();
             notificationService.createNotification(recipientId, message, "INVITATION",
                     activity.getName(), activity.getDate(), activity.getTime(), activity.getPlace());
 
@@ -74,7 +74,7 @@ public class InvitationService {
             invitation.setStatus(status);
             invitationRepository.save(invitation);
 
-            String message = "your invitation has been " + status.toLowerCase();
+            String message = "Your invitation has been " + status.toLowerCase();
             notificationService.createNotification(invitation.getSender().getUser_id(), message, "INVITATION_RESPONSE",
                     invitation.getActivity().getName(), invitation.getActivity().getDate(), invitation.getActivity().getTime(), invitation.getActivity().getPlace());
 
@@ -94,7 +94,7 @@ public class InvitationService {
                     activityService.addParticipant(activity.getActivityId(), user.getUser_id());
                 }
                 invitationRepository.deleteById(invitationId);
-                String message = "your invitation has been " + response.toLowerCase();
+                String message = "Your invitation has been " + response.toLowerCase();
                 notificationService.createNotification(invitation.getSender().getUser_id(), message, "INVITATION_RESPONSE",
                         activity.getName(), activity.getDate(), activity.getTime(), activity.getPlace());
             } else {
