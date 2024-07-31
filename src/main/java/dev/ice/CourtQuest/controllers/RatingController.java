@@ -17,14 +17,17 @@ public class RatingController {
     @Autowired
     private RatingService ratingService;
 
+    /*
     @PostMapping
     public Rating rateUser(@RequestParam Long ratingUserId, @RequestParam Long ratedUserId, @RequestParam Double rating) {
         return ratingService.rateUser(ratingUserId, ratedUserId, rating);
     }
 
+
     @GetMapping("/user/{userId}")
     public List<Rating> getRatingsForUser(@PathVariable Long userId) {
         return ratingService.getRatingsForUser(userId);
     }
+     */
 }
 

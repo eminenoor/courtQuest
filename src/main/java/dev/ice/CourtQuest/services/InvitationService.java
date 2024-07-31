@@ -5,6 +5,7 @@ import dev.ice.CourtQuest.entities.Invitation;
 import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.repos.ActivityRepository;
 import dev.ice.CourtQuest.repos.InvitationRepository;
+import dev.ice.CourtQuest.repos.NotificationRepository;
 import dev.ice.CourtQuest.repos.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -32,6 +33,9 @@ public class InvitationService {
     @Autowired
     private ActivityService activityService;
 
+    @Autowired
+    private NotificationRepository notificationRepository;
+
     @Transactional
     public Invitation sendInvitation(Long senderId, Long recipientId, Long activityId) {
         UserDB sender = userRepository.findById(senderId).orElse(null);
@@ -46,7 +50,9 @@ public class InvitationService {
             invitation.setStatus("Pending");
             invitationRepository.save(invitation);
 
-            // notificationService.createNotification(recipientId, "You have a new invitation from " + sender.getFirst_name(), "INVITATION");
+            String message = "you have a new invitation from " + sender.getFirst_name();
+            notificationService.createNotification(recipientId, message, "INVITATION",
+                    activity.getName(), activity.getDate(), activity.getTime(), activity.getPlace());
 
             return invitation;
         }
@@ -68,7 +74,9 @@ public class InvitationService {
             invitation.setStatus(status);
             invitationRepository.save(invitation);
 
-            notificationService.createNotification(invitation.getSender().getUser_id(), "Your invitation has been " + status.toLowerCase(), "INVITATION_RESPONSE");
+            String message = "your invitation has been " + status.toLowerCase();
+            notificationService.createNotification(invitation.getSender().getUser_id(), message, "INVITATION_RESPONSE",
+                    invitation.getActivity().getName(), invitation.getActivity().getDate(), invitation.getActivity().getTime(), invitation.getActivity().getPlace());
 
             return invitation;
         }).orElse(null);
@@ -86,6 +94,9 @@ public class InvitationService {
                     activityService.addParticipant(activity.getActivityId(), user.getUser_id());
                 }
                 invitationRepository.deleteById(invitationId);
+                String message = "your invitation has been " + response.toLowerCase();
+                notificationService.createNotification(invitation.getSender().getUser_id(), message, "INVITATION_RESPONSE",
+                        activity.getName(), activity.getDate(), activity.getTime(), activity.getPlace());
             } else {
                 System.out.println("Invitation with ID " + invitationId + " not found.");
             }

@@ -8,6 +8,7 @@ import dev.ice.CourtQuest.repos.RequestRepository;
 import dev.ice.CourtQuest.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -48,4 +49,12 @@ public class RequestService {
         }
     }
 
+    @Transactional
+    public void deleteRequest(Request request) {
+        requestRepository.delete(request);
+    }
+
+    public void deleteRequestById(Request request) {
+        requestRepository.deleteById(request.getRequestId());
+    }
 }

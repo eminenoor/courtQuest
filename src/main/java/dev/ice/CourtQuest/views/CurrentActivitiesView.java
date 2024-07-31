@@ -4,6 +4,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -11,7 +12,11 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import dev.ice.CourtQuest.components.ActivityCard;
 import dev.ice.CourtQuest.entities.Activity;
+import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.services.ActivityService;
+import dev.ice.CourtQuest.services.NotificationService;
+import dev.ice.CourtQuest.services.RequestService;
+import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,9 +28,18 @@ public class CurrentActivitiesView extends HorizontalLayout {
 
     @Autowired
     private ActivityService activityService;
+    @Autowired
+    private RequestService requestService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private NotificationService notificationService;
 
-    public CurrentActivitiesView(ActivityService activityService) {
+
+    public CurrentActivitiesView(ActivityService activityService, UserService userService, RequestService requestService) {        this.activityService = activityService;
         this.activityService = activityService;
+        this.userService = userService;
+        this.requestService = requestService;
 
         H1 currentActivitiesTitle = new H1("Current Activities");
 
@@ -112,6 +126,21 @@ public class CurrentActivitiesView extends HorizontalLayout {
                     activity.getStatus().equalsIgnoreCase("public")
             );
             activityCard.getPlayersButton().addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("players/" + activity.getActivityId())));
+            activityCard.getJoinButton().addClickListener(e -> {
+                UserDB user = userService.getCurrentUser();
+                requestService.joinActivity(user.getUser_id(), activity.getCreator().getUser_id(), activity.getActivityId());
+                Notification.show("Your Join request has been sent.");
+                String message = user.getFirst_name() + " wants to join your activity.";
+                notificationService.createNotification(
+                        activity.getCreator().getUser_id(),
+                        message,
+                        "join request",
+                        activity.getName(),
+                        activity.getDate(),
+                        activity.getTime(),
+                        activity.getPlace()
+                );
+            });
             activityLayout.add(activityCard);
         }
 

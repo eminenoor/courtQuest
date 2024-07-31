@@ -9,7 +9,7 @@ import java.util.*;
 @Entity
 @Table(name="user")
 @Data
-@EqualsAndHashCode(exclude = {"activities", "receivedRequests", "createdActivities", "receivedInvitations"})
+@EqualsAndHashCode(exclude = {"activities", "receivedRequests", "createdActivities", "receivedInvitations", "receivedRatings"})
 public class UserDB {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -100,13 +100,6 @@ public class UserDB {
         this.password = password;
     }
 
-    public Double getRating() {
-        return rating;
-    }
-
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
 
     public byte[] getAvatar() {
         return avatar;
@@ -132,6 +125,10 @@ public class UserDB {
         activities.add(activity);
     }
 
+    public void removeActivity(Activity activity){
+        activities.remove(activity);
+    }
+
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Request> receivedRequests = new HashSet<>();
 
@@ -149,6 +146,8 @@ public class UserDB {
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<Activity> createdActivities = new HashSet<>();
 
+    @OneToOne(mappedBy = "ratedUser", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Rating receivedRatings;
 
     /*
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -159,9 +158,6 @@ public class UserDB {
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Invitation> sentInvitations = new HashSet<>();
-
-    @OneToMany(mappedBy = "ratedUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Rating> receivedRatings = new HashSet<>();
 
     @OneToMany(mappedBy = "ratingUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Rating> givenRatings = new HashSet<>();

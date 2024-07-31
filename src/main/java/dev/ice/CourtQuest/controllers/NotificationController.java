@@ -5,6 +5,7 @@ import dev.ice.CourtQuest.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -15,8 +16,14 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @PostMapping
-    public Notification createNotification(@RequestParam Long userId, @RequestParam String message, @RequestParam String type) {
-        return notificationService.createNotification(userId, message, type);
+    public Notification createNotification(@RequestParam Long userId,
+                                           @RequestParam String message,
+                                           @RequestParam String type,
+                                           @RequestParam String activityName,
+                                           @RequestParam String activityDate,
+                                           @RequestParam String activityTime,
+                                           @RequestParam String activityPlace) {
+        return notificationService.createNotification(userId, message, type, activityName, activityDate, activityTime, activityPlace);
     }
 
     @GetMapping("/user/{userId}")

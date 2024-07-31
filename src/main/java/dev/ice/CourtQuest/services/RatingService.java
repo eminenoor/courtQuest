@@ -6,6 +6,7 @@ import dev.ice.CourtQuest.repos.RatingRepository;
 import dev.ice.CourtQuest.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class RatingService {
     @Autowired
     private UserRepository userRepository;
 
+    /*
     public Rating rateUser(Long ratingUserId, Long ratedUserId, Double ratingValue) {
         UserDB ratingUser = userRepository.findById(ratingUserId).orElse(null);
         UserDB ratedUser = userRepository.findById(ratedUserId).orElse(null);
@@ -31,12 +33,18 @@ public class RatingService {
         }
         return null;
     }
+     */
 
-    public List<Rating> getRatingsForUser(Long ratedUserId) {
+    public Rating getRatingsForUser(Long ratedUserId) {
         UserDB ratedUser = userRepository.findById(ratedUserId).orElse(null);
         if (ratedUser != null) {
             return ratingRepository.findByRatedUser(ratedUser);
         }
         return null;
+    }
+
+    @Transactional
+    public void saveRating(Rating rating){
+        ratingRepository.save(rating);
     }
 }

@@ -20,13 +20,17 @@ public class NotificationService {
     @Autowired
     private UserRepository userRepository;
 
-    public Notification createNotification(Long userId, String message, String type) {
+    public Notification createNotification(Long userId, String message, String type, String activityName, String activityDate, String activityTime, String activityPlace) {
         UserDB user = userRepository.findById(userId).orElse(null);
         if (user != null) {
             Notification notification = new Notification();
             notification.setUser(user);
             notification.setMessage(message);
             notification.setType(type);
+            notification.setActivityName(activityName);
+            notification.setActivityDate(activityDate);
+            notification.setActivityTime(activityTime);
+            notification.setActivityPlace(activityPlace);
             notification.setCreatedDate(new Date());
             return notificationRepository.save(notification);
         }

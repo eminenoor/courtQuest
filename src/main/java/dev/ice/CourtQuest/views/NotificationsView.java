@@ -9,13 +9,32 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import dev.ice.CourtQuest.components.NotificationsCard;
+import dev.ice.CourtQuest.controllers.NotificationController;
+import dev.ice.CourtQuest.entities.Notification;
+import dev.ice.CourtQuest.entities.UserDB;
+import dev.ice.CourtQuest.services.NotificationService;
+import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.List;
 
 @Route("notifications")
 @PermitAll
 public class NotificationsView extends HorizontalLayout {
 
-    public NotificationsView() {
+    private NotificationController notificationController;
+    private UserService userService;
+    private Long currentUserId;
+
+    @Autowired
+    public NotificationsView(NotificationController notificationController, UserService userService) {
+        this.notificationController = notificationController;
+        this.userService = userService;
+
         H1 currentActivitiesTitle = new H1("Notifications");
 
         RouterLink logoutLink = new RouterLink("Log out", LogoutView.class); // Assuming LogoutView is the class handling logout
@@ -80,10 +99,17 @@ public class NotificationsView extends HorizontalLayout {
         mainContent.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
         mainContent.getStyle().set("overflow", "auto");
 
-        mainContent.add(new NotificationsCard("Ilke", "has invited you to a game", "Volleyball", "12.07.2024", "15.00 - 17.00", "Dormitory Sports Hall"));
-        mainContent.add(new NotificationsCard("The team", "has accepted your request.", "Tennis", "13.07.2024", "13.00 - 14.00", "Dormitory Sports Hall"));
-        mainContent.add(new NotificationsCard("Emine", "wants to join your game.", "Football", "16.07.2024", "15.00 - 17.00", "Dormitory Sports Hall"));
-        mainContent.add(new NotificationsCard("The team", "has declined your request.", "Basketball", "13.07.2024", "10.00 - 12.30", "Main Sports Hall"));
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserDB currentUser = userService.findUserByEmail(username);
+        currentUserId = currentUser.getUser_id();
+
+        List<Notification> notifications = notificationController.getUserNotifications(currentUserId);
+        if (notifications != null) {
+            for (Notification notification : notifications) {
+                mainContent.add(new NotificationsCard(notification.getUser().getFirst_name(),
+                        notification.getMessage(), notification.getActivityName(), notification.getActivityDate(), notification.getActivityTime(), notification.getActivityPlace()));
+            }
+        }
 
         add(iconBar, mainContent);
         setAlignItems(Alignment.STRETCH);

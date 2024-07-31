@@ -1,10 +1,11 @@
 package dev.ice.CourtQuest.services;
 
-
 import dev.ice.CourtQuest.entities.Activity;
 import dev.ice.CourtQuest.repos.ActivityRepository;
 import dev.ice.CourtQuest.repos.UserRepository;
 import dev.ice.CourtQuest.entities.UserDB;
+import dev.ice.CourtQuest.entities.Request;
+import dev.ice.CourtQuest.repos.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,12 @@ public class ActivityService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private RequestRepository requestRepository;
+
     @Transactional
     public void addParticipant(Long activityId, Long userId) {
         Activity activity = activityRepository.findById(activityId).orElse(null);
@@ -33,16 +40,6 @@ public class ActivityService {
             }
         }
     }
-
-    /*
-    public Activity createActivity(Long userId, Activity activity) {
-        UserDB user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            return activityRepository.save(activity);
-        }
-        return null;
-    }
-     */
 
     public Activity createActivity(String name, String status, String place, String date, String time, int quota) {
         Activity activity = new Activity();
@@ -61,7 +58,6 @@ public class ActivityService {
         }
         return null;
     }
-
 
     @Transactional(readOnly = true)
     public Activity getActivity(Long activityId) {
@@ -87,9 +83,8 @@ public class ActivityService {
     public List<Activity> getUserActivities(Long userId) {
         UserDB user = userRepository.findById(userId).orElse(null);
         if (user != null) {
-            Set arr = user.getActivities();
-            List<Activity> activities = new ArrayList<>();
-            activities.addAll(arr);
+            Set<Activity> arr = user.getActivities();
+            List<Activity> activities = new ArrayList<>(arr);
             return activities;
         }
         return null;
@@ -98,9 +93,8 @@ public class ActivityService {
     public List<Activity> getMyActivities(){
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         UserDB currentUser = userRepository.findByEmailWithActivities(username);
-        Set activities = currentUser.getActivities();
-        List<Activity> activitiesList = new ArrayList<>();
-        activitiesList.addAll(activities);
+        Set<Activity> activities = currentUser.getActivities();
+        List<Activity> activitiesList = new ArrayList<>(activities);
         return activitiesList;
     }
 
@@ -130,9 +124,8 @@ public class ActivityService {
     }
 
     public void acceptUser(Activity activity, UserDB user) {
-        //Activity activity = activityRepository.findById(activityId).orElse(null);
-        //UserDB user = userRepository.findById(userId).orElse(null);
         activity.addParticipant(user);
+        user.addActivity(activity);
     }
 
     public List<Activity> getPublicActivities() {
@@ -156,5 +149,21 @@ public class ActivityService {
             return new ArrayList<>(participants);
         }
         return new ArrayList<>();
+    }
+
+    public void declineUser(Activity activity, UserDB player) {
+        activity.getParticipants().remove(player);
+    }
+
+    public void sendJoinRequestNotification(Activity activity, UserDB sender) {
+        notificationService.createNotification(
+                activity.getCreator().getUser_id(),
+                "You have a new request to join your activity",
+                "request",
+                activity.getName(),
+                activity.getDate(),
+                activity.getTime(),
+                activity.getPlace()
+        );
     }
 }
