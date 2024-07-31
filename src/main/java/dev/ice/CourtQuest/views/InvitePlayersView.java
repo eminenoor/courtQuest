@@ -16,8 +16,12 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import dev.ice.CourtQuest.components.PlayerCard;
 import dev.ice.CourtQuest.components.PlayerCardInvite;
+import dev.ice.CourtQuest.entities.Activity;
+import dev.ice.CourtQuest.entities.Rating;
 import dev.ice.CourtQuest.entities.UserDB;
+import dev.ice.CourtQuest.services.ActivityService;
 import dev.ice.CourtQuest.services.InvitationService;
 import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
@@ -34,13 +38,15 @@ public class InvitePlayersView extends HorizontalLayout implements BeforeEnterOb
     private Long activityId;
     private UserService userService;
     private InvitationService invitationService;
+    private ActivityService activityService;
 
     private Div playerContainer;
 
     @Autowired
-    public InvitePlayersView(UserService userService, InvitationService invitationService) {
+    public InvitePlayersView(UserService userService, InvitationService invitationService, ActivityService activityService) {
         this.userService = userService;
         this.invitationService = invitationService;
+        this.activityService = activityService;
 
         H1 profileTitle = new H1("Invite Players");
 
@@ -166,12 +172,35 @@ public class InvitePlayersView extends HorizontalLayout implements BeforeEnterOb
     public void search(String name) {
         playerContainer.removeAll();
         List<UserDB> allUsers = userService.getAllUsers();
+
+        Activity activity = activityService.getActivity(activityId);
+        double ratingGeneral = 0;
+        double ratingPersonal = 0;
+
         for (UserDB user : allUsers) {
+            Rating rating = user.getReceivedRatings();
+            if(activity.getName().equals("Volleyball")){
+                ratingGeneral = rating.getRatingVolleyball();
+                ratingPersonal = rating.getRatingVolleyballPersonal();
+            }
+            else if(activity.getName().equals("Football")){
+                ratingGeneral = rating.getRatingFootball();
+                ratingPersonal = rating.getRatingFootballPersonal();
+            }
+            else if(activity.getName().equals("Basketball")){
+                ratingGeneral = rating.getRatingBasketball();
+                ratingPersonal = rating.getRatingBasketballPersonal();
+            }
+            else if(activity.getName().equals("Tennis")){
+                ratingGeneral = rating.getRatingTennis();
+                ratingPersonal = rating.getRatingTennisPersonal();
+            }
             if ((user.getFirst_name() + " " + user.getLast_name()).toLowerCase().startsWith(name.toLowerCase())) {
-                PlayerCardInvite playerCard = new PlayerCardInvite(user.getUser_id(), user.getAvatar(), user.getFirst_name() + " " + user.getLast_name(), user.getDepartment(), user.getGender(), user.getAge(), user.getRating(), user.getRating());
+                PlayerCardInvite playerCard = new PlayerCardInvite(user.getUser_id(), user.getAvatar(), user.getFirst_name() + " " + user.getLast_name(), user.getDepartment(), user.getGender(), user.getAge(), ratingPersonal, ratingGeneral);
                 playerCard.getInviteButton().addClickListener(event -> sendInvitation(user.getUser_id()));
                 playerContainer.add(playerCard);
             }
         }
     }
+
 }

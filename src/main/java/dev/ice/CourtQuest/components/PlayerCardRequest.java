@@ -12,7 +12,6 @@ public class PlayerCardRequest extends PlayerCard{
         super(userId, avatarData, name, department, gender, age, selfRating, generalRating);
         //super(avatarURL, name, department, gender, age, selfRating, generalRating);
 
-
         acceptButton = new Button("Accept");
         declineButton = new Button("Decline");
 

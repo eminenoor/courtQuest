@@ -12,7 +12,9 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import dev.ice.CourtQuest.components.MyInvitationsCard;
 import dev.ice.CourtQuest.entities.Invitation;
+import dev.ice.CourtQuest.entities.Rating;
 import dev.ice.CourtQuest.entities.UserDB;
+import dev.ice.CourtQuest.entities.Activity;
 import dev.ice.CourtQuest.services.ActivityService;
 import dev.ice.CourtQuest.services.InvitationService;
 import dev.ice.CourtQuest.services.UserService;
@@ -116,6 +118,7 @@ public class MyInvitationsView extends HorizontalLayout {
         UserDB currentUser = userService.findUserByEmail(username);
         if (currentUser != null) {
             List<Invitation> invitations = invitationService.getUserInvitations(currentUser.getUser_id());
+
             for (Invitation invitation : invitations) {
                 MyInvitationsCard invitationCard = new MyInvitationsCard(
                         invitation.getSender().getFirst_name(),
@@ -130,7 +133,6 @@ public class MyInvitationsView extends HorizontalLayout {
                 );
 
                 invitationCard.getPlayersButton().addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("players/" + invitation.getActivity().getActivityId())));
-
 
                 invitationCard.getAcceptButton().addClickListener(event -> {
                     System.out.println("Accept button clicked for invitation ID: " + invitation.getInvitationId());

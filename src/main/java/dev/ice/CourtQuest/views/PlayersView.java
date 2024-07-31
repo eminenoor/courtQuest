@@ -14,6 +14,8 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
 import dev.ice.CourtQuest.components.PlayerCard;
 import dev.ice.CourtQuest.components.PlayerCardInvite;
+import dev.ice.CourtQuest.entities.Activity;
+import dev.ice.CourtQuest.entities.Rating;
 import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.services.ActivityService;
 import dev.ice.CourtQuest.services.UserService;
@@ -136,8 +138,29 @@ public class PlayersView extends HorizontalLayout implements BeforeEnterObserver
 
     private void displayPlayers() {
         List<UserDB> players = activityService.getUsersByActivityId(activityId);
+        Activity activity = activityService.getActivity(activityId);
+        double ratingGeneral = 0;
+        double ratingPersonal = 0;
+
         playerContainer.removeAll();
         for (UserDB player : players) {
+            Rating rating = player.getReceivedRatings();
+            if(activity.getName().equals("Volleyball")){
+                ratingGeneral = rating.getRatingVolleyball();
+                ratingPersonal = rating.getRatingVolleyballPersonal();
+            }
+            else if(activity.getName().equals("Football")){
+                ratingGeneral = rating.getRatingFootball();
+                ratingPersonal = rating.getRatingFootballPersonal();
+            }
+            else if(activity.getName().equals("Basketball")){
+                ratingGeneral = rating.getRatingBasketball();
+                ratingPersonal = rating.getRatingBasketballPersonal();
+            }
+            else if(activity.getName().equals("Tennis")){
+                ratingGeneral = rating.getRatingTennis();
+                ratingPersonal = rating.getRatingTennisPersonal();
+            }
             PlayerCard playerCard = new PlayerCard(
                     player.getUser_id(),
                     player.getAvatar(),
@@ -145,8 +168,8 @@ public class PlayersView extends HorizontalLayout implements BeforeEnterObserver
                     player.getDepartment(),
                     player.getGender(),
                     player.getAge(),
-                    player.getRating(),
-                    player.getRating()
+                    ratingPersonal,
+                    ratingGeneral
             );
             playerContainer.add(playerCard);
         }

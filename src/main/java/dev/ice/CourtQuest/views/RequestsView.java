@@ -13,6 +13,7 @@ import com.vaadin.flow.router.RouterLink;
 import dev.ice.CourtQuest.components.PlayerCardRequest;
 import dev.ice.CourtQuest.components.RequestActivityCard;
 import dev.ice.CourtQuest.entities.Activity;
+import dev.ice.CourtQuest.entities.Rating;
 import dev.ice.CourtQuest.entities.Request;
 import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.services.ActivityService;
@@ -137,8 +138,30 @@ public class RequestsView extends HorizontalLayout {
 
             VerticalLayout playersLayout = new VerticalLayout();
             playersLayout.setWidth("max-content");
+
+            // New added
             UserDB player = request.getSender();
-            PlayerCardRequest playerCard = new PlayerCardRequest(player.getUser_id(), player.getFirst_name(), player.getDepartment(), player.getGender(), player.getAge(), player.getRating(), 4.5);
+            double ratingGeneral = 0;
+            double ratingPersonal = 0;
+
+            Rating rating = player.getReceivedRatings();
+            if(activity.getName().equals("Volleyball")){
+                ratingGeneral = rating.getRatingVolleyball();
+                ratingPersonal = rating.getRatingVolleyballPersonal();
+            }
+            else if(activity.getName().equals("Football")){
+                ratingGeneral = rating.getRatingFootball();
+                ratingPersonal = rating.getRatingFootballPersonal();
+            }
+            else if(activity.getName().equals("Basketball")){
+                ratingGeneral = rating.getRatingBasketball();
+                ratingPersonal = rating.getRatingBasketballPersonal();
+            }
+            else if(activity.getName().equals("Tennis")){
+                ratingGeneral = rating.getRatingTennis();
+                ratingPersonal = rating.getRatingTennisPersonal();
+            }
+            PlayerCardRequest playerCard = new PlayerCardRequest(player.getUser_id(), player.getAvatar(), player.getFirst_name(), player.getDepartment(), player.getGender(), player.getAge(), ratingPersonal, ratingGeneral);
             playerCard.getAcceptButton().addClickListener(e -> {
                 if (activity.getQuota() > activity.getParticipants().size()) {
                     //activityService.acceptUser(activity, player);
