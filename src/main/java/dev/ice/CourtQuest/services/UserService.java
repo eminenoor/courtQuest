@@ -153,7 +153,6 @@ public class UserService implements UserDetailsService {
             foundUser.setFirst_name(newUser.getFirst_name());
             foundUser.setLast_name(newUser.getLast_name());
             foundUser.setAge(newUser.getAge());
-            foundUser.setReceivedRatings(newUser.getReceivedRatings());
             foundUser.setBirth_date(newUser.getBirth_date());
             foundUser.setDepartment(newUser.getDepartment());
             foundUser.setAvatar(newUser.getAvatar());
@@ -162,4 +161,17 @@ public class UserService implements UserDetailsService {
             return null;
         }
     }
+
+    public UserDB resetPassword(Long user_id, UserDB newUser) {
+        Optional<UserDB> user = userRepository.findById(user_id);
+        if(user.isPresent()) {
+            UserDB foundUser = user.get();
+            foundUser.setFirst_name(newUser.getFirst_name());
+            foundUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+            return userRepository.save(foundUser);
+        } else {
+            return null;
+        }
+    }
+
 }
