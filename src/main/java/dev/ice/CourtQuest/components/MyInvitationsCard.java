@@ -41,7 +41,7 @@ public class MyInvitationsCard extends GeneralActivityCard {
         inviterLayout.setWidthFull();
         inviterLayout.setJustifyContentMode(JustifyContentMode.START);
 
-        addDetails(place, date, time, quota);
+        addDetails(sportName, place, date, time, quota);
 
         playersButton = new Button("Players");
         playersButton.getStyle().set("background-color", "#1E3A8A");
