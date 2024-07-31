@@ -146,7 +146,7 @@ public class InvitePlayersView extends HorizontalLayout implements BeforeEnterOb
         List<UserDB> allUsers = userService.getAllUsers();
         playerContainer.removeAll();
         for (UserDB user : allUsers) {
-            PlayerCardInvite playerCard = new PlayerCardInvite(user.getUser_id(),user.getFirst_name() + " " + user.getLast_name(), user.getDepartment(), user.getGender(), user.getAge(), user.getRating(), user.getRating());
+            PlayerCardInvite playerCard = new PlayerCardInvite(user.getUser_id(), user.getAvatar(), user.getFirst_name() + " " + user.getLast_name(), user.getDepartment(), user.getGender(), user.getAge(), user.getRating(), user.getRating());
             playerCard.getInviteButton().addClickListener(event -> sendInvitation(user.getUser_id()));
             playerContainer.add(playerCard);
         }
@@ -168,7 +168,7 @@ public class InvitePlayersView extends HorizontalLayout implements BeforeEnterOb
         List<UserDB> allUsers = userService.getAllUsers();
         for (UserDB user : allUsers) {
             if ((user.getFirst_name() + " " + user.getLast_name()).toLowerCase().startsWith(name.toLowerCase())) {
-                PlayerCardInvite playerCard = new PlayerCardInvite(user.getUser_id(),user.getFirst_name() + " " + user.getLast_name(), user.getDepartment(), user.getGender(), user.getAge(), user.getRating(), user.getRating());
+                PlayerCardInvite playerCard = new PlayerCardInvite(user.getUser_id(), user.getAvatar(), user.getFirst_name() + " " + user.getLast_name(), user.getDepartment(), user.getGender(), user.getAge(), user.getRating(), user.getRating());
                 playerCard.getInviteButton().addClickListener(event -> sendInvitation(user.getUser_id()));
                 playerContainer.add(playerCard);
             }

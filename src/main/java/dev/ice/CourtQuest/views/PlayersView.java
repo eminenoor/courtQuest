@@ -140,6 +140,7 @@ public class PlayersView extends HorizontalLayout implements BeforeEnterObserver
         for (UserDB player : players) {
             PlayerCard playerCard = new PlayerCard(
                     player.getUser_id(),
+                    player.getAvatar(),
                     player.getFirst_name() + " " + player.getLast_name(),
                     player.getDepartment(),
                     player.getGender(),
