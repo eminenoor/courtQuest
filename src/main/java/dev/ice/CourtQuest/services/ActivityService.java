@@ -90,11 +90,27 @@ public class ActivityService {
         return null;
     }
 
+    public List<Activity> getUnfinishedActivities() {
+        List<Activity> list = activityRepository.findByStatus("Public");
+        List<Activity> unfinishedActivities = new ArrayList<>();
+        for (Activity activity : list) {
+            if(!activity.isFinished()){
+                unfinishedActivities.add(activity);
+            }
+        }
+        return unfinishedActivities;
+    }
+
     public List<Activity> getMyActivities(){
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         UserDB currentUser = userRepository.findByEmailWithActivities(username);
         Set<Activity> activities = currentUser.getActivities();
-        List<Activity> activitiesList = new ArrayList<>(activities);
+        List<Activity> activitiesList = new ArrayList<>();
+        for (Activity activity : activities) {
+            if (!activity.isFinished()) {
+                activitiesList.add(activity);
+            }
+        }
         return activitiesList;
     }
 

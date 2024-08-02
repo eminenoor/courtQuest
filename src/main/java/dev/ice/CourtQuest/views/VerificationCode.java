@@ -47,10 +47,26 @@ public class VerificationCode extends VerticalLayout {
         continueButton.addClickListener(e -> {
             String otp1 = (String) VaadinSession.getCurrent().getAttribute("otp");
             String otp2 = verificationCodeField.getValue();
-            if (otp1.equals(otp2)) {
-                continueButton.getUI().ifPresent(ui -> ui.navigate("register"));
-            } else {
+            if(otp1.equals(otp2)){
+
+                String source = (String) VaadinSession.getCurrent().getAttribute("source");
+
+                if ("create-account".equals(source)) {
+
+                    continueButton.getUI().ifPresent(ui -> ui.navigate("register"));
+
+                } else {
+
+                    continueButton.getUI().ifPresent(ui -> ui.navigate("new-password"));
+
+                }
+
+            }
+
+            else{
+
                 Notification.show("OTP is wrong!");
+
             }
         });
 

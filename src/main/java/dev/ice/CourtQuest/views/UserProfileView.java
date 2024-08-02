@@ -3,9 +3,7 @@ package dev.ice.CourtQuest.views;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.avatar.Avatar;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -15,7 +13,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
+import dev.ice.CourtQuest.entities.Rating;
 import dev.ice.CourtQuest.entities.UserDB;
 import dev.ice.CourtQuest.services.UserService;
 import jakarta.annotation.security.PermitAll;
@@ -39,8 +37,12 @@ public class UserProfileView extends VerticalLayout implements BeforeEnterObserv
     private Span departmentField;
     private Span emailField;
 
-    private UserService userService;
+    private final UserService userService;
     private Long userId;
+
+    // Define headerContainer and profileDetails as instance variables
+    private HorizontalLayout headerContainer;
+    private VerticalLayout profileDetails;
 
     @Autowired
     public UserProfileView(UserService userService) {
@@ -67,29 +69,11 @@ public class UserProfileView extends VerticalLayout implements BeforeEnterObserv
         headerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         headerLayout.setSpacing(true);
 
-        HorizontalLayout headerContainer = new HorizontalLayout(headerLayout, crossIcon);
+        headerContainer = new HorizontalLayout(headerLayout, crossIcon);
         headerContainer.setWidthFull();
         headerContainer.setAlignItems(FlexComponent.Alignment.START);
         headerContainer.expand(headerLayout);
         crossIcon.getElement().getStyle().set("margin-left", "auto");
-
-        Image profilePicture = new Image("images/profile-picture-placeholder.png", "Profile Picture");
-        profilePicture.setWidth("150px");
-
-        Span nameValueSpan = new Span(nameValue);
-        nameValueSpan.getElement().getStyle().set("font-size", "24px");
-
-        Span ageValueSpan = new Span(ageValue);
-        ageValueSpan.getElement().getStyle().set("font-size", "24px");
-
-        Span genderValueSpan = new Span(genderValue);
-        genderValueSpan.getElement().getStyle().set("font-size", "24px");
-
-        Span departmentValueSpan = new Span(departmentValue);
-        departmentValueSpan.getElement().getStyle().set("font-size", "24px");
-
-        Span emailValueSpan = new Span(emailValue);
-        emailValueSpan.getElement().getStyle().set("font-size", "24px");
 
         avatar = new Avatar(nameValue.getText());
         avatar.setWidth("150px");
@@ -106,6 +90,21 @@ public class UserProfileView extends VerticalLayout implements BeforeEnterObserv
         avatarLayout.getStyle().setWidth("150px");
         avatar.getStyle().set("margin-bottom", "20px");
 
+        Span nameValueSpan = new Span(nameValue);
+        nameValueSpan.getElement().getStyle().set("font-size", "24px");
+
+        Span ageValueSpan = new Span(ageValue);
+        ageValueSpan.getElement().getStyle().set("font-size", "24px");
+
+        Span genderValueSpan = new Span(genderValue);
+        genderValueSpan.getElement().getStyle().set("font-size", "24px");
+
+        Span departmentValueSpan = new Span(departmentValue);
+        departmentValueSpan.getElement().getStyle().set("font-size", "24px");
+
+        Span emailValueSpan = new Span(emailValue);
+        emailValueSpan.getElement().getStyle().set("font-size", "24px");
+
         nameField = new Span("Name: ");
         createStyledSpan(nameField);
         HorizontalLayout nameLayout = new HorizontalLayout(nameField, nameValueSpan);
@@ -115,6 +114,11 @@ public class UserProfileView extends VerticalLayout implements BeforeEnterObserv
         createStyledSpan(ageField);
         HorizontalLayout ageLayout = new HorizontalLayout(ageField, ageValueSpan);
         ageLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        genderField = new Span("Gender:  ");
+        createStyledSpan(genderField);
+        HorizontalLayout genderLayout = new HorizontalLayout(genderField, genderValueSpan);
+        genderLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
         departmentField = new Span("Department:  ");
         createStyledSpan(departmentField);
@@ -126,78 +130,21 @@ public class UserProfileView extends VerticalLayout implements BeforeEnterObserv
         HorizontalLayout emailLayout = new HorizontalLayout(emailField, emailValueSpan);
         emailLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
-        VerticalLayout profileDetails = new VerticalLayout(
+        profileDetails = new VerticalLayout(
                 avatarLayout,
                 nameLayout,
                 ageLayout,
+                genderLayout,
                 departmentLayout,
                 emailLayout
         );
 
         profileDetails.setAlignItems(FlexComponent.Alignment.START);
-        profileDetails.setAlignItems(VerticalLayout.Alignment.START);
         profileDetails.setSpacing(true);
         avatarLayout.getStyle().set("margin-bottom", "20px");
         profileDetails.getElement().getStyle().set("padding", "10px");
 
-        H1 personalRatingsTitle = new H1("Personal Ratings");
-        personalRatingsTitle.getElement().getStyle().set("font-size", "30px");
-
-        VerticalLayout personalRatings = new VerticalLayout(
-                personalRatingsTitle,
-                createPersonalRatingComponent("Volleyball", 4.5),
-                createPersonalRatingComponent("Football", 3.5),
-                createPersonalRatingComponent("Basketball", 4.0),
-                createPersonalRatingComponent("Tennis", 3.0)
-        );
-
-        personalRatingsTitle.getStyle().set("margin-bottom", "25px");
-        personalRatings.getElement().getStyle().set("background-color", "#ADD8E6");
-        personalRatings.getElement().getStyle().set("padding", "50px");
-        personalRatings.getElement().getStyle().set("border-radius", "30px");
-        personalRatings.getElement().getStyle().set("font-size", "23px");
-        personalRatings.setWidth("400px");
-        personalRatings.setHeight("500px");
-        personalRatings.setAlignItems(FlexComponent.Alignment.BASELINE);
-        personalRatings.setJustifyContentMode(FlexComponent.JustifyContentMode.AROUND);
-
-        H1 generalRatingsTitle = new H1("General Ratings");
-        generalRatingsTitle.getElement().getStyle().set("font-size", "30px");
-
-        VerticalLayout generalRatings = new VerticalLayout(
-                generalRatingsTitle,
-                createGeneralRatingComponent("Volleyball", 2.5),
-                createGeneralRatingComponent("Football", 1.5),
-                createGeneralRatingComponent("Basketball", 4.0),
-                createGeneralRatingComponent("Tennis", 5.0)
-        );
-
-        generalRatingsTitle.getStyle().set("margin-bottom", "25px");
-        generalRatings.getElement().getStyle().set("background-color", "#ADD8E6");
-        generalRatings.getElement().getStyle().set("padding", "50px");
-        generalRatings.getElement().getStyle().set("border-radius", "30px");
-        generalRatings.getElement().getStyle().set("font-size", "23px");
-        generalRatings.setWidth("400px");
-        generalRatings.setHeight("500px");
-        generalRatings.setAlignItems(FlexComponent.Alignment.BASELINE);
-        generalRatings.setJustifyContentMode(JustifyContentMode.AROUND);
-
-        HorizontalLayout profileAndRatings = new HorizontalLayout(profileDetails, personalRatings, generalRatings);
-        personalRatings.getStyle().set("margin-right", "25px");
-        profileAndRatings.setAlignItems(FlexComponent.Alignment.CENTER);
-        profileAndRatings.setSpacing(true);
-        profileAndRatings.setWidthFull();
-
-        VerticalLayout mainContent = new VerticalLayout(headerContainer, profileAndRatings);
-        mainContent.setWidthFull();
-        mainContent.setAlignItems(FlexComponent.Alignment.START);
-        mainContent.setSpacing(true);
-
-        // Add components to the root layout
-        add(mainContent);
-        setAlignItems(FlexComponent.Alignment.START);
-        setSizeFull();
-        getElement().getStyle().set("overflow", "hidden");
+        add(headerContainer);
     }
 
     @Override
@@ -221,34 +168,82 @@ public class UserProfileView extends VerticalLayout implements BeforeEnterObserv
             departmentValue.setText(user.getDepartment());
             emailValue.setText(user.getEmail());
             avatar.setName(user.getFirst_name() + " " + user.getLast_name());
+
+            // Add ratings after the user details are loaded
+            Rating rating = user.getReceivedRatings();
+            if (rating != null) {
+                H1 personalRatingsTitle = new H1("Personal Ratings");
+                personalRatingsTitle.getElement().getStyle().set("font-size", "30px");
+
+                double volleyballPersonal = rating.getRatingVolleyballPersonal();
+                double footballPersonal = rating.getRatingFootballPersonal();
+                double basketballPersonal = rating.getRatingBasketballPersonal();
+                double tennisPersonal = rating.getRatingTennisPersonal();
+
+                VerticalLayout personalRatings = new VerticalLayout(
+                        personalRatingsTitle,
+                        createRatingComponent("Volleyball", volleyballPersonal),
+                        createRatingComponent("Football", footballPersonal),
+                        createRatingComponent("Basketball", basketballPersonal),
+                        createRatingComponent("Tennis", tennisPersonal)
+                );
+
+                personalRatings.getElement().getStyle().set("background-color", "#ADD8E6");
+                personalRatings.getElement().getStyle().set("padding", "50px");
+                personalRatings.getElement().getStyle().set("border-radius", "30px");
+                personalRatings.getElement().getStyle().set("font-size", "23px");
+                personalRatings.setWidth("400px");
+                personalRatings.setHeight("500px");
+                personalRatings.setAlignItems(FlexComponent.Alignment.BASELINE);
+                personalRatings.setJustifyContentMode(FlexComponent.JustifyContentMode.AROUND);
+
+                H1 generalRatingsTitle = new H1("General Ratings");
+                generalRatingsTitle.getElement().getStyle().set("font-size", "30px");
+
+                double volleyballGeneral = rating.getRatingVolleyball();
+                double footballGeneral = rating.getRatingFootball();
+                double basketballGeneral = rating.getRatingBasketball();
+                double tennisGeneral = rating.getRatingTennis();
+
+                VerticalLayout generalRatings = new VerticalLayout(
+                        generalRatingsTitle,
+                        createRatingComponent("Volleyball", volleyballGeneral),
+                        createRatingComponent("Football", footballGeneral),
+                        createRatingComponent("Basketball", basketballGeneral),
+                        createRatingComponent("Tennis", tennisGeneral)
+                );
+
+                generalRatings.getElement().getStyle().set("background-color", "#ADD8E6");
+                generalRatings.getElement().getStyle().set("padding", "50px");
+                generalRatings.getElement().getStyle().set("border-radius", "30px");
+                generalRatings.getElement().getStyle().set("font-size", "23px");
+                generalRatings.setWidth("400px");
+                generalRatings.setHeight("500px");
+                generalRatings.setAlignItems(FlexComponent.Alignment.BASELINE);
+                generalRatings.setJustifyContentMode(FlexComponent.JustifyContentMode.AROUND);
+
+                HorizontalLayout ratingsLayout = new HorizontalLayout(personalRatings, generalRatings);
+                ratingsLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+                ratingsLayout.setSpacing(true);
+
+                HorizontalLayout profileAndRatings = new HorizontalLayout(profileDetails, ratingsLayout);
+                profileAndRatings.setAlignItems(FlexComponent.Alignment.START);
+                profileAndRatings.setSpacing(true);
+                profileAndRatings.setWidthFull();
+
+                removeAll(); // Clear the layout
+                add(headerContainer, profileAndRatings);
+            } else {
+                H1 error = new H1("Ratings not found for the user");
+                add(error);
+            }
         } else {
             H1 error = new H1("User not found");
             add(error);
         }
     }
 
-    private HorizontalLayout createPersonalRatingComponent(String sport, double rating) {
-        HorizontalLayout ratingLayout = new HorizontalLayout();
-        ratingLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        Span sportText = new Span(sport + ": ");
-        sportText.getElement().getStyle().set("margin-right", "auto");
-        ratingLayout.add(sportText);
-        ratingLayout.setSpacing(false);
-        ratingLayout.setPadding(false);
-        ratingLayout.setWidthFull();
-
-        for (int i = 1; i <= 5; i++) {
-            Icon star = new Icon(VaadinIcon.STAR);
-            star.setColor(i <= rating ? "#F8FFFD" : "gray");
-            star.getElement().setProperty("data-rating", i);
-            star.setSize("30px");
-            ratingLayout.add(star);
-            ratingLayout.getElement().getStyle().set("margin-bottom", "15px");
-        }
-        return ratingLayout;
-    }
-
-    private HorizontalLayout createGeneralRatingComponent(String sport, double rating) {
+    private HorizontalLayout createRatingComponent(String sport, double rating) {
         HorizontalLayout ratingLayout = new HorizontalLayout();
         ratingLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         Span sportText = new Span(sport + ": ");

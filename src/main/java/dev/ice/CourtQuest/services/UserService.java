@@ -162,4 +162,27 @@ public class UserService implements UserDetailsService {
             return null;
         }
     }
+
+
+    public UserDB resetPassword(Long user_id, UserDB newUser) {
+
+        Optional<UserDB> user = userRepository.findById(user_id);
+
+        if(user.isPresent()) {
+
+            UserDB foundUser = user.get();
+
+            foundUser.setFirst_name(newUser.getFirst_name());
+
+            foundUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+
+            return userRepository.save(foundUser);
+
+        } else {
+
+            return null;
+
+        }
+
+    }
 }

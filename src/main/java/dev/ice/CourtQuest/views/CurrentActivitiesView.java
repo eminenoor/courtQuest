@@ -115,7 +115,8 @@ public class CurrentActivitiesView extends HorizontalLayout {
         activityLayout.setWidthFull();
         activityLayout.setSpacing(true);
 
-        List<Activity> publicActivities = activityService.getPublicActivities();
+        //List<Activity> publicActivities = activityService.getPublicActivities();
+        List<Activity> publicActivities = activityService.getUnfinishedActivities();
         List<Activity> myActivities = activityService.getMyActivities();
         for(int i = 0; i < myActivities.size(); i++) {
             publicActivities.remove(myActivities.get(i));

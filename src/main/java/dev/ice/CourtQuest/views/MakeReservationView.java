@@ -15,6 +15,7 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLink;
+import dev.ice.CourtQuest.entities.Activity;
 import dev.ice.CourtQuest.services.ActivityService;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ public class MakeReservationView extends VerticalLayout {
 
     public MakeReservationView(ActivityService activityService) {
         this.activityService = activityService;
+        List<Activity> activities = activityService.getAllActivities();
 
         H1 makeReservationTitle = new H1("Make a Reservation");
 
@@ -202,11 +204,20 @@ public class MakeReservationView extends VerticalLayout {
             String selectedTime = time.getValue();
             String visibilityStatus = visibility.getValue();
             int quotaValue = Integer.parseInt(quota.getValue());
-            activityService.createActivity(sport, visibilityStatus, court, selectedDate.toString(), selectedTime, quotaValue);
+            boolean available = true;
+            for(int i = 0; i < activities.size(); i++){
+                if(activities.get(i).getTime().equals(selectedTime) && activities.get(i).getDate().equals(selectedDate.toString())
+                && activities.get(i).getPlace().equals(court)){
+                    available = false;
+                    Notification.show("There is already a reservation! Please choose a different time");
+                }
+            }
+            if(available){
+                activityService.createActivity(sport, visibilityStatus, court, selectedDate.toString(), selectedTime, quotaValue);
+                Notification.show("Reservation made!");
+                UI.getCurrent().navigate("my-activities");
+            }
 
-            Notification.show("Reservation made!");
-
-            UI.getCurrent().navigate("my-activities");
         });
 
         FormLayout formLayout = new FormLayout();

@@ -1,8 +1,10 @@
 package dev.ice.CourtQuest.entities;
 
+import dev.ice.CourtQuest.repos.UserRepository;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -46,4 +48,6 @@ public class Activity {
         participants.add(participant);
         participant.addActivity(this);
     }
+
+
 }

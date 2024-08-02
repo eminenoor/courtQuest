@@ -85,6 +85,7 @@ public class RegistrationView extends VerticalLayout {
                         newUser.setPassword(passwordField.getValue());
                         newUser.setAge(LocalDate.now().getYear() - birthday.getValue().getYear());
                         newUser.setRating(0.0);
+                        newUser.setEmail(emailValue);
                         userController.createUser(newUser);
                         Notification.show("Registration successful!");
                         getUI().ifPresent(ui -> ui.navigate("login"));

@@ -35,11 +35,22 @@ public class LoginView extends VerticalLayout {
 
         Div links = new Div();
         links.addClassName("additional-links");
+
         RouterLink createAccount = new RouterLink("Create an account", AnonymUserLoginView.class);
+
         createAccount.addClassName("create-account");
+
+        createAccount.getElement().setAttribute("href", "forgot-password?source=create-account");
+
         RouterLink forgotPassword = new RouterLink("Forgot password", AnonymUserLoginView.class);
+
         forgotPassword.addClassName("forgot-password");
+
+        forgotPassword.getElement().setAttribute("href", "forgot-password?source=forgot-password");
+
         links.add(createAccount, forgotPassword);
+
+
 
         add(new H1("CourtQuest"), login, links);
 

@@ -147,8 +147,8 @@ public class EditProfileView extends HorizontalLayout {
         deleteAvatarButton.getStyle().setBackgroundColor("white");
         deleteAvatarButton.addClickListener(e -> {
             avatar.setImage(null);
-            avatar.setName(profile.getNameValue() + " " + profile.getLastNameValue());
-            avatarData = null;
+            //avatar.setName(profile.getNameValue() + " " + profile.getLastNameValue());
+            avatarData = (profile.getNameValue() + " " + profile.getLastNameValue()).getBytes();
         });
 
         nameField = new TextField("Name");
