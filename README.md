@@ -40,4 +40,6 @@ After the activity is finished, each player have the option to rate the other pl
 ### About application.properties
 To be able to run the application, the database name should be written. Also, username and password should be written in yourusername and yourpassword sections. Plus, to be able to achieve the email functionality, email which will send emails to others, and its generated password should be written in yourgmail and yourpassword sections.
 
+### Link to personal and group log files in the wiki
+https://github.com/eminenoor/courtQuest/wiki
 
