@@ -1,0 +1,30 @@
+Emine's Personal Log File
+22201252
+
+10 June -16 June
+We discussed on the topic of the Project.
+
+17 June - 23 June
+We discussed which technologies we would be using.
+
+24 June - 30 June
+We started our requirements presentation. Elif and I researched similar applications and discussed which functionalities we wanted to implement or exclude in CourtQuest. Elif also researched optional technologies, and we deliberated on the most suitable technologies to use. I added the slides for the “similar applications” section, which Can and İlke edited later.
+
+1 July - 7 July
+We wrote our requirements report. I wrote the "similar applications" part. We started on our UI Design.
+
+8 July - 14 July
+For UI Design, we initially discussed which functionalities required their own pages and
+continued our design from there. During the requirements report stage, we all contributed to
+ensuring the design provided the most user-friendly interface. I created the sign-in, register,
+and invite players pages using Uizard, based on İlke’s drawings. Additionally, I contributed to
+the storyboard and activity design panels. For the presentation, I helped export designs from the Uizard site and edited the presentation slides. I presented the main page, the “my activities” page, and the sidebar menu.
+
+15 July - 21 July
+In the UI Design report, I wrote the parts for Main Page, My Activities Page, Sidebar Menu and Make a Reservation Page. And we started to discuss our implementation. 
+
+22 July - 28 July
+We started our implementation. I started to write the entities, services, repositories, and controllers. We wrote our detailed design report. ı wrote the parts for controllers and repositories.
+
+29 July - 4 August
+I connected notification view to backend, and request's accept and decline part. I directed the team with the usage of github. I merged the frontend repository with the backend repository. We finalized the code. İlke and I prepared the demo slides.
