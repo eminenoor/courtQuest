@@ -37,4 +37,7 @@ If someone requested to join to the activity, you can accept or decline them fro
 ## Rate Players
 After the activity is finished, each player have the option to rate the other players based on their performance.
 
+### About application.properties
+To be able to run the application, the database name should be written. Also, username and password should be written in yourusername and yourpassword sections. Plus, to be able to achieve the email functionality, email which will send emails to others, and its generated password should be written in yourgmail and yourpassword sections.
+
 
