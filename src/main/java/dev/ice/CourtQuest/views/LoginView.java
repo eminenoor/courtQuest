@@ -40,7 +40,7 @@ public class LoginView extends VerticalLayout {
         createAccount.getElement().setAttribute("href", "forgot-password?source=create-account");
         RouterLink forgotPassword = new RouterLink("Forgot password", AnonymUserLoginView.class);
         forgotPassword.addClassName("forgot-password");
-        forgotPassword.getElement().setAttribute("href", "forgot-password?source=forgot-Password");
+        forgotPassword.getElement().setAttribute("href", "forgot-password?source=forgot-password");
         links.add(createAccount, forgotPassword);
 
         add(new H1("CourtQuest"), login, links);

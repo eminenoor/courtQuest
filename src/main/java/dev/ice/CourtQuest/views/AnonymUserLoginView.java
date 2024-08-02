@@ -66,17 +66,29 @@ public class AnonymUserLoginView extends VerticalLayout implements BeforeEnterOb
         Button continueButton = new Button("Continue");
         continueButton.addClickListener(e -> {
             String email = emailField.getValue();
-
             UserDB existingUser = userRepository.findByEmail(email);
-            if (existingUser != null) {
-                Notification.show("The user already exists!", 3000, Notification.Position.BOTTOM_START);
-                getUI().ifPresent(ui -> ui.navigate("login"));
-            } else {
-                String otp = userService.getOtp(email);
-                VaadinSession.getCurrent().setAttribute("otp", otp);
-                VaadinSession.getCurrent().setAttribute("source", source);
-                VaadinSession.getCurrent().setAttribute("email", email);
-                continueButton.getUI().ifPresent(ui -> ui.navigate("verification-code"));
+
+            if ("create-account".equals(source)) {
+                if (existingUser != null) {
+                    Notification.show("The user already exists!", 3000, Notification.Position.BOTTOM_START);
+                    getUI().ifPresent(ui -> ui.navigate("login"));
+                } else {
+                    String otp = userService.getOtp(email);
+                    VaadinSession.getCurrent().setAttribute("otp", otp);
+                    VaadinSession.getCurrent().setAttribute("source", source);
+                    VaadinSession.getCurrent().setAttribute("email", email);
+                    continueButton.getUI().ifPresent(ui -> ui.navigate("verification-code"));
+                }
+            } else if ("forgot-password".equals(source)) {
+                if (existingUser == null) {
+                    Notification.show("The user does not exist!", 3000, Notification.Position.BOTTOM_START);
+                } else {
+                    String otp = userService.getOtp(email);
+                    VaadinSession.getCurrent().setAttribute("otp", otp);
+                    VaadinSession.getCurrent().setAttribute("source", source);
+                    VaadinSession.getCurrent().setAttribute("email", email);
+                    continueButton.getUI().ifPresent(ui -> ui.navigate("verification-code"));
+                }
             }
         });
 
